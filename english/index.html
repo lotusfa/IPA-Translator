@@ -4,11 +4,11 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="Translate conatonese to IPA.(廣東話文章 <-> 拼音)轉換器">
+    <meta name="description" content="Translate english paragraph to IPA.">
     <meta name="author" content="Lotusfa">
-    <meta name="keywords" content="IPA,粵語拼音翻譯器,粵語,拼音,翻譯器,Chinese Converter,粤语,发音,字典,粤语翻译,廣東話英文拼音,廣東話,英文,拼音,國際音標,萬國音標,標音,系統,口語聲音,香港拼音查询,香港,拼音查询,粵語審音配詞字庫,HUMA,HKUST,HUMA2031,HUMA2031,認識廣東話,UST,The Cantonese Language,白話,International Phonetic Alphabet,Cantonese,alphabetic system,Cantonese IPA Translator,Translator，粵語拼音轉換,香港拼音查询,廣東話姓名拼音,香港粵語拼音,粵語國際音標,粵語拼音字表,粵語注音,chinese, Cantonese, syllabary, characters, hanzi,廣東話ipa字典,字典">
+    <meta name="keywords" content="IPA,英文拼音翻譯器,拼音,翻譯器,English Converter,英文,发音,字典,英文翻译,廣東話英文拼音,廣東話,英文,拼音,國際音標,萬國音標,標音,系統,口語聲音,香港拼音查询,香港,拼音查询,英文審音配詞字庫,The English Language,International Phonetic Alphabet,English,alphabetic system,English IPA Translator,Translator，英文拼音轉換,香港拼音查询,香港英文拼音,英文國際音標,英文拼音字表,英文注音,chinese, English, syllabary, characters, hanzi">
     <link rel="icon" href="https://res.cloudinary.com/dcmnwc3ux/image/upload/v1493918347/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7_2017-05-05_%E4%B8%8A%E5%8D%881.09.00_fnw5k9.png">
-        <title>粵語拼音翻譯器: From Cantonese to IPA</title>
+        <title>From English to IPA</title>
         <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
         <!-- Custom styles for this template -->
@@ -18,15 +18,15 @@
         <!-- Begin page content -->
     <div class="container">
       <div class="mt-1">
-        <h1>粵語拼音翻譯器</h1>
-        <h4>Cantonese IPA Translator</h4>
+        <h1>English IPA Translator</h1>
+        <h4>paragraph -> IPA</h4>
         <hr>
       </div>
       <div class="row">
         <div class="col-md-6">
             <div class="form-group">
-              <label>中文字 (Chinese):</label>
-              <textarea class="form-control" rows="10" id="cWords_tBox" onfocusin="this.select();" onkeyup="update_result()" placeholder="Input some Chinese words. ">國際音標，早期又稱萬國音標，是一套用來標音的系統，以拉丁字母為基礎，由國際語音學學會設計來作為口語聲音的標準化標示方法。
+              <label>English paragraph:</label>
+              <textarea class="form-control" rows="10" id="cWords_tBox" onfocusin="this.select();" onkeyup="update_result()" placeholder="Input some English words. ">The International Phonetic Alphabet (IPA) is an alphabetic system of phonetic notation based primarily on the Latin alphabet. It was devised by the International Phonetic Association in the late 19th century as a standardized representation of the sounds of spoken language.
               </textarea>
           </div>
         </div>
@@ -41,34 +41,12 @@
       </div>
       <div class="row">
         <div class="col-md-6">
-          <label>Format:  </label>
-          <div class="form-check form-check-inline">
-            <label class="form-check-label">
-              <input class="form-check-input" type="radio" name="inlineRadioOptions" id="IPA_num" value="option2" checked="checked" onchange="update_result()"> /nei13/
-            </label>
-          </div>
-          <div class="form-check form-check-inline">
-            <label class="form-check-label">
-              <input class="form-check-input" type="radio" name="inlineRadioOptions" id="IPA_org" value="option1" onchange="update_result()"> /nei˩˧/
-            </label>
-          </div>
-          <div class="form-check form-check-inline">
-            <label class="form-check-label">
-              <input class="form-check-input" type="radio" name="inlineRadioOptions" id="Jyutping" value="option3" onchange="update_result()"> /nei5/
-            </label>
-          </div>
         </div>
         <div class="col-md-6">
           <div class="form-check ">
             <label class="form-check-label">
               <input type="checkbox" class="form-check-input" checked="checked" onchange="update_result()" id="wf_c_words">
-              With Chinese Words
-            </label>
-          </div>
-          <div class="form-check ">
-            <label class="form-check-label">
-              <input type="checkbox" class="form-check-input" checked="checked" onchange="update_result()" id="allow_words_search">
-              Allow Words Search
+              With English Words
             </label>
           </div>
         </div>
@@ -78,26 +56,25 @@
 
       <h4>Description</h4>
       <hr>
-      <p>This project is use to translate conatonese to IPA in difference format.</p>
+      <p>This project is use to translate english to IPA.</p>
       <br>
 
       <h4>Other Languages</h4>
       <hr>
       <p> - Cantonese: <a href="https://toolbox.lotusfa.com/ipa/cantonese/index.html"> LINK</a> </p>
       <p> - Mandarin: <a href="https://toolbox.lotusfa.com/ipa/mandarin/index.html"> LINK</a> </p>
+      <p> - English: <a href="https://toolbox.lotusfa.com/ipa/english/index.html"> LINK</a> </p>
       <br>
 
       <h4>Built With </h4>
       <hr>
-      <p>  - <a href="./ipa_list.html">IPA database</a> : <a href="https://open-dict-data.github.io/ipa-lookup/yue/"> 粵語國際音標查詢</a>  </p>
+      <p>  - <a href="./ipa_list.html">IPA database</a> : <a href="https://open-dict-data.github.io/ipa-lookup/en/">English IPA Lookup</a>  </p>
       <p> - Boostrap: <a href="https://getbootstrap.com/"> LINK </a> </p>
     
       <br>
       <h4>Useful Links </h4>
       <hr>
-      <p> - 粵語拼音對照表: <a href="https://zh.m.wikipedia.org/wiki/%E7%B2%B5%E8%AA%9E%E6%8B%BC%E9%9F%B3%E5%B0%8D%E7%85%A7%E8%A1%A8"> WIKI</a> </p>
-      
-      <p> - 粵語審音配詞字庫: <a href="http://humanum.arts.cuhk.edu.hk/Lexis/lexi-can/"> CU</a> </p>
+      <p> - IPA/English: <a href="https://en.wikipedia.org/wiki/Help:IPA/English"> WIKI</a> </p>
       
       <p> - International Phonetic Alphabet: <a href="https://en.wikipedia.org/wiki/International_Phonetic_Alphabet"> WIKI </a> </p>
       <br>

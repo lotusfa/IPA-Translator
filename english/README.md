@@ -1,21 +1,14 @@
 # Cantonese-IPA-Translator
-This project is use to translate difference languages paragraph to IPA.
+This project is use to translate conatonese to IPA in difference format.
 
 ## Getting Started
 
 Go to this <a href="https://toolbox.lotusfa.com/ipa/"> website</a> 
 
-## Languages
-
-- Cantonese: <a href="https://toolbox.lotusfa.com/ipa/cantonese/index.html">LINK </a>
-
-- Mandarin: <a href="https://toolbox.lotusfa.com/ipa/mandarin/index.html">LINK </a>
-
-- English: <a href="https://toolbox.lotusfa.com/ipa/english/index.html">LINK </a>
 
 ## Built With
 
-- IPA database: <a href="https://open-dict-data.github.io/">LINK </a>
+- IPA database: <a href="https://open-dict-data.github.io/ipa-lookup/yue/">粵語國際音標查詢 </a>
 
 - Boostrap: <a href="https://getbootstrap.com/"> LINK </a>
 

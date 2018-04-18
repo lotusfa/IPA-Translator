@@ -57,7 +57,7 @@ function get_IPA_DB (s) {
       }
   };
 
-  xmlhttp.open("GET", "./ipa_data.txt", true);
+  xmlhttp.open("GET", "./yue.json", true);
   xmlhttp.send();
 }
 
