@@ -13,6 +13,10 @@ Go to this <a href="https://toolbox.lotusfa.com/ipa/"> website</a>
 
 - English: <a href="https://toolbox.lotusfa.com/ipa/english/index.html">LINK </a>
 
+- Esperanto: <a href="https://toolbox.lotusfa.com/ipa/esperanto/index.html">LINK </a>
+
+- Persian: <a href="https://toolbox.lotusfa.com/ipa/persian/index.html">LINK </a>
+
 ## Built With
 
 - IPA database: <a href="https://open-dict-data.github.io/">LINK </a>

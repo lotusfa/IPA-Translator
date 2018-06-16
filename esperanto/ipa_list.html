@@ -6,34 +6,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="Lotusfa">
-    <meta name="keywords" content="IPA,粵語拼音翻譯器,粵語,拼音,翻譯器,Chinese Converter,粤语,发音,字典,粤语翻译,廣東話英文拼音,廣東話,英文,拼音,國際音標,萬國音標,標音,系統,口語聲音,香港拼音查询,香港,拼音查询,粵語審音配詞字庫,HUMA,HKUST,HUMA2031,HUMA2031,認識廣東話,UST,The Cantonese Language,白話,International Phonetic Alphabet,Cantonese,alphabetic system,Cantonese IPA Translator,Translator">
+    <meta name="keywords" content="IPA,拼音,翻譯器,Esperanto Converter,世界語IPA,发音,字典,世界語,國際音標,萬國音標,標音,系統,拼音查询,The Esperanto Language,International Phonetic Alphabet,Esperanto,alphabetic system,Esperanto IPA Translator,世界語拼音,世界語國際音標,世界語拼音字表,世界語注音, characters">
     <link rel="icon" href="https://res.cloudinary.com/dcmnwc3ux/image/upload/v1493918347/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7_2017-05-05_%E4%B8%8A%E5%8D%881.09.00_fnw5k9.png">
-
-    <title>粵語拼音列表: Cantonese IPA List</title>
-
-    <!-- Bootstrap core CSS -->
+        <title>Esperanto IPA List</title>
+        <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
-
-    <!-- Custom styles for this template -->
+        <!-- Custom styles for this template -->
     <link href="https://v4-alpha.getbootstrap.com/examples/sticky-footer/sticky-footer.css" rel="stylesheet">
   </head>
-
-  <body>
-
-    <!-- Begin page content -->
+    <body>
+        <!-- Begin page content -->
     <div class="container">
       <div class="mt-1">
-        <h1>粵語拼音列表</h1>
-        <h4><a href="./index.html">Cantonese IPA List</a></h4>
+        <h1>Esperanto IPA List</h1>
         <hr>
       </div>
-      <h6><a href="./ipa_data.txt" >IPA json file</a></h6>
+      <h6><a href="./eo.json" >IPA json file</a></h6>
       <table class="table table-striped">
         <thead>
           <tr>
             <th scope="col">#</th>
-            <th scope="col">中文字 (Chinese)</th>
-            <th scope="col">拼音 (PINYIN)</th>
+            <th scope="col">Esperanto Word</th>
+            <th scope="col">IPA</th>
           </tr>
         </thead>
         <tbody id="tbody">
@@ -100,7 +94,7 @@
             }
         };
 
-        xmlhttp.open("GET", "./yue.json", true);
+        xmlhttp.open("GET", "./eo.json", true);
         xmlhttp.send();
       }
 
