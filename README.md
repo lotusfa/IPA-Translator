@@ -1,4 +1,4 @@
-# Cantonese-IPA-Translator
+# IPA-Translator
 This project is use to translate difference languages paragraph to IPA.
 
 ## Getting Started
