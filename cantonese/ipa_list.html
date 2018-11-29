@@ -16,6 +16,11 @@
 
     <!-- Custom styles for this template -->
     <link href="https://v4-alpha.getbootstrap.com/examples/sticky-footer/sticky-footer.css" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/jq-3.3.1/dt-1.10.18/datatables.min.css"/>
+     
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/jq-3.3.1/dt-1.10.18/datatables.min.js"></script>
+    
   </head>
 
   <body>
@@ -28,10 +33,9 @@
         <hr>
       </div>
       <h6><a href="./ipa_data.txt" >IPA json file</a></h6>
-      <table class="table table-striped">
+      <table class="table table-striped display" id="DataTable">
         <thead>
           <tr>
-            <th scope="col">#</th>
             <th scope="col">中文字 (Chinese)</th>
             <th scope="col">拼音 (PINYIN)</th>
           </tr>
@@ -39,7 +43,6 @@
         <tbody id="tbody">
         </tbody>
       </table>
-      <small>This may need few seconds for loading...</small>
     </div>
 
     
@@ -52,58 +55,11 @@
 
     <div id="demo"></div>
     <script type="text/javascript">
-
-      let num_item = 0;
-
-      main ();
-
-      function main () {
-        reset_List ();
-        get_IPA_DB ((obj)=>{
-          for(var k in obj) { addToRow (k, obj[k]); }
-        });
-
-      }
-
-      function reset_List () {
-        num_item = 0;
-        document.getElementById("tbody").innerHTML = "";
-      }
-
-      function addToRow (chin,pin) {
-        num_item++;
-        var row = document.createElement("tr");
-        
-        var col_1 = document.createElement("th");
-        col_1.scope = "row";
-        col_1.innerHTML = num_item;
-
-        var col_2 = document.createElement("td");
-        col_2.innerHTML = chin;
-
-        var col_3 = document.createElement("td");
-        col_3.innerHTML = pin;
-
-        row.appendChild(col_1);
-        row.appendChild(col_2);
-        row.appendChild(col_3);
-
-        document.getElementById("tbody").appendChild(row);
-      }
-
-      function get_IPA_DB (s) {
-        var xmlhttp = new XMLHttpRequest();
-        xmlhttp.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
-                var myObj = JSON.parse(this.responseText);
-                return s(myObj);
-            }
-        };
-
-        xmlhttp.open("GET", "./yue.json", true);
-        xmlhttp.send();
-      }
-
+      $(document).ready(function() {
+          $('#DataTable').DataTable( {
+              "ajax": './ipa_ajex_data.txt'
+          } );
+      } );
     </script>
 
         <!--Google Analysis -->
