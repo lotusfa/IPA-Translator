@@ -104,9 +104,23 @@ function format_Jyutping (x) {
     x = x.replace(/˩˧/g, "5");
     x = x.replace(/˨˧/g, "5");
     x = x.replace(/˨˨/g, "6");
-    x = x.replace(/˥/g, "7");
-    x = x.replace(/˧/g, "8");
-    x = x.replace(/˨/g, "9");
+
+    x = x.replace(/k˥/g, "k7");
+    x = x.replace(/k˧/g, "k8");
+    x = x.replace(/k˨/g, "k9");
+
+    x = x.replace(/t˥/g, "t7");
+    x = x.replace(/t˧/g, "t8");
+    x = x.replace(/t˨/g, "t9");
+
+    x = x.replace(/p˥/g, "p7");
+    x = x.replace(/p˧/g, "p8");
+    x = x.replace(/p˨/g, "p9");
+
+    x = x.replace(/˥/g, "1");
+    x = x.replace(/˧/g, "3");
+    x = x.replace(/˨/g, "6");
+
     x = x.replace(/:/g, "");
     return x;
 }
