@@ -1,4 +1,5 @@
 let IPA_result = "";
+let data_file = './en_US.json';
 
 function update_result () {
   
@@ -48,7 +49,15 @@ function get_IPA_DB (s) {
       }
   };
 
-  xmlhttp.open("GET", "./en_US.json", true);
+  if (document.getElementById("IPA_US").checked){
+    data_file = './en_US.json';
+  }else if (document.getElementById("IPA_UK").checked) {
+    data_file = './en_UK.json';
+  }else {
+    data_file = './en_US.json';
+  }
+
+  xmlhttp.open("GET", data_file, true);
   xmlhttp.send();
 }
 

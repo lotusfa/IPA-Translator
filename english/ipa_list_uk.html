@@ -1,0 +1,128 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Lotusfa">
+    <meta name="keywords" content="IPA,拼音,翻譯器,English Converter, 英文IPA, 发音, 字典, 英文翻译英文拼音, 英文, 國際音標, 萬國音標,International Phonetic Alphabet,English,alphabetic system,English IPA Translator, Translator, 英文拼音轉, 英文國際音標,ipa轉換, 國際音標英文">
+    <link rel="icon" href="https://res.cloudinary.com/dcmnwc3ux/image/upload/v1493918347/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7_2017-05-05_%E4%B8%8A%E5%8D%881.09.00_fnw5k9.png">
+        <title>English IPA List</title>
+        <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+        <!-- Custom styles for this template -->
+    <link href="https://v4-alpha.getbootstrap.com/examples/sticky-footer/sticky-footer.css" rel="stylesheet">
+  </head>
+    <body>
+    
+    <!-- Begin page content -->
+    <div class="container">
+      <div class="mt-1">
+        <h1>English IPA List</h1>
+        <hr>
+      </div>
+      <h6><a href="./en_UK.json" >IPA json file</a></h6>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">English Word</th>
+            <th scope="col">IPA</th>
+          </tr>
+        </thead>
+        <tbody id="tbody">
+        </tbody>
+      </table>
+      <small>This may need few seconds for loading...</small>
+    </div>
+
+    <footer class="footer" >
+      <div class="container">
+        <span class="text-muted">Power By: LOTUS FA, <a href="https://lotusfa.com/">lotusfa.com</a></span>
+
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+        <!-- ipa -->
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-8952191733743650"
+             data-ad-slot="7418454359"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>
+             (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+        
+      </div>
+    </footer>
+
+    <div id="demo"></div>
+    
+    <script type="text/javascript">
+
+      let num_item = 0;
+
+      main ();
+
+      function main () {
+        reset_List ();
+        get_IPA_DB ((obj)=>{
+          for(var k in obj) { addToRow (k, obj[k]); }
+        });
+
+      }
+
+      function reset_List () {
+        num_item = 0;
+        document.getElementById("tbody").innerHTML = "";
+      }
+
+      function addToRow (chin,pin) {
+        num_item++;
+        var row = document.createElement("tr");
+        
+        var col_1 = document.createElement("th");
+        col_1.scope = "row";
+        col_1.innerHTML = num_item;
+
+        var col_2 = document.createElement("td");
+        col_2.innerHTML = chin;
+
+        var col_3 = document.createElement("td");
+        col_3.innerHTML = pin;
+
+        row.appendChild(col_1);
+        row.appendChild(col_2);
+        row.appendChild(col_3);
+
+        document.getElementById("tbody").appendChild(row);
+      }
+
+      function get_IPA_DB (s) {
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                var myObj = JSON.parse(this.responseText);
+                return s(myObj);
+            }
+        };
+
+        xmlhttp.open("GET", "./en_UK.json", true);
+        xmlhttp.send();
+      }
+
+    </script>
+
+        <!--Google Analysis -->
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-80492067-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+  </body>
+</html>
