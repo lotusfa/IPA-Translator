@@ -31,7 +31,7 @@ function update_result () {
 
           search_words = s_words[words_index];
           if (document.getElementById("wf_c_words").checked) {
-            str += "(" + search_words + " /" + obj[search_words] + "/ )";
+            str += "（" + search_words + "/" + obj[search_words] + "/）";
           }else  str += "/" + obj[search_words] + "/ ";
           i += words_index;
 
