@@ -1,0 +1,127 @@
+/* Minimal CSS for IPA Translator */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.6;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 20px;
+  color: #333;
+}
+
+h1, h2, h4 {
+  margin-bottom: 10px;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid #ddd;
+  margin: 15px 0;
+}
+
+textarea {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical;
+}
+
+textarea[disabled] {
+  background-color: #f5f5f5;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+.form-check {
+  display: inline-block;
+  margin-right: 15px;
+  margin-bottom: 0;
+}
+
+.form-check input {
+  margin-right: 5px;
+}
+
+textarea.form-control, input.form-control {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+select.form-control {
+  height: 36px;
+}
+
+.footer {
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid #ddd;
+  font-size: 14px;
+  color: #666;
+}
+
+/* Two-column layout */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -10px;
+}
+
+.col, .col-md-6, .col-sm {
+  flex: 1;
+  padding: 0 10px;
+  min-width: 280px;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  body {
+    padding: 15px;
+  }
+
+  .row {
+    flex-direction: column;
+  }
+
+  .col {
+    min-width: 100%;
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  h2 {
+    font-size: 1.2rem;
+  }
+
+  textarea {
+    font-size: 14px;
+  }
+}
+
+a {
+  color: #0066cc;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
