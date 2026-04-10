@@ -135,17 +135,20 @@ document.addEventListener('DOMContentLoaded', function() {
   const darkModeToggle = document.getElementById('dark-mode-toggle');
 
   // Dark mode toggle
-  const icon = darkModeToggle.querySelector('.icon');
+  const iconImg = darkModeToggle.querySelector('.icon');
   const savedTheme = localStorage.getItem('theme');
   if (savedTheme === 'dark') {
     document.body.classList.add('dark-mode');
-    icon.textContent = '☀️';
+    iconImg.src = '../img/dark-mode.svg';
+  } else {
+    iconImg.src = '../img/light-mode.svg';
   }
 
   darkModeToggle.addEventListener('click', function() {
+    darkModeToggle.classList.add('btn-theme-transition');
     document.body.classList.toggle('dark-mode');
     const isDark = document.body.classList.contains('dark-mode');
-    icon.textContent = isDark ? '☀️' : '🌙';
+    iconImg.src = isDark ? '../img/dark-mode.svg' : '../img/light-mode.svg';
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
   });
 
