@@ -35,14 +35,17 @@ textarea {
   width: 100%;
   padding: 10px;
   font-size: 16px;
+  font-family: inherit;
   border: 1px solid #ccc;
   border-radius: 4px;
   resize: vertical;
   min-height: 300px;
+  line-height: 1.4;
 }
 
 textarea[disabled] {
   background-color: #f5f5f5;
+  cursor: default;
 }
 
 .form-group {
@@ -77,12 +80,87 @@ select.form-control {
   height: 36px;
 }
 
+/* Footer - 3 column responsive layout */
 .footer {
   margin-top: 40px;
-  padding-top: 20px;
-  border-top: 1px solid #ddd;
+  padding: 30px 0;
+  border-top: 1px solid #e1e1e8;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  margin-bottom: 20px;
+}
+
+.footer-col h4 {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 12px 0;
+  color: #333;
+}
+
+.footer-col p {
   font-size: 14px;
   color: #666;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.footer-col ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-col ul li {
+  margin-bottom: 6px;
+}
+
+.footer-col ul li a {
+  font-size: 14px;
+  color: #666;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footer-col ul li a:hover {
+  color: #0066cc;
+  text-decoration: none;
+}
+
+.footer-bottom {
+  padding-top: 20px;
+  border-top: 1px solid #e1e1e8;
+  text-align: center;
+}
+
+.footer-bottom p {
+  margin: 0;
+  font-size: 13px;
+  color: #999;
+}
+
+.footer-bottom a {
+  color: #666;
+  font-weight: 500;
+}
+
+.footer-bottom a:hover {
+  color: #0066cc;
+}
+
+/* Mobile responsive - footer columns stack vertically */
+@media (max-width: 768px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .footer-col h4 {
+    font-size: 16px;
+  }
 }
 
 /* Two-column layout */
