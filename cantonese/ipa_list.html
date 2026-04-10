@@ -1,90 +1,129 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="Lotusfa">
-    <meta name="keywords" content="IPA,粵語拼音翻譯器,粵語,拼音,翻譯器,Chinese Converter,粤语,发音,字典,粤语翻译,廣東話英文拼音,廣東話,英文,拼音,國際音標,萬國音標,標音,系統,口語聲音,香港拼音查询,香港,拼音查询,粵語審音配詞字庫,HUMA,HKUST,HUMA2031,HUMA2031,認識廣東話,UST,The Cantonese Language,白話,International Phonetic Alphabet,Cantonese,alphabetic system,Cantonese IPA Translator,Translator">
-    <link rel="icon" href="https://res.cloudinary.com/dcmnwc3ux/image/upload/v1493918347/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7_2017-05-05_%E4%B8%8A%E5%8D%881.09.00_fnw5k9.png">
-
-    <title>粵語拼音列表: Cantonese IPA List</title>
-
-    <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
-
-    <!-- Custom styles for this template -->
-    <link href="https://v4-alpha.getbootstrap.com/examples/sticky-footer/sticky-footer.css" rel="stylesheet">
-
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>粵語拼音列表 - Cantonese IPA List</title>
+    <link rel="icon" href="../favicon.svg" />
+    <link rel="stylesheet" href="../css/styles.css" />
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <!-- DataTable -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/jq-3.3.1/dt-1.10.18/datatables.min.css"/>
     <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/jq-3.3.1/dt-1.10.18/datatables.min.js"></script>
-    
   </head>
 
   <body>
-
-    <!-- Begin page content -->
-    <div class="container">
-      <div class="mt-1">
+    <div class="header">
+      <div class="titles">
         <h1>粵語拼音列表</h1>
-        <h4><a href="./index.html">Cantonese IPA List</a></h4>
-        <hr>
+        <h2>Cantonese IPA List</h2>
       </div>
-      <h6><a href="./ipa_data.txt" >IPA json file</a></h6>
-      <table class="table table-striped display" id="DataTable">
-        <thead>
-          <tr>
-            <th scope="col">中文字 (Chinese)</th>
-            <th scope="col">拼音 (PINYIN)</th>
-          </tr>
-        </thead>
-        <tbody id="tbody">
-        </tbody>
-      </table>
+      <button id="dark-mode-toggle" class="btn-theme" aria-label="Toggle dark mode">
+        <img src="../img/light-mode.svg" class="icon" alt="" />
+      </button>
+    </div>
+    <hr />
+
+    <div class="container">
+      <div class="row" style="margin-bottom: 15px;">
+        <div class="col" style="flex: 0 0 auto;">
+          <h5 style="margin: 0;"><a href="./index.html">← 返回翻譯器 (Back to Translator)</a></h5>
+        </div>
+        <div class="col" style="flex: 0 0 auto; text-align: right;">
+          <h6 style="margin: 0;"><a href="./ipa_data.txt">IPA json file</a></h6>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <table class="table table-striped display" id="DataTable">
+            <thead>
+              <tr>
+                <th scope="col">中文字 (Chinese)</th>
+                <th scope="col">拼音 (PINYIN)</th>
+              </tr>
+            </thead>
+            <tbody id="tbody">
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
 
-    
-    
-    <footer class="footer" >
-      <div class="container">
-        <span class="text-muted">Power By: LOTUS FA, <a href="https://lotusfa.com/">lotusfa.com</a></span>
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h4>說明</h4>
+          <p>這是一個開源專案，用於將廣東話轉換為國際音標。</p>
+        </div>
 
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-        <!-- ipa -->
-        <ins class="adsbygoogle"
-             style="display:block"
-             data-ad-client="ca-pub-8952191733743650"
-             data-ad-slot="7418454359"
-             data-ad-format="auto"
-             data-full-width-responsive="true"></ins>
-        <script>
-             (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
-        
+        <div class="footer-col">
+          <h4>其他語言</h4>
+          <ul class="lang-list">
+            <li><a href="../cantonese/index.html">Cantonese (廣東話)</a></li>
+            <li><a href="../mandarin/index.html">Mandarin (普通話)</a></li>
+            <li><a href="../english/index.html">English</a></li>
+            <li><a href="../french/index.html">French</a></li>
+            <li><a href="../esperanto/index.html">Esperanto</a></li>
+            <li><a href="../persian/index.html">Persian</a></li>
+            <li><a href="../spanish/index.html">Spanish</a></li>
+            <li><a href="../japanese/index.html">Japanese</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>連結</h4>
+          <ul>
+            <li><a href="./ipa_list.html">IPA 資料庫</a></li>
+            <li><a href="https://zh.wikipedia.org/wiki/粵語拼音對照表">粵語拼音對照表 (WIKI)</a></li>
+            <li><a href="http://humanum.arts.cuhk.edu.hk/Lexis/lexi-can/">粵語審音配詞字庫 (CUHK)</a></li>
+            <li><a href="https://open-dict-data.github.io/ipa-lookup/yue/">粵語國際音標查詢</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>
+          <a href="https://github.com/lotusfa/IPA-Translator">GitHub</a>
+          &nbsp;|&nbsp;
+          Power By: <a href="https://lotusfa.com/">LOTUS FA</a>
+        </p>
       </div>
     </footer>
 
-    <div id="demo"></div>
     <script type="text/javascript">
+      // Dark mode toggle
+      const darkModeToggle = document.getElementById('dark-mode-toggle');
+      const icon = darkModeToggle.querySelector('.icon');
+      const lightModeIcon = '../img/light-mode.svg';
+      const darkModeIcon = '../img/dark-mode.svg';
+
+      // Check for saved dark mode preference
+      const isDarkMode = localStorage.getItem('darkMode') === 'enabled';
+      if (isDarkMode) {
+        document.body.classList.add('dark-mode');
+        icon.src = darkModeIcon;
+      }
+
+      darkModeToggle.addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+
+        if (document.body.classList.contains('dark-mode')) {
+          localStorage.setItem('darkMode', 'enabled');
+          icon.src = darkModeIcon;
+        } else {
+          localStorage.setItem('darkMode', 'disabled');
+          icon.src = lightModeIcon;
+        }
+      });
+
+      // Initialize DataTable
       $(document).ready(function() {
           $('#DataTable').DataTable( {
               "ajax": './ipa_ajex_data.txt'
           } );
       } );
-    </script>
-
-        <!--Google Analysis -->
-    <script>
-      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-      ga('create', 'UA-80492067-1', 'auto');
-      ga('send', 'pageview');
-
     </script>
   </body>
 </html>
