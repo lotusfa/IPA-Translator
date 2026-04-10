@@ -132,6 +132,22 @@ document.addEventListener('DOMContentLoaded', function() {
   const formatRadios = document.querySelectorAll('input[name="format"]');
   const wf_c_words = document.getElementById('wf_c_words');
   const allow_words_search = document.getElementById('allow_words_search');
+  const darkModeToggle = document.getElementById('dark-mode-toggle');
+
+  // Dark mode toggle
+  const icon = darkModeToggle.querySelector('.icon');
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme === 'dark') {
+    document.body.classList.add('dark-mode');
+    icon.textContent = '☀️';
+  }
+
+  darkModeToggle.addEventListener('click', function() {
+    document.body.classList.toggle('dark-mode');
+    const isDark = document.body.classList.contains('dark-mode');
+    icon.textContent = isDark ? '☀️' : '🌙';
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+  });
 
   // Auto-update on input
   cWords_tBox.addEventListener('input', update_result);
