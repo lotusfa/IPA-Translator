@@ -1,93 +1,102 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>粵語拼音翻譯器 - Cantonese IPA Translator</title>
-  <link rel="icon" href="https://res.cloudinary.com/dcmnwc3ux/image/upload/v1493918347/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7_2017-05-05_%E4%B8%8A%E5%8D%88 1.09.00_fnw5k9.png">
-  <link rel="stylesheet" href="./styles.css">
-</head>
-<body>
-  <h1>粵語拼音翻譯器</h1>
-  <h2>Cantonese IPA Translator</h2>
-  <hr>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>粵語拼音翻譯器 - Cantonese IPA Translator</title>
+    <link rel="icon" href="../favicon.svg" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <h1>粵語拼音翻譯器</h1>
+    <h2>Cantonese IPA Translator</h2>
+    <hr />
 
-  <div class="row">
-    <div class="col">
-      <div class="form-group">
-        <label>中文字 (Chinese)</label>
-        <textarea id="cWords_tBox" rows="10" placeholder="輸入廣東話文字...">國際音標，早期又稱萬國音標，是一套用來標音的系統，以拉丁字母為基礎，由國際語音學學會設計來作為口語聲音的標準化標示方法。</textarea>
+    <div class="row">
+      <div class="col">
+        <div class="form-group">
+          <label>中文字 (Chinese)</label>
+          <textarea id="cWords_tBox" rows="10" placeholder="輸入廣東話文字...">
+國際音標，早期又稱萬國音標，是一套用來標音的系統，以拉丁字母為基礎，由國際語音學學會設計來作為口語聲音的標準化標示方法。</textarea
+          >
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="form-group">
+          <label>拼音 (IPA)</label>
+          <textarea id="IPA_tBox" rows="10" disabled></textarea>
+        </div>
       </div>
     </div>
 
-    <div class="col">
-      <div class="form-group">
-        <label>拼音 (IPA)</label>
-        <textarea id="IPA_tBox" rows="10" disabled></textarea>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-check-inline" style="align-items: baseline; margin-bottom: 5px;">
+          <span style="font-weight: 500; margin-right: 5px;">Format:</span>
+          <input type="radio" name="format" id="IPA_num" checked />
+          <label for="IPA_num">/nei13/</label>
+        </div>
+        <div class="form-check-inline">
+          <input type="radio" name="format" id="IPA_org" />
+          <label for="IPA_org">/nei˩˧/</label>
+        </div>
+        <div class="form-check-inline">
+          <input type="radio" name="format" id="Jyutping" />
+          <label for="Jyutping">/nei5/</label>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-check-inline">
+          <input type="checkbox" id="wf_c_words" checked />
+          <label for="wf_c_words">With Chinese Words</label>
+        </div>
+        <div class="form-check-inline">
+          <input type="checkbox" id="allow_words_search" checked />
+          <label for="allow_words_search">Allow Words Search</label>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="row">
-    <div class="col">
-      <label>格式</label>
-      <div class="form-check">
-        <input type="radio" name="format" id="IPA_num" checked>
-        <label for="IPA_num">/nei13/</label>
-      </div>
-      <div class="form-check">
-        <input type="radio" name="format" id="IPA_org">
-        <label for="IPA_org">/nei˩˧/</label>
-      </div>
-      <div class="form-check">
-        <input type="radio" name="format" id="Jyutping">
-        <label for="Jyutping">/nei5/</label>
-      </div>
-    </div>
+    <hr />
 
-    <div class="col">
-      <div class="form-check">
-        <input type="checkbox" id="wf_c_words" checked>
-        <label for="wf_c_words">顯示詞語</label>
-      </div>
-      <div class="form-check">
-        <input type="checkbox" id="allow_words_search" checked>
-        <label for="allow_words_search">啟用詞語搜尋</label>
-      </div>
-    </div>
-  </div>
+    <h4>說明</h4>
+    <p>這是一個開源專案，用於將廣東話轉換為國際音標。</p>
 
-  <hr>
+    <h4>其他語言</h4>
+    <ul>
+      <li><a href="../cantonese/index.html">Cantonese (廣東話)</a></li>
+      <li><a href="../mandarin/index.html">Mandarin (普通話)</a></li>
+      <li><a href="../english/index.html">English</a></li>
+      <li><a href="../french/index.html">French</a></li>
+      <li><a href="../esperanto/index.html">Esperanto</a></li>
+      <li><a href="../persian/index.html">Persian</a></li>
+      <li><a href="../spanish/index.html">Spanish</a></li>
+      <li><a href="../japanese/index.html">Japanese</a></li>
+    </ul>
 
-  <h4>說明</h4>
-  <p>這是一個開源專案，用於將廣東話轉換為國際音標。</p>
+    <h4>連結</h4>
+    <ul>
+      <li><a href="https://github.com/lotusfa/IPA-Translator">GitHub</a></li>
+      <li><a href="./ipa_list.html">IPA 資料庫</a></li>
+      <li>
+        <a href="https://zh.wikipedia.org/wiki/粵語拼音對照表"
+          >粵語拼音對照表</a
+        >
+      </li>
+      <li>
+        <a href="http://humanum.arts.cuhk.edu.hk/Lexis/lexi-can/"
+          >粵語審音配詞字庫</a
+        >
+      </li>
+    </ul>
 
-  <h4>其他語言</h4>
-  <ul>
-    <li><a href="../cantonese/index.html">Cantonese (廣東話)</a></li>
-    <li><a href="../mandarin/index.html">Mandarin (普通話)</a></li>
-    <li><a href="../english/index.html">English</a></li>
-    <li><a href="../french/index.html">French</a></li>
-    <li><a href="../esperanto/index.html">Esperanto</a></li>
-    <li><a href="../persian/index.html">Persian</a></li>
-    <li><a href="../spanish/index.html">Spanish</a></li>
-    <li><a href="../japanese/index.html">Japanese</a></li>
-  </ul>
+    <hr />
 
-  <h4>連結</h4>
-  <ul>
-    <li><a href="https://github.com/lotusfa/IPA-Translator">GitHub</a></li>
-    <li><a href="./ipa_list.html">IPA 資料庫</a></li>
-    <li><a href="https://zh.wikipedia.org/wiki/粵語拼音對照表">粵語拼音對照表</a></li>
-    <li><a href="http://humanum.arts.cuhk.edu.hk/Lexis/lexi-can/">粵語審音配詞字庫</a></li>
-  </ul>
+    <footer>
+      <p>Power By: <a href="https://lotusfa.com/">LOTUS FA</a></p>
+    </footer>
 
-  <hr>
-
-  <footer>
-    <p>Power By: <a href="https://lotusfa.com/">LOTUS FA</a></p>
-  </footer>
-
-  <script src="./main.js"></script>
-</body>
+    <script src="./main.js"></script>
+  </body>
 </html>
