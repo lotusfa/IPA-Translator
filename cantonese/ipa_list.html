@@ -92,27 +92,25 @@
     <script type="text/javascript">
       // Dark mode toggle
       const darkModeToggle = document.getElementById('dark-mode-toggle');
-      const icon = darkModeToggle.querySelector('.icon');
+      const iconImg = darkModeToggle.querySelector('.icon');
       const lightModeIcon = '../img/light-mode.svg';
       const darkModeIcon = '../img/dark-mode.svg';
 
-      // Check for saved dark mode preference
-      const isDarkMode = localStorage.getItem('darkMode') === 'enabled';
-      if (isDarkMode) {
+      // Check for saved dark mode preference (using same key as main.js)
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'dark') {
         document.body.classList.add('dark-mode');
-        icon.src = darkModeIcon;
+        iconImg.src = darkModeIcon;
+      } else {
+        iconImg.src = lightModeIcon;
       }
 
       darkModeToggle.addEventListener('click', () => {
+        darkModeToggle.classList.add('btn-theme-transition');
         document.body.classList.toggle('dark-mode');
-
-        if (document.body.classList.contains('dark-mode')) {
-          localStorage.setItem('darkMode', 'enabled');
-          icon.src = darkModeIcon;
-        } else {
-          localStorage.setItem('darkMode', 'disabled');
-          icon.src = lightModeIcon;
-        }
+        const isDark = document.body.classList.contains('dark-mode');
+        iconImg.src = isDark ? darkModeIcon : lightModeIcon;
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
       });
 
       // Initialize DataTable
