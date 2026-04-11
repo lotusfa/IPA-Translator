@@ -76,8 +76,9 @@
     </footer>
 
     <script src="../lib/jquery/jquery.min.js"></script>
-    <script src="../lib/datatables/jquery.dataTables.min.js"></script>
-    <script src="../lib/datatables/dataTables.bootstrap4.min.js"></script>
+    <script src="../lib/datatables/datatables.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="../lib/datatables/datatables.min.css"/>
+    
     <script type="text/javascript">
       // Wait for DOM to be ready before accessing elements
       document.addEventListener('DOMContentLoaded', function() {
@@ -103,18 +104,16 @@
           localStorage.setItem('theme', isDark ? 'dark' : 'light');
         });
 
-        // Initialize DataTable with English data
-        $.getJSON('./en_US.json', function(data) {
-          // Convert object format {"word": "IPA"} to array format [["word", "IPA"], ...]
-          var dataArray = Object.entries(data).map(function(entry) {
-            return [entry[0], entry[1]];
-          });
-          // Initialize DataTable with transformed data
+        $(document).ready(function() {
           $('#DataTable').DataTable({
-            "data": dataArray
+            "ajax": {
+              url: '../json/en_US.json',
+              dataSrc: function (json) {
+                const dataObj = json.en_US[0];
+                return Object.entries(dataObj).map(([entry, ipa]) => [entry, ipa]);
+              }
+            }
           });
-        }).fail(function() {
-          console.error('Failed to load en_US.json');
         });
       });
     </script>

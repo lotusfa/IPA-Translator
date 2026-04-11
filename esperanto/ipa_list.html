@@ -98,18 +98,16 @@
           localStorage.setItem('theme', isDark ? 'dark' : 'light');
         });
 
-        // Initialize DataTable with Esperanto data
-        $.getJSON('./eo.json', function(data) {
-          // Convert object format {"word": "IPA"} to array format [["word", "IPA"], ...]
-          var dataArray = Object.entries(data).map(function(entry) {
-            return [entry[0], entry[1]];
-          });
-          // Initialize DataTable with transformed data
+        $(document).ready(function() {
           $('#DataTable').DataTable({
-            "data": dataArray
+            "ajax": {
+              url: '../json/eo.json',
+              dataSrc: function (json) {
+                const dataObj = json.eo[0];
+                return Object.entries(dataObj).map(([entry, ipa]) => [entry, ipa]);
+              }
+            }
           });
-        }).fail(function() {
-          console.error('Failed to load eo.json');
         });
       });
     </script>

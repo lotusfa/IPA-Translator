@@ -6,7 +6,6 @@
     <title>Spanish IPA List (M&eacute;xico)</title>
     <link rel="icon" href="../favicon.svg" />
     <link rel="stylesheet" href="../css/styles.css" />
-    <link rel="stylesheet" href="../lib/datatables/dataTables.bootstrap4.min.css" />
   </head>
   <body>
     <div class="header">
@@ -76,8 +75,9 @@
     </footer>
 
     <script src="../lib/jquery/jquery.min.js"></script>
-    <script src="../lib/datatables/jquery.dataTables.min.js"></script>
-    <script src="../lib/datatables/dataTables.bootstrap4.min.js"></script>
+    <script src="../lib/datatables/datatables.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="../lib/datatables/datatables.min.css"/>
+    
     <script type="text/javascript">
       // Dark mode toggle
       const darkModeToggle = document.getElementById('dark-mode-toggle');
@@ -100,18 +100,14 @@
 
       // Initialize DataTable
       $(document).ready(function() {
-        // Load JSON data and transform to DataTables format
-        $.getJSON('./es_MX.json', function(data) {
-          // Convert object format {"word": "IPA"} to array format [["word", "IPA"], ...]
-          var dataArray = Object.entries(data).map(function(entry) {
-            return [entry[0], entry[1]];
-          });
-          // Initialize DataTable with transformed data
-          $('#DataTable').DataTable({
-            "data": dataArray
-          });
-        }).fail(function() {
-          console.error('Failed to load es_MX.json');
+        $('#DataTable').DataTable({
+          "ajax": {
+            url: '../json/es_MX.json',
+            dataSrc: function (json) {
+              const dataObj = json.es_MX[0];
+              return Object.entries(dataObj).map(([entry, ipa]) => [entry, ipa]);
+            }
+          }
         });
       });
     </script>
