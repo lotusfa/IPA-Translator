@@ -13,7 +13,8 @@ function normalize_ipa_data(lang_data) {
 }
 
 function update_result() {
-  let c_w = get_IPA_tBox();
+  let c_w = get_IPA_tBox().split(" ");
+  
   set_IPA_tBox("loading....");
 
   get_IPA_DB((obj) => {
@@ -23,15 +24,9 @@ function update_result() {
       let word = c_w[i];
 
       preprocess_eo(word, (t_word) => {
-        if (word !== "") {
-          if (typeof obj[t_word] !== "undefined" || typeof obj[word] !== "undefined") {
-            let ipa;
-
-            if (typeof obj[t_word] === "undefined") {
-              ipa = obj[word];
-            } else {
-              ipa = obj[t_word];
-            }
+        if (word != "") {
+          if (typeof obj[t_word] != "undefined") {
+            let ipa = obj[t_word];
 
             if (document.getElementById("wf_c_words").checked) {
               str += "( " + word + " : " + ipa + " ) ";

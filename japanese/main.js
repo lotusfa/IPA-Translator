@@ -11,54 +11,46 @@ function normalize_ipa_data(lang_data) {
   return normalized;
 }
 
-function preprocess_ja_str(str) {
-  return str
-    .replace(/[A-Z]/g, c => c.toLowerCase())
-    .replace(/[.,\n]/g, "");
-}
-
 function update_result() {
-  let c_w = get_IPA_tBox();
-  set_IPA_tBox("loading....");
-  get_IPA_DB((obj) => {
+  let c_w = get_IPA_tBox ();
+  set_IPA_tBox ("loading....");
+  get_IPA_DB ((obj)=>{
+
     let str = "";
 
-    for (var i = 0; i < c_w.length; i++) {
-      let t_char = preprocess_ja_str(c_w[i]);
-      if (t_char != "") {
-        if (typeof obj[t_char] != "undefined") {
-          if (document.getElementById("allow_words_search") && document.getElementById("allow_words_search").checked) {
-            let search_words = t_char;
-            let words_index = 0;
-            for (let len = 6; len >= 1; len--) {
-              if (i + len <= c_w.length) {
-                let word = preprocess_ja_str(c_w.substring(i, i + len));
-                if (typeof obj[word] != "undefined") {
-                  search_words = word;
-                  words_index = len - 1;
-                  break;
-                }
+    for (var i = 0; i < c_w.length ; i++) {
+      if(typeof obj[c_w[i]] != "undefined"){
+
+        if (document.getElementById("allow_words_search").checked) {
+
+          let search_words = c_w[i];
+          let words_index = 0;
+          for (let len = 6; len >= 1; len--) {
+            if (i + len <= c_w.length) {
+              let word = c_w.substring(i, i + len);
+              if (typeof obj[word] != "undefined") {
+                search_words = word;
+                words_index = len - 1;
+                break;
               }
             }
-            if (document.getElementById("wf_c_words") && document.getElementById("wf_c_words").checked) {
-              str += "( " + search_words + " " + obj[search_words] + " )";
-            } else {
-              str += obj[search_words];
-            }
-            i += words_index;
-          } else {
-            if (document.getElementById("wf_c_words") && document.getElementById("wf_c_words").checked) {
-              str += t_char + " " + obj[t_char];
-            } else {
-              str += obj[t_char];
-            }
           }
-        } else {
-          str += t_char;
+
+          if (document.getElementById("wf_c_words").checked) {
+            str += "( " + search_words + " " + obj[search_words] + " )";
+          }else  str += "/" + obj[search_words];
+          i += words_index;
+
+        }else{
+          if (document.getElementById("wf_c_words").checked) {
+            str += c_w[i] + obj[c_w[i]];
+          }else  str = str + obj[c_w[i]];
         }
-      }
+      }else str += c_w[i] + " ";
     }
-    set_IPA_tBox(str);
+
+    set_IPA_tBox (str);
+
   });
 }
 

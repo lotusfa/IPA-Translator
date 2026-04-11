@@ -14,7 +14,7 @@ function normalize_ipa_data(lang_data) {
 }
 
 function update_result() {
-  let c_w = get_IPA_tBox();
+  let c_w = get_IPA_tBox().split(" ");
 
   set_IPA_tBox("loading....");
 
