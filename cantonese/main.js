@@ -1,20 +1,13 @@
 let IPA_result = "";
 let IPA_DB = {};
 
-function normalize_ipa_data(lang_data, has_suffix = true) {
+function normalize_ipa_data(lang_data) {
   const normalized = {};
-  const lang_key = Object.keys(lang_data)[0];
-  const entries = lang_data[lang_key];
-
-  entries.forEach(entry => {
+  lang_data.yue.forEach(entry => {
     Object.keys(entry).forEach(char => {
-      const raw_value = entry[char];
-      // Remove / IPA_num suffix if present
-      const value = has_suffix ? raw_value.replace(/\/\d+$/, '') : raw_value;
-      normalized[char] = value;
+      normalized[char] = entry[char];
     });
   });
-
   return normalized;
 }
 
@@ -30,23 +23,19 @@ function update_result () {
 
         if (document.getElementById("allow_words_search").checked) {
 
-          let s_words = [];
-          s_words[0] = c_w[i];
-          s_words[1] = s_words[0] + c_w[i+1];
-          s_words[2] = s_words[1] + c_w[i+2];
-          s_words[3] = s_words[2] + c_w[i+3];
-          s_words[4] = s_words[3] + c_w[i+4];
-          s_words[5] = s_words[4] + c_w[i+5];
-
+          let search_words = c_w[i];
           let words_index = 0;
-          if (typeof obj[s_words[5]] != "undefined") { words_index = 5; }
-          else if (typeof obj[s_words[4]] != "undefined") { words_index = 4;}
-          else if (typeof obj[s_words[3]] != "undefined") { words_index = 3;}
-          else if (typeof obj[s_words[2]] != "undefined") { words_index = 2;}
-          else if (typeof obj[s_words[1]] != "undefined") { words_index = 1;}
-          else if (typeof obj[s_words[0]] != "undefined") { words_index = 0;}
+          for (let len = 6; len >= 1; len--) {
+            if (i + len <= c_w.length) {
+              let word = c_w.substring(i, i + len);
+              if (typeof obj[word] != "undefined") {
+                search_words = word;
+                words_index = len - 1;
+                break;
+              }
+            }
+          }
 
-          search_words = s_words[words_index];
           if (document.getElementById("wf_c_words").checked) {
             str += "( " + search_words + " " + obj[search_words] + " )";
           }else  str += "/" + obj[search_words];
