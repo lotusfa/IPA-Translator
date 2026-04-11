@@ -1,8 +1,14 @@
 let IPA_result = "";
 let data_file = "./ja.json";
 
+function preprocess_ja_str(str) {
+  return str
+    .replace(/[A-Z]/g, c => c.toLowerCase())
+    .replace(/[.,\n]/g, "");
+}
+
 function update_result() {
-  let c_w = get_IPA_tBox().split(" ");
+  let c_w = get_IPA_tBox();
 
   set_IPA_tBox("loading....");
 
@@ -10,26 +16,41 @@ function update_result() {
     let str = "";
 
     for (var i = 0; i < c_w.length; i++) {
-      let word = c_w[i];
-
-      preprocess_ja(word, (t_word) => {
-        if (word != "") {
-          if (typeof obj[t_word] != "undefined") {
-            let ipa = obj[t_word];
-
-            if (document.getElementById("wf_c_words").checked) {
-              str += "( " + word + " : " + ipa + " ) ";
-            } else {
-              str += ipa + " ";
+      let t_char = preprocess_ja_str(c_w[i]);
+      if (t_char != "") {
+        if (typeof obj[t_char] != "undefined") {
+          if (document.getElementById("allow_words_search") && document.getElementById("allow_words_search").checked) {
+            let search_words = t_char;
+            let words_index = 0;
+            for (let len = 6; len >= 1; len--) {
+              if (i + len <= c_w.length) {
+                let word = preprocess_ja_str(c_w.substring(i, i + len));
+                if (typeof obj[word] != "undefined") {
+                  search_words = word;
+                  words_index = len - 1;
+                  break;
+                }
+              }
             }
+            if (document.getElementById("wf_c_words") && document.getElementById("wf_c_words").checked) {
+              str += "( " + search_words + " " + obj[search_words] + " )";
+            } else {
+              str += obj[search_words];
+            }
+            i += words_index;
           } else {
-            str += word + " ";
+            if (document.getElementById("wf_c_words") && document.getElementById("wf_c_words").checked) {
+              str += t_char + " " + obj[t_char];
+            } else {
+              str += obj[t_char];
+            }
           }
-
-          set_IPA_tBox(str);
+        } else {
+          str += t_char;
         }
-      });
+      }
     }
+    set_IPA_tBox(str);
   });
 }
 
@@ -54,43 +75,11 @@ function set_IPA_tBox(v = IPA_result) {
   document.getElementById("IPA_tBox").value = v;
 }
 
-function preprocess_ja(x, callback) {
-  x = x.replace(/A/g, "a");
-  x = x.replace(/B/g, "b");
-  x = x.replace(/C/g, "c");
-  x = x.replace(/D/g, "d");
-  x = x.replace(/E/g, "e");
-  x = x.replace(/F/g, "f");
-  x = x.replace(/G/g, "g");
-  x = x.replace(/H/g, "h");
-  x = x.replace(/I/g, "i");
-  x = x.replace(/J/g, "j");
-  x = x.replace(/K/g, "k");
-  x = x.replace(/L/g, "l");
-  x = x.replace(/M/g, "m");
-  x = x.replace(/N/g, "n");
-  x = x.replace(/O/g, "o");
-  x = x.replace(/P/g, "p");
-  x = x.replace(/Q/g, "q");
-  x = x.replace(/R/g, "r");
-  x = x.replace(/S/g, "s");
-  x = x.replace(/T/g, "t");
-  x = x.replace(/U/g, "u");
-  x = x.replace(/V/g, "v");
-  x = x.replace(/W/g, "w");
-  x = x.replace(/X/g, "x");
-  x = x.replace(/Y/g, "y");
-  x = x.replace(/Z/g, "z");
-  x = x.replace(/\./g, "");
-  x = x.replace(/\,/g, "");
-  x = x.replace(/\n/g, "");
-  callback(x);
-}
-
 // Initialize event listeners when DOM is ready
 document.addEventListener("DOMContentLoaded", function () {
   const cWords_tBox = document.getElementById("cWords_tBox");
   const wf_c_words = document.getElementById("wf_c_words");
+  const allow_words_search = document.getElementById("allow_words_search");
   const darkModeToggle = document.getElementById("dark-mode-toggle");
 
   // Dark mode toggle
@@ -121,7 +110,8 @@ document.addEventListener("DOMContentLoaded", function () {
     this.select();
   });
 
-  wf_c_words.addEventListener("change", update_result);
+  if (wf_c_words) wf_c_words.addEventListener("change", update_result);
+  if (allow_words_search) allow_words_search.addEventListener("change", update_result);
 
   // Initial load
   update_result();
