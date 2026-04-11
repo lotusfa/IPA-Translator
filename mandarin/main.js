@@ -124,4 +124,54 @@ function format_Jyutping_num (x) {
     return x;
 }
 
-update_result ();
+// Initialize event listeners when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+  const cWords_tBox = document.getElementById('cWords_tBox');
+  const IPA_tBox = document.getElementById('IPA_tBox');
+  const formatRadios = document.querySelectorAll('input[name="format"]');
+  const zhTypeRadios = document.querySelectorAll('input[name="zhTypeOption"]');
+  const wf_c_words = document.getElementById('wf_c_words');
+  const allow_words_search = document.getElementById('allow_words_search');
+  const darkModeToggle = document.getElementById('dark-mode-toggle');
+
+  // Dark mode toggle
+  const iconImg = darkModeToggle.querySelector('.icon');
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme === 'dark') {
+    document.body.classList.add('dark-mode');
+    iconImg.src = '../img/dark-mode.svg';
+  } else {
+    iconImg.src = '../img/light-mode.svg';
+  }
+
+  darkModeToggle.addEventListener('click', function() {
+    darkModeToggle.classList.add('btn-theme-transition');
+    document.body.classList.toggle('dark-mode');
+    const isDark = document.body.classList.contains('dark-mode');
+    iconImg.src = isDark ? '../img/dark-mode.svg' : '../img/light-mode.svg';
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+  });
+
+  // Auto-update on input
+  cWords_tBox.addEventListener('input', update_result);
+
+  // Select all text on focus
+  cWords_tBox.addEventListener('focus', function() {
+    this.select();
+  });
+
+  // Update when any control changes
+  formatRadios.forEach(function(radio) {
+    radio.addEventListener('change', update_result);
+  });
+
+  zhTypeRadios.forEach(function(radio) {
+    radio.addEventListener('change', update_result);
+  });
+
+  wf_c_words.addEventListener('change', update_result);
+  allow_words_search.addEventListener('change', update_result);
+
+  // Initial load
+  update_result();
+});

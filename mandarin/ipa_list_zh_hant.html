@@ -2,102 +2,124 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />
-    <meta name="description" content="" />
-    <meta name="author" content="Lotusfa" />
-    <meta
-      name="keywords"
-      content="IPA,普通話拼音翻譯器,普通話IPA,拼音,发音,普通話,國際音標,普通話國際音標,萬國音標,標音,普通話審音配詞字庫,認識普通話,International Phonetic Alphabet,Mandarin,IPA,Mandarin IPA,chinese,characters,hanzi,普通話ipa字典,字典,汉语,中文轉國際音標"
-    />
-    <link
-      rel="icon"
-      href="https://res.cloudinary.com/dcmnwc3ux/image/upload/v1493918347/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7_2017-05-05_%E4%B8%8A%E5%8D%881.09.00_fnw5k9.png"
-    />
-    <title>普通話IPA拼音列表</title>
-
-    <!-- Bootstrap core CSS -->
-    <link
-      rel="stylesheet"
-      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"
-      integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb"
-      crossorigin="anonymous"
-    />
-
-    <!-- Custom styles for this template -->
-    <link
-      href="https://v4-alpha.getbootstrap.com/examples/sticky-footer/sticky-footer.css"
-      rel="stylesheet"
-    />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>普通話拼音列表 - Mandarin IPA List (Traditional)</title>
+    <link rel="icon" href="../favicon.svg" />
+    <link rel="stylesheet" href="../css/styles.css" />
+    <!-- jQuery -->
+    <script src="../lib/jquery-3.3.1.min.js"></script>
     <!-- DataTable -->
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="https://cdn.datatables.net/v/bs4/jq-3.3.1/dt-1.10.18/datatables.min.css"
-    />
-    <script
-      type="text/javascript"
-      src="https://cdn.datatables.net/v/bs4/jq-3.3.1/dt-1.10.18/datatables.min.js"
-    ></script>
+    <link rel="stylesheet" type="text/css" href="../lib/datatables.min.css"/>
+    <script type="text/javascript" src="../lib/datatables.min.js"></script>
   </head>
 
   <body>
-    <!-- Begin page content -->
-    <div class="container">
-      <div class="mt-1">
-        <h1>普通話國際音標列表 (繁體)</h1>
-        <h4 href="./index.html">Mandarin (Simplified) IPA List</h4>
-        <hr />
+    <div class="header">
+      <div class="titles">
+        <h1>普通話拼音列表</h1>
+        <h2>Mandarin IPA List (Traditional)</h2>
       </div>
-      <h6><a href="./zh_hans.txt">IPA json file</a></h6>
-      <table class="table table-striped" id="DataTable">
-        <thead>
-          <tr>
-            <th scope="col">中文字 (Chinese)</th>
-            <th scope="col">拼音 (PINYIN)</th>
-          </tr>
-        </thead>
-        <tbody id="tbody"></tbody>
-      </table>
-      h
+      <button id="dark-mode-toggle" class="btn-theme" aria-label="Toggle dark mode">
+        <img src="../img/light-mode.svg" class="icon" alt="" />
+      </button>
+    </div>
+    <hr />
+
+    <div class="container">
+      <div class="row" style="margin-bottom: 15px;">
+        <div class="col" style="flex: 0 0 auto;">
+          <h5 style="margin: 0;"><a href="./index.html">← 返回翻譯器 (Back to Translator)</a></h5>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <table class="table table-striped display" id="DataTable">
+            <thead>
+              <tr>
+                <th scope="col">中文字 (Chinese)</th>
+                <th scope="col">拼音 (PINYIN)</th>
+              </tr>
+            </thead>
+            <tbody id="tbody">
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
 
     <footer class="footer">
-      <div class="container">
-        <span class="text-muted"
-          >Power By: LOTUS FA,
-          <a href="https://lotusfa.com/">lotusfa.com</a></span
-        >
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h4>Description</h4>
+          <p>This is an open-source project to translate Mandarin to IPA.</p>
+        </div>
 
-        <script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
-        ></script>
-        <!-- ipa -->
-        <ins
-          class="adsbygoogle"
-          style="display: block"
-          data-ad-client="ca-pub-8952191733743650"
-          data-ad-slot="7418454359"
-          data-ad-format="auto"
-          data-full-width-responsive="true"
-        ></ins>
-        <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
+        <div class="footer-col">
+          <h4>Other Languages</h4>
+          <ul class="lang-list">
+            <li><a href="../cantonese/index.html">Cantonese (廣東話)</a></li>
+            <li><a href="../mandarin/index.html">Mandarin (普通話)</a></li>
+            <li><a href="../english/index.html">English</a></li>
+            <li><a href="../french/index.html">French</a></li>
+            <li><a href="../esperanto/index.html">Esperanto</a></li>
+            <li><a href="../persian/index.html">Persian</a></li>
+            <li><a href="../spanish/index.html">Spanish</a></li>
+            <li><a href="../japanese/index.html">Japanese</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Useful Links</h4>
+          <ul>
+            <li><a href="https://github.com/lotusfa/IPA-Translator">GitHub</a></li>
+            <li><a href="./ipa_list.html">IPA Database</a></li>
+            <li><a href="./ipa_list_zh_hans.html">IPA Database (簡體)</a></li>
+            <li><a href="./ipa_list_zh_hant.html">IPA Database (繁體)</a></li>
+            <li><a href="https://open-dict-data.github.io/ipa-lookup/zh_hant/">普通話國際音標查詢</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>
+          <a href="https://github.com/lotusfa/IPA-Translator">GitHub</a>
+          &nbsp;|&nbsp;
+          Power By: <a href="https://lotusfa.com/">LOTUS FA</a>
+        </p>
       </div>
     </footer>
 
-    <div id="demo"></div>
     <script type="text/javascript">
-      $(document).ready(function () {
-        $("#DataTable").DataTable({
-          ajax: "./zh_hant_ajex.json",
-        });
+      // Dark mode toggle
+      const darkModeToggle = document.getElementById('dark-mode-toggle');
+      const iconImg = darkModeToggle.querySelector('.icon');
+      const lightModeIcon = '../img/light-mode.svg';
+      const darkModeIcon = '../img/dark-mode.svg';
+
+      // Check for saved dark mode preference
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'dark') {
+        document.body.classList.add('dark-mode');
+        iconImg.src = darkModeIcon;
+      } else {
+        iconImg.src = lightModeIcon;
+      }
+
+      darkModeToggle.addEventListener('click', () => {
+        darkModeToggle.classList.add('btn-theme-transition');
+        document.body.classList.toggle('dark-mode');
+        const isDark = document.body.classList.contains('dark-mode');
+        iconImg.src = isDark ? darkModeIcon : lightModeIcon;
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
       });
+
+      // Initialize DataTable
+      $(document).ready(function() {
+          $('#DataTable').DataTable( {
+              "ajax": './zh_hant_ajex.json'
+          } );
+      } );
     </script>
   </body>
 </html>
