@@ -105,7 +105,7 @@
             url: '../json/es_ES.json',
             dataSrc: function (json) {
               const dataObj = json.es_ES[0];
-              return Object.entries(dataObj).map(([entry, ipa]) => [entry, ipa]);
+              return Object.entries(dataObj).map(([entry, ipa], index) => [index + 1, entry, ipa]);
             }
           }
         });
