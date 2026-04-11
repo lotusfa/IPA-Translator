@@ -1,208 +1,99 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />
-    <meta
-      name="description"
-      content="Translate english paragraph to IPA.( 英語 <-> 國際音標 )"
-    />
-    <meta name="author" content="Lotusfa" />
-    <meta
-      name="keywords"
-      content="IPA,拼音,翻譯器,Spanish Converter, 西班牙IPA, 发音, 字典, 西班牙, 翻译西班牙拼音, 西班牙, 國際音標, 萬國音標,International Phonetic Alphabet,Spanish,alphabetic system,Spanish IPA Translator, Translator, 西班牙拼音轉, 西班牙國際音標,ipa轉換, 國際音標西班牙"
-    />
-    <link
-      rel="icon"
-      href="https://res.cloudinary.com/dcmnwc3ux/image/upload/v1493918347/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7_2017-05-05_%E4%B8%8A%E5%8D%881.09.00_fnw5k9.png"
-    />
-    <title>
-      Spanish IPA Translator - From Spanish to IPA (Traductora de español IPA)
-    </title>
-    <!-- Bootstrap core CSS -->
-    <link
-      rel="stylesheet"
-      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"
-      integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb"
-      crossorigin="anonymous"
-    />
-    <!-- Custom styles for this template -->
-    <link
-      href="https://v4-alpha.getbootstrap.com/examples/sticky-footer/sticky-footer.css"
-      rel="stylesheet"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Traductora de espa&#241;ol IPA - Spanish IPA Translator</title>
+    <link rel="icon" href="../favicon.svg" />
+    <link rel="stylesheet" href="../css/styles.css" />
   </head>
   <body>
-    <!-- Begin page content -->
-    <div class="container">
-      <div class="mt-1">
-        <h1>Traductora de español IPA</h1>
-        <h2><u>Spanish IPA Translator</u></h2>
-        <h4>párrafo -> IPA (beta)</h4>
-        <hr />
+    <div class="header">
+      <div class="titles">
+        <h1>Traductora de espa&#241;ol IPA</h1>
+        <h2>Spanish IPA Translator</h2>
       </div>
-      <div class="row">
-        <div class="col-md-6">
-          <div class="form-group">
-            <label>párrafo español:</label>
-            <textarea
-              class="form-control"
-              rows="10"
-              id="cWords_tBox"
-              onfocusin="this.select();"
-              onkeyup="update_result()"
-              placeholder="Input some Spanish words. "
-            >
-El Alfabeto Fonético Internacional (AFI en español, API en francés e IPA en inglés) es un sistema de notación fonética creado por lingüistas.
-              </textarea
-            >
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="form-group">
-            <label>IPA:</label>
-            <textarea
-              class="form-control"
-              rows="10"
-              id="IPA_tBox"
-              disabled="true"
-            ></textarea>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-6">
-          <label>Pronunciada (Pronounced): </label>
-          <br />
-          <div class="form-check form-check-inline">
-            <label class="form-check-label">
-              <input
-                class="form-check-input"
-                type="radio"
-                name="inlineRadioOptions"
-                id="IPA_Spain"
-                value="option2"
-                checked="checked"
-                onchange="update_result()"
-              />
-              españa (Spain)
-            </label>
-          </div>
-          <div class="form-check form-check-inline">
-            <label class="form-check-label">
-              <input
-                class="form-check-input"
-                type="radio"
-                name="inlineRadioOptions"
-                id="IPA_Mexico"
-                value="option1"
-                onchange="update_result()"
-              />
-              México (Mexico)
-            </label>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="form-check">
-            <label class="form-check-label">
-              <input
-                type="checkbox"
-                class="form-check-input"
-                checked="checked"
-                onchange="update_result()"
-                id="wf_c_words"
-              />
-              con palabras en español <br />
-              (With Spanish Words)
-            </label>
-          </div>
+      <button id="dark-mode-toggle" class="btn-theme" aria-label="Toggle dark mode">
+        <img src="../img/light-mode.svg" class="icon" alt="" />
+      </button>
+    </div>
+    <hr />
+
+    <div class="row">
+      <div class="col">
+        <div class="form-group">
+          <label>p&aacute;rrafo espa&#241;ol (Spanish paragraph)</label>
+          <textarea id="cWords_tBox" rows="10" placeholder="Input some Spanish words.">El Alfabeto Fon&eacute;tico Internacional (AFI en espa&#241;ol, API en franc&eacute;s e IPA en ingl&eacute;s) es un sistema de notaci&oacute;n fon&eacute;tica creado por ling&uuml;istas.</textarea>
         </div>
       </div>
 
-      <br />
-
-      <h4>Descripción</h4>
-      <hr />
-      <p>Este es un proyecto de código abierto para traducir español a IPA.</p>
-      <br />
-
-      <h4>Otros idiomas</h4>
-      <hr />
-      <div class="row">
-        <div class="col-sm">
-          <p>- Cantonese: <a href="../cantonese/index.html"> LINK</a></p>
-          <p>- Mandarin: <a href="../mandarin/index.html"> LINK</a></p>
-          <p>- English: <a href="../english/index.html"> LINK</a></p>
-          <p>- French: <a href="../french/index.html"> LINK</a></p>
-        </div>
-        <div class="col-sm">
-          <p>- Esperanto: <a href="../esperanto/index.html"> LINK</a></p>
-          <p>- Persian: <a href="../persian/index.html"> LINK</a></p>
-          <p>- Spanish: <a href="../spanish/index.html"> LINK</a></p>
-          <p>- Japanese: <a href="../japanese/index.html"> LINK</a></p>
+      <div class="col">
+        <div class="form-group">
+          <label>IPA</label>
+          <textarea id="IPA_tBox" rows="10" disabled></textarea>
         </div>
       </div>
-      <br />
+    </div>
 
-      <h4>Useful Links</h4>
-      <hr />
-      <p>
-        - GITHUB:
-        <a href="https://github.com/lotusfa/IPA-Translator"> IPA-Translator </a>
-      </p>
-      <p>
-        - IPA database (<a href="./ipa_list_es.html">ES</a>,<a
-          href="./ipa_list_mx.html"
-          >MX</a
-        >) :
-        <a href="https://open-dict-data.github.io/ipa-lookup/en/"
-          >Spanish IPA Lookup</a
-        >
-      </p>
-      <p>
-        - IPA/Spanish:
-        <a href="https://en.wikipedia.org/wiki/Help:IPA/Spanish"> WIKI</a>
-      </p>
-
-      <p>
-        - International Phonetic Alphabet:
-        <a href="https://en.wikipedia.org/wiki/International_Phonetic_Alphabet">
-          WIKI
-        </a>
-      </p>
-      <br />
-
-      <script
-        async
-        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
-      ></script>
-      <!-- ipa -->
-      <ins
-        class="adsbygoogle"
-        style="display: block"
-        data-ad-client="ca-pub-8952191733743650"
-        data-ad-slot="7418454359"
-        data-ad-format="auto"
-        data-full-width-responsive="true"
-      ></ins>
-      <script>
-        (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-check-inline" style="align-items: baseline; margin-bottom: 5px;">
+          <span style="font-weight: 500; margin-right: 5px;">Pronunciada (Pronounced):</span>
+          <input type="radio" name="inlineRadioOptions" id="IPA_Spain" checked />
+          <label for="IPA_Spain">Espa&#241;a (Spain)</label>
+        </div>
+        <div class="form-check-inline">
+          <input type="radio" name="inlineRadioOptions" id="IPA_Mexico" />
+          <label for="IPA_Mexico">M&eacute;xico (Mexico)</label>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-check-inline">
+          <input type="checkbox" id="wf_c_words" checked />
+          <label for="wf_c_words">Con palabras en espa&#241;ol (With Spanish Words)</label>
+        </div>
+      </div>
     </div>
 
     <footer class="footer">
-      <div class="container">
-        <span class="text-muted"
-          >Power By: LOTUS FA,
-          <a href="https://lotusfa.com/">lotusfa.com</a></span
-        >
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h4>Descripci&oacute;n</h4>
+          <p>Este es un proyecto de c&oacute;digo abierto para traducir espa&#241;ol a IPA.</p>
+        </div>
+
+        <div class="footer-col">
+          <h4>Otros idiomas (Other Languages)</h4>
+          <ul class="lang-list">
+            <li><a href="../cantonese/index.html">Cantonese (&#28808;&#20839;&#35805)</a></li>
+            <li><a href="../mandarin/index.html">Mandarin (&#26222;&#36890;&#35805)</a></li>
+            <li><a href="../english/index.html">English</a></li>
+            <li><a href="../french/index.html">French</a></li>
+            <li><a href="../esperanto/index.html">Esperanto</a></li>
+            <li><a href="../persian/index.html">Persian</a></li>
+            <li><a href="../spanish/index.html">Spanish</a></li>
+            <li><a href="../japanese/index.html">Japanese</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Enlaces &uacute;tiles (Useful Links)</h4>
+          <ul>
+            <li><a href="./ipa_list_es.html">IPA Database (ES/MX)</a></li>
+            <li><a href="https://en.wikipedia.org/wiki/Help:IPA/Spanish">WIKI - IPA/Spanish</a></li>
+            <li><a href="https://open-dict-data.github.io/ipa-lookup/es/">Spanish IPA Lookup</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>
+          <a href="https://github.com/lotusfa/IPA-Translator">GitHub</a>
+          &nbsp;|&nbsp;
+          Power By: <a href="https://lotusfa.com/">LOTUS FA</a>
+        </p>
       </div>
     </footer>
-
-    <div id="demo"></div>
 
     <script src="./main.js"></script>
   </body>

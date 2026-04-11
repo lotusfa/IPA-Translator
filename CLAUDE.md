@@ -46,10 +46,10 @@ This is a static site. No build process required. Can be served with any static 
 
 ```bash
 # Python
-python -m http.server 8000
+python -m http.server 9979
 
 # Node.js
 npx serve
 ```
 
-Then open `http://localhost:8000/cantonese/index.html` (or other language paths).
+Then open `http://localhost:9979/cantonese/index.html` (or other language paths).

@@ -1,44 +1,27 @@
 <!doctype html>
-<html lang="en">
+<html lang="fr">
   <head>
     <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />
-    <meta name="description" content="" />
-    <meta name="author" content="Lotusfa" />
-    <meta
-      name="keywords"
-      content="IPA,拼音,翻譯器,French Converter, 英文IPA, 发音, 字典, 英文翻译英文拼音, 英文, 國際音標, 萬國音標,International Phonetic Alphabet,French,alphabetic system,French IPA Translator, Translator, 英文拼音轉, 英文國際音標,ipa轉換, 國際音標英文"
-    />
-    <link
-      rel="icon"
-      href="https://res.cloudinary.com/dcmnwc3ux/image/upload/v1493918347/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7_2017-05-05_%E4%B8%8A%E5%8D%881.09.00_fnw5k9.png"
-    />
-    <title>French IPA List</title>
-    <!-- Bootstrap core CSS -->
-    <link
-      rel="stylesheet"
-      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"
-      integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb"
-      crossorigin="anonymous"
-    />
-    <!-- Custom styles for this template -->
-    <link
-      href="https://v4-alpha.getbootstrap.com/examples/sticky-footer/sticky-footer.css"
-      rel="stylesheet"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>French IPA List (Qu&#233;bec)</title>
+    <link rel="icon" href="../favicon.svg" />
+    <link rel="stylesheet" href="../css/styles.css" />
+    <link rel="stylesheet" href="../lib/datatables/dataTables.bootstrap4.min.css" />
   </head>
   <body>
-    <!-- Begin page content -->
-    <div class="container">
-      <div class="mt-1">
+    <div class="header">
+      <div class="titles">
         <h1>French IPA List</h1>
-        <hr />
+        <h2>Qu&#233;bec Pronunciation</h2>
       </div>
-      <h6><a href="./fr_QC.json">IPA json file</a></h6>
-      <table class="table table-striped">
+      <button id="dark-mode-toggle" class="btn-theme" aria-label="Toggle dark mode">
+        <img src="../img/light-mode.svg" class="icon" alt="" />
+      </button>
+    </div>
+    <hr />
+
+    <div class="container">
+      <table id="DataTable" class="table table-striped">
         <thead>
           <tr>
             <th scope="col">#</th>
@@ -46,91 +29,81 @@
             <th scope="col">IPA</th>
           </tr>
         </thead>
-        <tbody id="tbody"></tbody>
+        <tbody></tbody>
       </table>
       <small>This may need few seconds for loading...</small>
     </div>
 
     <footer class="footer">
-      <div class="container">
-        <span class="text-muted"
-          >Power By: LOTUS FA,
-          <a href="https://lotusfa.com/">lotusfa.com</a></span
-        >
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h4>Description</h4>
+          <p>French IPA word list with Qu&#233;bec pronunciation.</p>
+        </div>
 
-        <script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
-        ></script>
-        <!-- ipa -->
-        <ins
-          class="adsbygoogle"
-          style="display: block"
-          data-ad-client="ca-pub-8952191733743650"
-          data-ad-slot="7418454359"
-          data-ad-format="auto"
-          data-full-width-responsive="true"
-        ></ins>
-        <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
+        <div class="footer-col">
+          <h4>Other Languages</h4>
+          <ul class="lang-list">
+            <li><a href="../cantonese/index.html">Cantonese (&#28808;&#20839;&#35805)</a></li>
+            <li><a href="../mandarin/index.html">Mandarin (&#26222;&#36890;&#35805)</a></li>
+            <li><a href="../english/index.html">English</a></li>
+            <li><a href="../french/index.html">French</a></li>
+            <li><a href="../esperanto/index.html">Esperanto</a></li>
+            <li><a href="../persian/index.html">Persian</a></li>
+            <li><a href="../spanish/index.html">Spanish</a></li>
+            <li><a href="../japanese/index.html">Japanese</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Liens utiles (Useful Links)</h4>
+          <ul>
+            <li><a href="./ipa_list_es.html">IPA Database (FR)</a></li>
+            <li><a href="./ipa_list_qc.html">IPA Database (QC)</a></li>
+            <li><a href="https://en.wikipedia.org/wiki/Help:IPA/French">WIKI - IPA/French</a></li>
+            <li><a href="https://open-dict-data.github.io/ipa-lookup/fr/">French IPA Lookup</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>
+          <a href="https://github.com/lotusfa/IPA-Translator">GitHub</a>
+          &nbsp;|&nbsp;
+          Power By: <a href="https://lotusfa.com/">LOTUS FA</a>
+        </p>
       </div>
     </footer>
 
-    <div id="demo"></div>
-
+    <script src="../lib/jquery/jquery.min.js"></script>
+    <script src="../lib/datatables/jquery.dataTables.min.js"></script>
+    <script src="../lib/datatables/dataTables.bootstrap4.min.js"></script>
     <script type="text/javascript">
-      let num_item = 0;
+      // Dark mode toggle
+      const darkModeToggle = document.getElementById('dark-mode-toggle');
+      const iconImg = darkModeToggle.querySelector('.icon');
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'dark') {
+        document.body.classList.add('dark-mode');
+        iconImg.src = '../img/dark-mode.svg';
+      } else {
+        iconImg.src = '../img/light-mode.svg';
+      }
 
-      main();
+      darkModeToggle.addEventListener('click', function() {
+        darkModeToggle.classList.add('btn-theme-transition');
+        document.body.classList.toggle('dark-mode');
+        const isDark = document.body.classList.contains('dark-mode');
+        iconImg.src = isDark ? '../img/dark-mode.svg' : '../img/light-mode.svg';
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      });
 
-      function main() {
-        reset_List();
-        get_IPA_DB((obj) => {
-          for (var k in obj) {
-            addToRow(k, obj[k]);
-          }
+      // Initialize DataTable
+      $(document).ready(function() {
+        $('#DataTable').DataTable({
+          "ajax": "./fr_QC.json"
         });
-      }
-
-      function reset_List() {
-        num_item = 0;
-        document.getElementById("tbody").innerHTML = "";
-      }
-
-      function addToRow(chin, pin) {
-        num_item++;
-        var row = document.createElement("tr");
-
-        var col_1 = document.createElement("th");
-        col_1.scope = "row";
-        col_1.innerHTML = num_item;
-
-        var col_2 = document.createElement("td");
-        col_2.innerHTML = chin;
-
-        var col_3 = document.createElement("td");
-        col_3.innerHTML = pin;
-
-        row.appendChild(col_1);
-        row.appendChild(col_2);
-        row.appendChild(col_3);
-
-        document.getElementById("tbody").appendChild(row);
-      }
-
-      function get_IPA_DB(s) {
-        var xmlhttp = new XMLHttpRequest();
-        xmlhttp.onreadystatechange = function () {
-          if (this.readyState == 4 && this.status == 200) {
-            var myObj = JSON.parse(this.responseText);
-            return s(myObj);
-          }
-        };
-
-        xmlhttp.open("GET", "./fr_QC.json", true);
-        xmlhttp.send();
-      }
+      });
     </script>
   </body>
 </html>

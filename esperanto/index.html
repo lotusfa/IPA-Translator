@@ -1,112 +1,90 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="eo">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="Translate esperanto paragraph to IPA.">
-    <meta name="author" content="Lotusfa">
-    <meta name="keywords" content="IPA,拼音,翻譯器,Esperanto Converter,世界語IPA,发音,字典,世界語,國際音標,萬國音標,標音,系統,拼音查询,The Esperanto Language,International Phonetic Alphabet,Esperanto,alphabetic system,Esperanto IPA Translator,世界語拼音,世界語國際音標,世界語拼音字表,世界語注音, characters">
-    <link rel="icon" href="https://res.cloudinary.com/dcmnwc3ux/image/upload/v1493918347/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7_2017-05-05_%E4%B8%8A%E5%8D%881.09.00_fnw5k9.png">
-        <title>Esperanto IPA Translator - From Esperanto to IPA</title>
-        <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
-        <!-- Custom styles for this template -->
-    <link href="https://v4-alpha.getbootstrap.com/examples/sticky-footer/sticky-footer.css" rel="stylesheet">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Esperanto IPA Translator</title>
+    <link rel="icon" href="../favicon.svg" />
+    <link rel="stylesheet" href="../css/styles.css" />
   </head>
-    <body>
-        <!-- Begin page content -->
-    <div class="container">
-      <div class="mt-1">
+  <body>
+    <div class="header">
+      <div class="titles">
         <h1>Esperanto IPA Translator</h1>
-        <h4>Beta Version</h4>
-        <hr>
+        <h2>Paragraph to IPA</h2>
       </div>
-      <div class="row">
-        <div class="col-md-6">
-            <div class="form-group">
-              <label>Esperanto paragraph:</label>
-              <textarea class="form-control" rows="10" id="cWords_tBox" onfocusin="this.select();" onkeyup="update_result()" placeholder="Input some Esperanto words. ">Esperanto, origine la Lingvo Internacia, estas la plej disvastigita internacia planlingvo.
-              </textarea>
-          </div>
-        </div>
-        <div class="col-md-6">
-
-          <div class="form-group">
-            <label >IPA:</label>
-            <textarea class="form-control" rows="10" id="IPA_tBox" disabled="true"></textarea>
-          </div>
-
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-6">
-        </div>
-        <div class="col-md-6">
-          <div class="form-check ">
-            <label class="form-check-label">
-              <input type="checkbox" class="form-check-input" checked="checked" onchange="update_result()" id="wf_c_words">
-              With Esperanto Words
-            </label>
-          </div>
-        </div>
-      </div>
-
-      <br>
-
-      <h4>Description</h4>
-      <hr>
-      <p>This is an open-source project to translate Esperanto to IPA.</p>
-      <br>
-
-      <h4>Other Languages</h4>
-      <hr>
-      <div class="row">
-        <div class="col-sm">
-          <p> - Cantonese: <a href="../cantonese/index.html"> LINK</a> </p>
-          <p> - Mandarin: <a href="../mandarin/index.html"> LINK</a> </p>
-          <p> - English: <a href="../english/index.html"> LINK</a> </p>
-          <p> - French: <a href="../french/index.html"> LINK</a> </p>
-        </div>
-        <div class="col-sm">
-          <p> - Esperanto: <a href="../esperanto/index.html"> LINK</a> </p>
-          <p> - Persian: <a href="../persian/index.html"> LINK</a> </p>
-          <p> - Spanish: <a href="../spanish/index.html"> LINK</a> </p>
-          <p> - Japanese: <a href="../japanese/index.html"> LINK</a> </p>
-        </div>
-      </div>
-      <br>
-
-      <h4>Useful Links </h4>
-      <hr>
-
-      <p>  - GITHUB: <a href="https://github.com/lotusfa/IPA-Translator"> IPA-Translator </a>  </p>
-      <p>  - <a href="./ipa_list.html">IPA database</a> : <a href="https://open-dict-data.github.io/ipa-lookup/eo/">Esperanto IPA Lookup</a>  </p>
-      <p> - IPA/Esperanto: <a href="https://en.wikipedia.org/wiki/Help:IPA/Esperanto"> WIKI</a> </p>
-      <p> - International Phonetic Alphabet: <a href="https://en.wikipedia.org/wiki/International_Phonetic_Alphabet"> WIKI </a> </p>
-      <br>
-
+      <button id="dark-mode-toggle" class="btn-theme" aria-label="Toggle dark mode">
+        <img src="../img/light-mode.svg" class="icon" alt="" />
+      </button>
     </div>
-    
-    <footer class="footer" >
-      <div class="container">
-        <span class="text-muted">Power By: LOTUS FA, <a href="https://lotusfa.com/">lotusfa.com</a></span>
+    <hr />
 
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-        <!-- ipa -->
-        <ins class="adsbygoogle"
-             style="display:block"
-             data-ad-client="ca-pub-8952191733743650"
-             data-ad-slot="7418454359"
-             data-ad-format="auto"
-             data-full-width-responsive="true"></ins>
-        <script>
-             (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
-        
+    <div class="row">
+      <div class="col">
+        <div class="form-group">
+          <label>Esperanto paragraph</label>
+          <textarea id="cWords_tBox" rows="10" placeholder="Input some Esperanto words.">Esperanto, origine la Lingvo Internacia, estas la plej disvastigita internacia planlingvo.</textarea>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="form-group">
+          <label>IPA</label>
+          <textarea id="IPA_tBox" rows="10" disabled></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6"></div>
+      <div class="col-md-6">
+        <div class="form-check-inline">
+          <input type="checkbox" id="wf_c_words" checked />
+          <label for="wf_c_words">With Esperanto Words</label>
+        </div>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h4>Description</h4>
+          <p>This is an open-source project to translate Esperanto to IPA.</p>
+        </div>
+
+        <div class="footer-col">
+          <h4>Other Languages</h4>
+          <ul class="lang-list">
+            <li><a href="../cantonese/index.html">Cantonese (&#28808;&#20839;&#35805)</a></li>
+            <li><a href="../mandarin/index.html">Mandarin (&#26222;&#36890;&#35805)</a></li>
+            <li><a href="../english/index.html">English</a></li>
+            <li><a href="../french/index.html">French</a></li>
+            <li><a href="../esperanto/index.html">Esperanto</a></li>
+            <li><a href="../persian/index.html">Persian</a></li>
+            <li><a href="../spanish/index.html">Spanish</a></li>
+            <li><a href="../japanese/index.html">Japanese</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Useful Links</h4>
+          <ul>
+            <li><a href="./ipa_list.html">IPA Database</a></li>
+            <li><a href="https://en.wikipedia.org/wiki/Help:IPA/Esperanto">WIKI - IPA/Esperanto</a></li>
+            <li><a href="https://open-dict-data.github.io/ipa-lookup/eo/">Esperanto IPA Lookup</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>
+          <a href="https://github.com/lotusfa/IPA-Translator">GitHub</a>
+          &nbsp;|&nbsp;
+          Power By: <a href="https://lotusfa.com/">LOTUS FA</a>
+        </p>
       </div>
     </footer>
-        <div id="demo"></div>
+
     <script src="./main.js"></script>
-    
   </body>
 </html>

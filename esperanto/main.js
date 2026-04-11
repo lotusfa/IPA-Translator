@@ -1,78 +1,72 @@
 let IPA_result = "";
 
-function update_result () {
-  
-  let c_w = (get_IPA_tBox()+" ").split(" ");
+function update_result() {
+  let c_w = get_IPA_tBox().split(" ");
 
-  set_IPA_tBox ("loading....");
+  set_IPA_tBox("loading....");
 
-  get_IPA_DB ((obj)=>{
-
-    
+  get_IPA_DB((obj) => {
     let str = "";
 
     for (var i = 0; i < c_w.length; i++) {
-
       let word = pre(c_w[i]);
 
-      preprocess_eng(word,(t_word)=>{
-        
-        if ( word != "") {
-          if(typeof obj[t_word] != "undefined" || typeof obj[word] != "undefined"){
-            
+      preprocess_eo(word, (t_word) => {
+        if (word != "") {
+          if (typeof obj[t_word] != "undefined" || typeof obj[word] != "undefined") {
             let ipa;
-            
-            if(typeof obj[t_word] == "undefined")
+
+            if (typeof obj[t_word] == "undefined") {
               ipa = obj[word];
-            else 
+            } else {
               ipa = obj[t_word];
+            }
 
             if (document.getElementById("wf_c_words").checked) {
+              str += "( " + word + " : " + ipa + " ) ";
+            } else {
+              str += ipa + " ";
+            }
+          } else {
+            str += word + " ";
+          }
 
-                str += "( " + word + " : " + ipa + " ) ";
-
-              }else  str += ipa + " ";
-
-          }else str += word + " ";
-
-          set_IPA_tBox (str);
-
+          set_IPA_tBox(str);
         }
       });
     }
-
   });
 }
 
-function get_IPA_DB (s) {
+function get_IPA_DB(s) {
   var xmlhttp = new XMLHttpRequest();
-  xmlhttp.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-          var myObj = JSON.parse(this.responseText);
-          return s(myObj);
-      }
+  xmlhttp.onreadystatechange = function () {
+    if (this.readyState == 4 && this.status == 200) {
+      var myObj = JSON.parse(this.responseText);
+      return s(myObj);
+    }
   };
 
   xmlhttp.open("GET", "./eo.json", true);
   xmlhttp.send();
 }
 
-function get_IPA_tBox () {
-  return document.getElementById("cWords_tBox").value
+function get_IPA_tBox() {
+  return document.getElementById("cWords_tBox").value;
 }
 
-function set_IPA_tBox (v = IPA_result) {
+function set_IPA_tBox(v = IPA_result) {
   document.getElementById("IPA_tBox").value = v;
 }
 
-function pre(x){
+function pre(x) {
   x = x.replace(/\./g, "");
   x = x.replace(/\,/g, "");
   x = x.replace(/\n/g, "");
   return x;
 }
 
-function preprocess_eng (x,callback){
+function preprocess_eo(x, callback) {
   x = x.replace(/A/g, "a");
   x = x.replace(/B/g, "b");
   x = x.replace(/C/g, "c");
@@ -105,4 +99,42 @@ function preprocess_eng (x,callback){
   callback(x);
 }
 
-update_result ();
+// Initialize event listeners when DOM is ready
+document.addEventListener("DOMContentLoaded", function () {
+  const cWords_tBox = document.getElementById("cWords_tBox");
+  const wf_c_words = document.getElementById("wf_c_words");
+  const darkModeToggle = document.getElementById("dark-mode-toggle");
+
+  // Dark mode toggle
+  const iconImg = darkModeToggle.querySelector(".icon");
+  const savedTheme = localStorage.getItem("theme");
+  if (savedTheme === "dark") {
+    document.body.classList.add("dark-mode");
+    iconImg.src = "../img/dark-mode.svg";
+  } else {
+    iconImg.src = "../img/light-mode.svg";
+  }
+
+  darkModeToggle.addEventListener("click", function () {
+    darkModeToggle.classList.add("btn-theme-transition");
+    document.body.classList.toggle("dark-mode");
+    const isDark = document.body.classList.contains("dark-mode");
+    iconImg.src = isDark
+      ? "../img/dark-mode.svg"
+      : "../img/light-mode.svg";
+    localStorage.setItem("theme", isDark ? "dark" : "light");
+  });
+
+  // Auto-update on input
+  cWords_tBox.addEventListener("input", update_result);
+
+  // Select all text on focus
+  cWords_tBox.addEventListener("focus", function () {
+    this.select();
+  });
+
+  wf_c_words.addEventListener("change", update_result);
+
+  // Initial load
+  update_result();
+});
