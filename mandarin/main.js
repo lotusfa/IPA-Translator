@@ -57,8 +57,8 @@ function get_IPA_DB (s) {
   };
 
   let link;
-  if (document.getElementById("zh_type1").checked) link = "./zh_hant.json";
-  else if (document.getElementById("zh_type2").checked) link = "./zh_hans.json";
+  if (document.getElementById("zh_type1") && document.getElementById("zh_type1").checked) link = "./zh_hant.json";
+  else if (document.getElementById("zh_type2") && document.getElementById("zh_type2").checked) link = "./zh_hans.json";
 
   xmlhttp.open("GET", link, true);
   xmlhttp.send();
@@ -68,7 +68,8 @@ function get_IPA_tBox () {
   return document.getElementById("cWords_tBox").value
 }
 
-function set_IPA_tBox (v = IPA_result) {
+function set_IPA_tBox (v) {
+  if (v === undefined || v === "") v = IPA_result;
   let tBox_str = format_main(v);
   document.getElementById("IPA_tBox").value = tBox_str;
 }
@@ -76,10 +77,15 @@ function set_IPA_tBox (v = IPA_result) {
 function format_main(t_str){
   let f_str = t_str;
 
-  if (document.getElementById("IPA_num").checked) f_str = format_IPA_num (t_str);
-  else if (document.getElementById("IPA_org").checked) f_str = format_IPA_org (t_str);
-  else if (document.getElementById("Jyutping").checked) f_str = format_Jyutping (t_str);
-  else if (document.getElementById("Jyutping_num").checked) f_str = format_Jyutping_num (t_str);
+  let IPA_num = document.getElementById("IPA_num");
+  let IPA_org = document.getElementById("IPA_org");
+  let Jyutping = document.getElementById("Jyutping");
+  let Jyutping_num = document.getElementById("Jyutping_num");
+
+  if (IPA_num && IPA_num.checked) f_str = format_IPA_num (t_str);
+  else if (IPA_org && IPA_org.checked) f_str = format_IPA_org (t_str);
+  else if (Jyutping && Jyutping.checked) f_str = format_Jyutping (t_str);
+  else if (Jyutping_num && Jyutping_num.checked) f_str = format_Jyutping_num (t_str);
   return f_str;
 }
 
