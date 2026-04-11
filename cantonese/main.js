@@ -1,7 +1,24 @@
 let IPA_result = "";
+let IPA_DB = {};
+
+function normalize_ipa_data(lang_data, has_suffix = true) {
+  const normalized = {};
+  const lang_key = Object.keys(lang_data)[0];
+  const entries = lang_data[lang_key];
+
+  entries.forEach(entry => {
+    Object.keys(entry).forEach(char => {
+      const raw_value = entry[char];
+      // Remove / IPA_num suffix if present
+      const value = has_suffix ? raw_value.replace(/\/\d+$/, '') : raw_value;
+      normalized[char] = value;
+    });
+  });
+
+  return normalized;
+}
 
 function update_result () {
-
   let c_w = get_IPA_tBox ();
   set_IPA_tBox ("loading....");
   get_IPA_DB ((obj)=>{
@@ -31,14 +48,14 @@ function update_result () {
 
           search_words = s_words[words_index];
           if (document.getElementById("wf_c_words").checked) {
-            str += "(" + search_words + " /" + obj[search_words] + "/ )";
-          }else  str += "/" + obj[search_words] + "/ ";
+            str += "( " + search_words + " " + obj[search_words] + " )";
+          }else  str += "/" + obj[search_words];
           i += words_index;
 
         }else{
           if (document.getElementById("wf_c_words").checked) {
-            str += c_w[i] + "/" + obj[c_w[i]] + "/ ";
-          }else  str = str + "/" + obj[c_w[i]] + "/ ";
+            str += c_w[i] + obj[c_w[i]];
+          }else  str = str + obj[c_w[i]];
         }
       }else str += c_w[i] + " ";
     }
@@ -53,11 +70,12 @@ function get_IPA_DB (s) {
   xmlhttp.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
           var myObj = JSON.parse(this.responseText);
-          return s(myObj);
+          IPA_DB = normalize_ipa_data(myObj);
+          return s(IPA_DB);
       }
   };
 
-  xmlhttp.open("GET", "./yue.json", true);
+  xmlhttp.open("GET", "../json/yue.json", true);
   xmlhttp.send();
 }
 
@@ -76,7 +94,7 @@ function format_main(t_str){
   if (document.getElementById("IPA_num").checked) f_str = format_IPA_num (t_str);
   else if (document.getElementById("IPA_org").checked) f_str = format_IPA_org (t_str);
   else if (document.getElementById("Jyutping").checked) f_str = format_Jyutping (t_str);
-  
+
   return f_str;
 }
 
