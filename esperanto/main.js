@@ -1,22 +1,33 @@
 let IPA_result = "";
+let IPA_DB = {};
+
+function normalize_ipa_data(lang_data) {
+  const normalized = {};
+  const lang = Object.keys(lang_data)[0];
+  lang_data[lang].forEach(entry => {
+    Object.keys(entry).forEach(word => {
+      normalized[word] = entry[word];
+    });
+  });
+  return normalized;
+}
 
 function update_result() {
-  let c_w = get_IPA_tBox().split(" ");
-
+  let c_w = get_IPA_tBox();
   set_IPA_tBox("loading....");
 
   get_IPA_DB((obj) => {
     let str = "";
 
     for (var i = 0; i < c_w.length; i++) {
-      let word = pre(c_w[i]);
+      let word = c_w[i];
 
       preprocess_eo(word, (t_word) => {
-        if (word != "") {
-          if (typeof obj[t_word] != "undefined" || typeof obj[word] != "undefined") {
+        if (word !== "") {
+          if (typeof obj[t_word] !== "undefined" || typeof obj[word] !== "undefined") {
             let ipa;
 
-            if (typeof obj[t_word] == "undefined") {
+            if (typeof obj[t_word] === "undefined") {
               ipa = obj[word];
             } else {
               ipa = obj[t_word];
@@ -40,14 +51,15 @@ function update_result() {
 
 function get_IPA_DB(s) {
   var xmlhttp = new XMLHttpRequest();
-  xmlhttp.onreadystatechange = function () {
-    if (this.readyState == 4 && this.status == 200) {
+  xmlhttp.onreadystatechange = function() {
+    if (this.readyState === 4 && this.status === 200) {
       var myObj = JSON.parse(this.responseText);
-      return s(myObj);
+      IPA_DB = normalize_ipa_data(myObj);
+      return s(IPA_DB);
     }
   };
 
-  xmlhttp.open("GET", "./eo.json", true);
+  xmlhttp.open("GET", "../json/eo.json", true);
   xmlhttp.send();
 }
 
@@ -100,7 +112,7 @@ function preprocess_eo(x, callback) {
 }
 
 // Initialize event listeners when DOM is ready
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", function() {
   const cWords_tBox = document.getElementById("cWords_tBox");
   const wf_c_words = document.getElementById("wf_c_words");
   const darkModeToggle = document.getElementById("dark-mode-toggle");
@@ -115,7 +127,7 @@ document.addEventListener("DOMContentLoaded", function () {
     iconImg.src = "../img/light-mode.svg";
   }
 
-  darkModeToggle.addEventListener("click", function () {
+  darkModeToggle.addEventListener("click", function() {
     darkModeToggle.classList.add("btn-theme-transition");
     document.body.classList.toggle("dark-mode");
     const isDark = document.body.classList.contains("dark-mode");
@@ -129,7 +141,7 @@ document.addEventListener("DOMContentLoaded", function () {
   cWords_tBox.addEventListener("input", update_result);
 
   // Select all text on focus
-  cWords_tBox.addEventListener("focus", function () {
+  cWords_tBox.addEventListener("focus", function() {
     this.select();
   });
 

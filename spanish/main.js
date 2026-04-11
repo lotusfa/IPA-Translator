@@ -1,35 +1,38 @@
 let IPA_result = "";
-let data_file = "./es_ES.json";
+let IPA_DB = {};
+
+function normalize_ipa_data(lang_data) {
+  const normalized = {};
+  const lang_key = document.getElementById("IPA_Spain").checked ? "es_ES" : "es_MX";
+  const entries = lang_data[lang_key] || [];
+  entries.forEach(entry => {
+    Object.keys(entry).forEach(char => {
+      normalized[char] = entry[char];
+    });
+  });
+  return normalized;
+}
 
 function update_result() {
-  let c_w = get_IPA_tBox().split(" ");
-
+  let c_w = get_IPA_tBox();
   set_IPA_tBox("loading....");
 
   get_IPA_DB((obj) => {
     let str = "";
 
     for (var i = 0; i < c_w.length; i++) {
-      let word = c_w[i];
-
-      preprocess_es(word, (t_word) => {
-        if (word != "") {
-          if (typeof obj[t_word] != "undefined") {
-            let ipa = obj[t_word];
-
-            if (document.getElementById("wf_c_words").checked) {
-              str += "( " + word + " : " + ipa + " ) ";
-            } else {
-              str += ipa + " ";
-            }
-          } else {
-            str += word + " ";
-          }
-
-          set_IPA_tBox(str);
+      if (typeof obj[c_w[i]] != "undefined") {
+        if (document.getElementById("wf_c_words").checked) {
+          str += "( " + c_w[i] + " : " + obj[c_w[i]] + " )";
+        } else {
+          str += obj[c_w[i]];
         }
-      });
+      } else {
+        str += c_w[i] + " ";
+      }
     }
+
+    set_IPA_tBox(str);
   });
 }
 
@@ -38,15 +41,14 @@ function get_IPA_DB(s) {
   xmlhttp.onreadystatechange = function () {
     if (this.readyState == 4 && this.status == 200) {
       var myObj = JSON.parse(this.responseText);
-      return s(myObj);
+      IPA_DB = normalize_ipa_data(myObj);
+      return s(IPA_DB);
     }
   };
 
-  if (document.getElementById("IPA_Spain").checked) {
-    data_file = "./es_ES.json";
-  } else if (document.getElementById("IPA_Mexico").checked) {
-    data_file = "./es_MX.json";
-  }
+  const data_file = document.getElementById("IPA_Spain").checked
+    ? "../json/es_ES.json"
+    : "../json/es_MX.json";
 
   xmlhttp.open("GET", data_file, true);
   xmlhttp.send();
@@ -96,9 +98,8 @@ function preprocess_es(x, callback) {
 // Initialize event listeners when DOM is ready
 document.addEventListener("DOMContentLoaded", function () {
   const cWords_tBox = document.getElementById("cWords_tBox");
-  const inlineRadioOptions = document.querySelectorAll(
-    'input[name="inlineRadioOptions"]'
-  );
+  const IPA_SpainRadio = document.getElementById("IPA_Spain");
+  const IPA_MexicoRadio = document.getElementById("IPA_Mexico");
   const wf_c_words = document.getElementById("wf_c_words");
   const darkModeToggle = document.getElementById("dark-mode-toggle");
 
@@ -130,10 +131,9 @@ document.addEventListener("DOMContentLoaded", function () {
     this.select();
   });
 
-  // Update when any control changes
-  inlineRadioOptions.forEach(function (radio) {
-    radio.addEventListener("change", update_result);
-  });
+  // Update when radio buttons change
+  IPA_SpainRadio.addEventListener("change", update_result);
+  IPA_MexicoRadio.addEventListener("change", update_result);
 
   wf_c_words.addEventListener("change", update_result);
 

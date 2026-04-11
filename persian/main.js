@@ -1,5 +1,17 @@
 let IPA_result = "";
 
+function normalize_ipa_data(lang_data) {
+  const normalized = {};
+  if (lang_data.fa && Array.isArray(lang_data.fa)) {
+    lang_data.fa.forEach(entry => {
+      Object.keys(entry).forEach(word => {
+        normalized[word] = entry[word];
+      });
+    });
+  }
+  return normalized;
+}
+
 function update_result() {
   let c_w = (pre(get_IPA_tBox()) + " ").split(" ");
 
@@ -60,11 +72,11 @@ function get_IPA_DB(s) {
   xmlhttp.onreadystatechange = function () {
     if (this.readyState == 4 && this.status == 200) {
       var myObj = JSON.parse(this.responseText);
-      return s(myObj);
+      return s(normalize_ipa_data(myObj));
     }
   };
 
-  xmlhttp.open("GET", "./fa.json", true);
+  xmlhttp.open("GET", "../json/fa.json", true);
   xmlhttp.send();
 }
 

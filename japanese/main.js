@@ -1,5 +1,15 @@
 let IPA_result = "";
-let data_file = "./ja.json";
+let IPA_DB = {};
+
+function normalize_ipa_data(lang_data) {
+  const normalized = {};
+  lang_data.ja.forEach(entry => {
+    Object.keys(entry).forEach(char => {
+      normalized[char] = entry[char];
+    });
+  });
+  return normalized;
+}
 
 function preprocess_ja_str(str) {
   return str
@@ -9,9 +19,7 @@ function preprocess_ja_str(str) {
 
 function update_result() {
   let c_w = get_IPA_tBox();
-
   set_IPA_tBox("loading....");
-
   get_IPA_DB((obj) => {
     let str = "";
 
@@ -59,11 +67,12 @@ function get_IPA_DB(s) {
   xmlhttp.onreadystatechange = function () {
     if (this.readyState == 4 && this.status == 200) {
       var myObj = JSON.parse(this.responseText);
-      return s(myObj);
+      IPA_DB = normalize_ipa_data(myObj);
+      return s(IPA_DB);
     }
   };
 
-  xmlhttp.open("GET", data_file, true);
+  xmlhttp.open("GET", "../json/ja.json", true);
   xmlhttp.send();
 }
 

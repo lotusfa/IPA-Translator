@@ -1,4 +1,16 @@
 let IPA_result = "";
+let IPA_DB = {};
+
+function normalize_ipa_data(lang_data) {
+  const normalized = {};
+  const zh_hans = lang_data.zh_hans || lang_data.zh_hant || [];
+  zh_hans.forEach(entry => {
+    Object.keys(entry).forEach(char => {
+      normalized[char] = entry[char];
+    });
+  });
+  return normalized;
+}
 
 function update_result () {
 
@@ -46,13 +58,14 @@ function get_IPA_DB (s) {
   xmlhttp.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
           var myObj = JSON.parse(this.responseText);
-          return s(myObj);
+          const IPA_DB = normalize_ipa_data(myObj);
+          return s(IPA_DB);
       }
   };
 
   let link;
-  if (document.getElementById("zh_type1") && document.getElementById("zh_type1").checked) link = "./zh_hant.json";
-  else if (document.getElementById("zh_type2") && document.getElementById("zh_type2").checked) link = "./zh_hans.json";
+  if (document.getElementById("zh_type1") && document.getElementById("zh_type1").checked) link = "../json/zh_hant.json";
+  else if (document.getElementById("zh_type2") && document.getElementById("zh_type2").checked) link = "../json/zh_hans.json";
 
   xmlhttp.open("GET", link, true);
   xmlhttp.send();

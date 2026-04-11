@@ -1,8 +1,19 @@
 let IPA_result = "";
-let data_file = "./en_US.json";
+let IPA_DB = {};
+
+function normalize_ipa_data(lang_data) {
+  const normalized = {};
+  const lang = IPA_US.checked ? "en_US" : "en_UK";
+  lang_data[lang].forEach(entry => {
+    Object.keys(entry).forEach(word => {
+      normalized[word] = entry[word];
+    });
+  });
+  return normalized;
+}
 
 function update_result() {
-  let c_w = get_IPA_tBox().split(" ");
+  let c_w = get_IPA_tBox();
 
   set_IPA_tBox("loading....");
 
@@ -38,17 +49,14 @@ function get_IPA_DB(s) {
   xmlhttp.onreadystatechange = function () {
     if (this.readyState == 4 && this.status == 200) {
       var myObj = JSON.parse(this.responseText);
-      return s(myObj);
+      IPA_DB = normalize_ipa_data(myObj);
+      return s(IPA_DB);
     }
   };
 
-  if (document.getElementById("IPA_US").checked) {
-    data_file = "./en_US.json";
-  } else if (document.getElementById("IPA_UK").checked) {
-    data_file = "./en_UK.json";
-  } else {
-    data_file = "./en_US.json";
-  }
+  const data_file = document.getElementById("IPA_US").checked
+    ? "../json/en_US.json"
+    : "../json/en_UK.json";
 
   xmlhttp.open("GET", data_file, true);
   xmlhttp.send();

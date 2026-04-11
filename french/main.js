@@ -1,8 +1,20 @@
 let IPA_result = "";
-let data_file = "./fr_FR.json";
+let IPA_DB = {};
+
+function normalize_ipa_data(lang_data) {
+  const normalized = {};
+  const lang = Object.keys(lang_data)[0];
+  const entries = lang_data[lang];
+  entries.forEach(entry => {
+    Object.keys(entry).forEach(word => {
+      normalized[word] = entry[word];
+    });
+  });
+  return normalized;
+}
 
 function update_result() {
-  let c_w = get_IPA_tBox().split(" ");
+  let c_w = get_IPA_tBox();
 
   set_IPA_tBox("loading....");
 
@@ -38,14 +50,18 @@ function get_IPA_DB(s) {
   xmlhttp.onreadystatechange = function () {
     if (this.readyState == 4 && this.status == 200) {
       var myObj = JSON.parse(this.responseText);
-      return s(myObj);
+      IPA_DB = normalize_ipa_data(myObj);
+      return s(IPA_DB);
     }
   };
 
+  let data_file;
   if (document.getElementById("IPA_fr_FR").checked) {
-    data_file = "./fr_FR.json";
+    data_file = "../json/fr_FR.json";
   } else if (document.getElementById("IPA_fr_QC").checked) {
-    data_file = "./fr_QC.json";
+    data_file = "../json/fr_QC.json";
+  } else {
+    data_file = "../json/fr_FR.json";
   }
 
   xmlhttp.open("GET", data_file, true);
@@ -130,7 +146,7 @@ document.addEventListener("DOMContentLoaded", function () {
     this.select();
   });
 
-  // Update when any control changes
+  // Update when radio buttons change (IPA_fr_FR/IPA_fr_QC)
   inlineRadioOptions.forEach(function (radio) {
     radio.addEventListener("change", update_result);
   });
