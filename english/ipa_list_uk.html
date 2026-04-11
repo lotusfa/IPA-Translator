@@ -79,29 +79,42 @@
     <script src="../lib/datatables/jquery.dataTables.min.js"></script>
     <script src="../lib/datatables/dataTables.bootstrap4.min.js"></script>
     <script type="text/javascript">
-      // Dark mode toggle
-      const darkModeToggle = document.getElementById('dark-mode-toggle');
-      const iconImg = darkModeToggle.querySelector('.icon');
-      const savedTheme = localStorage.getItem('theme');
-      if (savedTheme === 'dark') {
-        document.body.classList.add('dark-mode');
-        iconImg.src = '../img/dark-mode.svg';
-      } else {
-        iconImg.src = '../img/light-mode.svg';
-      }
+      // Wait for DOM to be ready before accessing elements
+      document.addEventListener('DOMContentLoaded', function() {
+        // Dark mode toggle
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const iconImg = darkModeToggle.querySelector('.icon');
+        const lightModeIcon = '../img/light-mode.svg';
+        const darkModeIcon = '../img/dark-mode.svg';
 
-      darkModeToggle.addEventListener('click', function() {
-        darkModeToggle.classList.add('btn-theme-transition');
-        document.body.classList.toggle('dark-mode');
-        const isDark = document.body.classList.contains('dark-mode');
-        iconImg.src = isDark ? '../img/dark-mode.svg' : '../img/light-mode.svg';
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
-      });
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+          document.body.classList.add('dark-mode');
+          iconImg.src = darkModeIcon;
+        } else {
+          iconImg.src = lightModeIcon;
+        }
 
-      // Initialize DataTable
-      $(document).ready(function() {
-        $('#DataTable').DataTable({
-          "ajax": "./en_UK.json"
+        darkModeToggle.addEventListener('click', function() {
+          darkModeToggle.classList.add('btn-theme-transition');
+          document.body.classList.toggle('dark-mode');
+          const isDark = document.body.classList.contains('dark-mode');
+          iconImg.src = isDark ? darkModeIcon : lightModeIcon;
+          localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        });
+
+        // Initialize DataTable with English data
+        $.getJSON('./en_UK.json', function(data) {
+          // Convert object format {"word": "IPA"} to array format [["word", "IPA"], ...]
+          var dataArray = Object.entries(data).map(function(entry) {
+            return [entry[0], entry[1]];
+          });
+          // Initialize DataTable with transformed data
+          $('#DataTable').DataTable({
+            "data": dataArray
+          });
+        }).fail(function() {
+          console.error('Failed to load en_UK.json');
         });
       });
     </script>
