@@ -116,7 +116,7 @@
                 url: '../json/ar.json',
                 dataSrc: function (json) {
                   const dataObj = json.ar[0];
-                  return Object.entries(dataObj).map(([entry, ipa]) => [entry, ipa]);
+                  return Object.entries(dataObj).map(([entry, ipa], index) => [index + 1, entry, ipa]);
               }
             }
           }

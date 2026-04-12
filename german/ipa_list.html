@@ -3,16 +3,16 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>IPA Word List - German</title>
+    <title>IPA Wortliste - Deutsch</title>
     <link rel="icon" href="../favicon.svg" />
     <link rel="stylesheet" href="../css/styles.css" />
-    <link rel="stylesheet" href="../lib/datatables/dataTables.bootstrap4.min.css" />
   </head>
+
   <body>
     <div class="header">
       <div class="titles">
-        <h1>IPA Word List</h1>
-        <h2>German</h2>
+        <h1>IPA Wortliste</h1>
+        <h2>Deutsch</h2>
       </div>
       <button id="dark-mode-toggle" class="btn-theme" aria-label="Toggle dark mode">
         <img src="../img/light-mode.svg" class="icon" alt="" />
@@ -20,35 +20,39 @@
     </div>
     <hr />
 
+    <div class="container">
       <div class="row" style="margin-bottom: 15px;">
         <div class="col" style="flex: 0 0 auto;">
-          <h5 style="margin: 0;"><a href="./index.html">← Back to Translator</a></h5>
+          <h5 style="margin: 0;"><a href="./index.html">← Zurück zum Übersetzer</a></h5>
         </div>
       </div>
 
-    <div class="container">
-      <table id="DataTable" class="table table-striped">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">German Word</th>
-            <th scope="col">IPA</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-      <small>This may need few seconds for loading...</small>
+      <div class="row">
+        <div class="col">
+          <table class="table table-striped display" id="DataTable">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Deutsches Wort</th>
+                <th scope="col">IPA</th>
+              </tr>
+            </thead>
+            <tbody id="tbody">
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
 
     <footer class="footer">
       <div class="footer-grid">
         <div class="footer-col">
-          <h4>Description</h4>
-          <p>German IPA word list with standard pronunciation.</p>
+          <h4>Beschreibung</h4>
+          <p>Deutsche IPA-Wortliste mit Standardaussprache.</p>
         </div>
 
         <div class="footer-col">
-          <h4>Other Languages</h4>
+          <h4>Andere Sprachen</h4>
           <ul class="lang-list">
             <li><a href="../cantonese/index.html">Cantonese (廣東話)</a></li>
             <li><a href="../mandarin/index.html">Mandarin (普通話)</a></li>
@@ -70,11 +74,11 @@
         </div>
 
         <div class="footer-col">
-          <h4>Useful Links</h4>
+          <h4>Nützliche Links</h4>
           <ul>
-            <li><a href="./ipa_list.html">IPA Database</a></li>
-            <li><a href="https://en.wikipedia.org/wiki/Help:IPA_for_Germany">WIKI - IPA/Germany</a></li>
-            <li><a href="https://open-dict-data.github.io/ipa-lookup/de/">German IPA Lookup</a></li>
+            <li><a href="./ipa_list.html">IPA-Datenbank</a></li>
+            <li><a href="https://en.wikipedia.org/wiki/Help:IPA_for_Germany">WIKI - IPA/Deutsch</a></li>
+            <li><a href="https://open-dict-data.github.io/ipa-lookup/de/">Deutsche IPA-Suche</a></li>
           </ul>
         </div>
       </div>
@@ -91,72 +95,44 @@
     <script src="../lib/jquery/jquery.min.js"></script>
     <script src="../lib/datatables/datatables.min.js"></script>
     <link rel="stylesheet" type="text/css" href="../lib/datatables/datatables.min.css"/>
-    
+
     <script type="text/javascript">
-      // Wait for DOM to be ready before accessing elements
-      document.addEventListener('DOMContentLoaded', function() {
-        // Dark mode toggle
-        const darkModeToggle = document.getElementById('dark-mode-toggle');
-        const iconImg = darkModeToggle.querySelector('.icon');
-        const lightModeIcon = '../img/light-mode.svg';
-        const darkModeIcon = '../img/dark-mode.svg';
+      // Dark mode toggle
+      const darkModeToggle = document.getElementById('dark-mode-toggle');
+      const iconImg = darkModeToggle.querySelector('.icon');
+      const lightModeIcon = '../img/light-mode.svg';
+      const darkModeIcon = '../img/dark-mode.svg';
 
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme === 'dark') {
-          document.body.classList.add('dark-mode');
-          iconImg.src = darkModeIcon;
-        } else {
-          iconImg.src = lightModeIcon;
-        }
+      // Check for saved dark mode preference (using same key as main.js)
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'dark') {
+        document.body.classList.add('dark-mode');
+        iconImg.src = darkModeIcon;
+      } else {
+        iconImg.src = lightModeIcon;
+      }
 
-        darkModeToggle.addEventListener('click', function() {
-          darkModeToggle.classList.add('btn-theme-transition');
-          document.body.classList.toggle('dark-mode');
-          if (document.body.classList.contains('dark-mode')) {
-            iconImg.src = darkModeIcon;
-            localStorage.setItem('theme', 'dark');
-          } else {
-            iconImg.src = lightModeIcon;
-            localStorage.setItem('theme', 'light');
-          }
-          setTimeout(() => {
-            darkModeToggle.classList.remove('btn-theme-transition');
-          }, 300);
-        });
-
-        // Initialize DataTable
-        $('#DataTable').DataTable({
-          order: [[0, 'asc']],
-          pageLength: 25,
-          lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
-          language: {
-            processing: "Loading...",
-            search: "Search:",
-            lengthMenu: "Show _MENU_ entries",
-            info: "Showing _START_ to _END_ of _TOTAL_ entries",
-            infoEmpty: "Showing 0 to 0 of 0 entries",
-            infoFiltered: "(filtered from _MAX_ total entries)"
-          }
-        });
-
-        // Load German IPA data
-        fetch('./german_ipa_data.json')
-          .then(response => response.json())
-          .then(data => {
-            const table = $('#DataTable').DataTable();
-            data.forEach((item, index) => {
-              table.row.add([
-                index + 1,
-                item.word || '',
-                item.ipa || ''
-              ]);
-            });
-            table.draw();
-          })
-          .catch(error => {
-            console.error('Error loading German IPA data:', error);
-          });
+      darkModeToggle.addEventListener('click', () => {
+        darkModeToggle.classList.add('btn-theme-transition');
+        document.body.classList.toggle('dark-mode');
+        const isDark = document.body.classList.contains('dark-mode');
+        iconImg.src = isDark ? darkModeIcon : lightModeIcon;
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
       });
+
+      // Initialize DataTable
+      $(document).ready(function() {
+          $('#DataTable').DataTable( {
+              "ajax": {
+                url: '../json/de.json',
+                dataSrc: function (json) {
+                  const dataObj = json.de[0];
+                  return Object.entries(dataObj).map(([entry, ipa], index) => [index + 1, entry, ipa]);
+              }
+            }
+          }
+        );
+      } );
     </script>
   </body>
 </html>

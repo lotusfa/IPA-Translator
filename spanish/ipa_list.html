@@ -39,10 +39,22 @@
       <small>This may need few seconds for loading...</small>
     </div>
 
-    <script src="../lib/jquery/jquery-3.7.1.min.js"></script>
-    <script src="../lib/datatables/jquery.dataTables.min.js"></script>
-    <script src="../lib/datatables/dataTables.bootstrap4.min.js"></script>
-    <script src="../js/spanish_ipa_data.json"></script>
-    <script src="main.js"></script>
+    <script src="../lib/jquery/jquery.min.js"></script>
+    <script src="../lib/datatables/datatables.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="../lib/datatables/datatables.min.css"/>
+
+    <script type="text/javascript">
+      $(document).ready(function() {
+        $('#DataTable').DataTable({
+          "ajax": {
+            url: '../json/es_ES.json',
+            dataSrc: function (json) {
+              const dataObj = json.es_ES[0];
+              return Object.entries(dataObj).map(([entry, ipa], index) => [index + 1, entry, ipa]);
+            }
+          }
+        });
+      });
+    </script>
   </body>
 </html>
