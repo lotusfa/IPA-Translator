@@ -13,7 +13,7 @@ function normalize_ipa_data(lang_data) {
 }
 
 function update_result() {
-  let c_w = (pre(get_IPA_tBox()) + " ").split(" ");
+  let c_w = get_IPA_tBox().split(" ");
 
   set_IPA_tBox("loading....");
 
@@ -23,46 +23,23 @@ function update_result() {
     for (var i = 0; i < c_w.length; i++) {
       let word = c_w[i];
 
-      if (word != "") {
-        if (typeof obj[word] != "undefined") {
-          let s_words = [];
-          s_words[0] = c_w[i];
-          s_words[1] = s_words[0] + " " + c_w[i + 1];
-          s_words[2] = s_words[1] + " " + c_w[i + 2];
-          s_words[3] = s_words[2] + " " + c_w[i + 3];
-          s_words[4] = s_words[3] + " " + c_w[i + 4];
-          s_words[5] = s_words[4] + " " + c_w[i + 5];
+      preprocess_input(word, (t_word) => {
+        if (word != "") {
+          if (typeof obj[t_word] != "undefined") {
+            let ipa = obj[t_word];
 
-          let words_index = 0;
-          if (typeof obj[s_words[5]] != "undefined") {
-            words_index = 5;
-          } else if (typeof obj[s_words[4]] != "undefined") {
-            words_index = 4;
-          } else if (typeof obj[s_words[3]] != "undefined") {
-            words_index = 3;
-          } else if (typeof obj[s_words[2]] != "undefined") {
-            words_index = 2;
-          } else if (typeof obj[s_words[1]] != "undefined") {
-            words_index = 1;
-          } else if (typeof obj[s_words[0]] != "undefined") {
-            words_index = 0;
-          }
-
-          let search_words = s_words[words_index];
-
-          if (document.getElementById("wf_c_words").checked) {
-            str += "{ " + search_words + " - " + obj[search_words] + " }";
+            if (document.getElementById("wf_c_words").checked) {
+              str += "( " + word + " : " + ipa + " ) ";
+            } else {
+              str += ipa + " ";
+            }
           } else {
-            str += obj[search_words] + " ";
+            str += word + " ";
           }
 
-          i += words_index;
-        } else {
-          str += word + " ";
+          set_IPA_tBox(str);
         }
-
-        set_IPA_tBox(str);
-      }
+      });
     }
   });
 }
@@ -88,11 +65,12 @@ function set_IPA_tBox(v = IPA_result) {
   document.getElementById("IPA_tBox").value = v;
 }
 
-function pre(x) {
-  x = x.replace(/\./g, "");
-  x = x.replace(/\,/g, "");
-  x = x.replace(/\n/g, "");
-  return x;
+function preprocess_input(x, callback) {
+  callback(x
+    .replace(/[;:>"<`~!@#$%^&*()={}|\\[\]/.,?!]/g, "")
+    .replace(/\s+/g, " ")
+    .trim()
+  );
 }
 
 // Initialize event listeners when DOM is ready

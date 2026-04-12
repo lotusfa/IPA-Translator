@@ -72,9 +72,11 @@ function set_IPA_tBox(v = IPA_result) {
 
 function preprocess_input(x, callback) {
   callback(x
-    .replace(/[A-Z]/g, c => c.toLowerCase())
-    .replace(/[.,\n]/g, "")
-    );
+    .toLowerCase()
+    .replace(/[;:>"<`~!@#$%^&*()={}|\\[\]/.,?!]/g, "")
+    .replace(/\s+/g, " ")
+    .trim()
+  );
 }
 
 // Initialize event listeners when DOM is ready
