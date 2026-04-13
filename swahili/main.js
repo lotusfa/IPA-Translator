@@ -1,116 +1,71 @@
-let IPA_result = "";
+/**
+ * Swahili IPA Translator - Refactored to use shared ipa-core module
+ */
+
+import {
+  loadIPADatabase,
+  processTextWordBased,
+  initDarkMode,
+  onTextInputChange,
+  onMultipleChange,
+  getElementValue,
+  setElementValue,
+  isElementChecked
+} from '../js/ipa-core.js';
+
 let IPA_DB = {};
 
-function normalize_ipa_data(lang_data) {
-  const normalized = {};
-  const sw = lang_data["sw"];
-  sw.forEach(entry => {
-    Object.keys(entry).forEach(word => {
-      normalized[word] = entry[word];
+/**
+ * Load database (static path for Swahili)
+ */
+function loadDatabase() {
+  loadIPADatabase({
+    basePath: '../json/sw.json',
+    onSuccess: (lookup) => {
+      IPA_DB = lookup;
+      translate();
+    },
+    onError: (err) => {
+      console.error('Failed to load database:', err);
+      setElementValue('IPA_tBox', 'Error loading database');
+    }
+  });
+}
+
+/**
+ * Translate input text
+ */
+function translate() {
+  const input = getElementValue('cWords_tBox');
+  setElementValue('IPA_tBox', 'loading....');
+
+  setTimeout(() => {
+    const result = processTextWordBased({
+      input,
+      lookupTable: IPA_DB,
+      withWords: isElementChecked('wf_c_words')
     });
-  });
-  return normalized;
+    setElementValue('IPA_tBox', result);
+  }, 10);
 }
 
-function update_result() {
-  let c_w = get_IPA_tBox().split(" ");
+// ============================================
+// Initialization
+// ============================================
 
-  set_IPA_tBox("loading....");
+document.addEventListener('DOMContentLoaded', () => {
+  // Initialize dark mode
+  initDarkMode('dark-mode-toggle');
 
-  get_IPA_DB((obj) => {
-    let str = "";
+  // Set up input handler
+  onTextInputChange('cWords_tBox', translate);
 
-    for (var i = 0; i < c_w.length; i++) {
-      let word = c_w[i];
-
-      preprocess_input(word, (t_word) => {
-        if (word != "") {
-          if (typeof obj[t_word] != "undefined") {
-            let ipa = obj[t_word];
-
-            if (document.getElementById("wf_c_words").checked) {
-              str += "( " + word + " : " + ipa + " ) ";
-            } else {
-              str += ipa + " ";
-            }
-          } else {
-            str += word + " ";
-          }
-
-          set_IPA_tBox(str);
-        }
-      });
-    }
-  });
-}
-
-function get_IPA_DB(s) {
-  var xmlhttp = new XMLHttpRequest();
-  xmlhttp.onreadystatechange = function () {
-    if (this.readyState == 4 && this.status == 200) {
-      var myObj = JSON.parse(this.responseText);
-      IPA_DB = normalize_ipa_data(myObj);
-      return s(IPA_DB);
-    }
-  };
-
-  xmlhttp.open("GET", "../json/sw.json", true);
-  xmlhttp.send();
-}
-
-function get_IPA_tBox() {
-  return document.getElementById("cWords_tBox").value;
-}
-
-function set_IPA_tBox(v = IPA_result) {
-  document.getElementById("IPA_tBox").value = v;
-}
-
-function preprocess_input(x, callback) {
-  callback(x
-    .toLowerCase()
-    .replace(/[;:>"<`~!@#$%^&*()={}|\\[\]/.,?!]/g, "")
-    .replace(/\s+/g, " ")
-    .trim()
-  );
-}
-
-// Initialize event listeners when DOM is ready
-document.addEventListener("DOMContentLoaded", function () {
-  const cWords_tBox = document.getElementById("cWords_tBox");
-  const wf_c_words = document.getElementById("wf_c_words");
-  const darkModeToggle = document.getElementById("dark-mode-toggle");
-
-  // Dark mode toggle
-  const iconImg = darkModeToggle.querySelector(".icon");
-  const savedTheme = localStorage.getItem("theme");
-  if (savedTheme === "dark") {
-    document.body.classList.add("dark-mode");
-    iconImg.src = "../img/dark-mode.svg";
-  } else {
-    iconImg.src = "../img/light-mode.svg";
+  // Set up word format checkbox
+  const wf_c_words = document.getElementById('wf_c_words');
+  if (wf_c_words) {
+    wf_c_words.addEventListener('change', translate);
   }
 
-  darkModeToggle.addEventListener("click", function () {
-    darkModeToggle.classList.add("btn-theme-transition");
-    document.body.classList.toggle("dark-mode");
-    const isDark = document.body.classList.contains("dark-mode");
-    iconImg.src = isDark
-      ? "../img/dark-mode.svg"
-      : "../img/light-mode.svg";
-    localStorage.setItem("theme", isDark ? "dark" : "light");
-  });
-
-  // Auto-update on input
-  cWords_tBox.addEventListener("input", update_result);
-
-  // Select all text on focus
-  cWords_tBox.addEventListener("focus", function () {
-    this.select();
-  });
-
-  wf_c_words.addEventListener("change", update_result);
-
   // Initial loading
-  update_result();
+  loadDatabase();
 });
