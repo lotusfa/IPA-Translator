@@ -12,37 +12,25 @@
 
 /**
  * Load IPA database from JSON file with error handling
- * Supports both static paths and dynamic variant selection
+ * Simply loads the JSON and normalizes using the first key
  * 
  * @param {object} options - Configuration object:
- *   @param {string} options.basePath - Base path to JSON file (e.g., "../json/en" or "../json/yue.json")
- *   @param {string} [options.variantKey] - Optional static variant key (e.g., "en_US")
- *   @param {function} [options.getVariant] - Callback to get variant dynamically from DOM
+ *   @param {string} options.basePath - Base path to JSON file (e.g., "../json/yue.json")
  *   @param {function} options.onSuccess - Callback with normalized lookup object
  *   @param {function} [options.onError] - Optional error callback
  * 
  * Example usage:
- *   // Static path
  *   loadIPADatabase({ basePath: '../json/yue.json', onSuccess: (data) => { ... } });
- *   
- *   // Dynamic variant (en_US/en_UK)
- *   loadIPADatabase({
- *     basePath: '../json/en',
- *     getVariant: () => document.getElementById('IPA_US').checked ? 'US' : 'UK',
- *     onSuccess: (data) => { ... }
- *   });
  */
 export function loadIPADatabase(options) {
-  const { basePath, variantKey, getVariant, onSuccess, onError } = options;
+  const { basePath, onSuccess, onError } = options;
   
   var xmlhttp = new XMLHttpRequest();
   
   xmlhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
       var langData = JSON.parse(this.responseText);
-      // Determine variant: use variantKey if provided, otherwise call getVariant callback
-      const variant = variantKey || (getVariant ? getVariant() : null);
-      const lookup = normalizeIPAData(langData, variant);
+      const lookup = normalizeIPAData(langData);
       onSuccess(lookup);
     } else if (this.readyState == 4) {
       const errorMsg = "Failed to load database: " + this.status;
@@ -57,49 +45,25 @@ export function loadIPADatabase(options) {
     if (onError) onError(errorMsg);
   };
 
-  // Determine the JSON path
-  let jsonPath;
-  if (getVariant) {
-    const variant = getVariant();
-    // Handle paths like "../json/en" -> "../json/en_US.json" or "../json/en_UK.json"
-    const base = basePath.replace(/\.json$/, '');
-    jsonPath = base + '_' + variant + '.json';
-  } else if (variantKey) {
-    // Static variant: "../json/en" + "_US" + ".json" = "../json/en_US.json"
-    const base = basePath.replace(/\.json$/, '');
-    jsonPath = base + '_' + variantKey + '.json';
-  } else {
-    jsonPath = basePath;
-  }
-  
-  xmlhttp.open("GET", jsonPath, true);
+  xmlhttp.open("GET", basePath, true);
   xmlhttp.send();
 }
 
 /**
  * Normalize IPA data from JSON format into a flat lookup object
- * Supports both single-key and multi-variant formats
+ * Simply gets the first key from the JSON and uses its array
+ * This works universally for all single-key formats: "yue", "en_US", "zh_hans", etc.
  * 
  * @param {object} langData - Raw JSON data
- * @param {string|null} [variantKey] - Optional variant key (e.g., 'en_US', 'zh_hans', 'yue')
  * @returns {object} Flat lookup object: { word: ipa, char: ipa }
  */
-export function normalizeIPAData(langData, variantKey = null) {
+export function normalizeIPAData(langData) {
   const normalized = {};
   
-  // Get the appropriate data array
-  let dataArray;
-  if (variantKey && langData[variantKey]) {
-    dataArray = langData[variantKey];
-  } else if (variantKey) {
-    // Fallback for zh_hans/zh_hant pattern
-    const fallbackKey = variantKey === 'zh_hans' ? 'zh_hant' : 'zh_hans';
-    dataArray = langData[fallbackKey] || [];
-  } else {
-    // Single-key format: get first key's value
-    const firstKey = Object.keys(langData)[0];
-    dataArray = firstKey ? langData[firstKey] : [];
-  }
+  // Get the first (and typically only) key from the JSON
+  // This works for all single-key formats: "yue", "en_US", "zh_hans", etc.
+  const firstKey = Object.keys(langData)[0];
+  const dataArray = firstKey ? langData[firstKey] : [];
   
   // Flatten into lookup object
   if (Array.isArray(dataArray)) {
