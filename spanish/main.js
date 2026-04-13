@@ -1,129 +1,72 @@
-let IPA_result = "";
+/**
+ * Spanish IPA Translator - Refactored to use shared ipa-core module
+ */
+
+import {
+  loadIPADatabase,
+  processTextWordBased,
+  initDarkMode,
+  onTextInputChange,
+  onMultipleChange
+} from '../js/ipa-core.js';
+
 let IPA_DB = {};
+let variantOption = 'IPA_Spain'; // Default: Spain
 
-function normalize_ipa_data(lang_data) {
-  const normalized = {};
-  const lang_key = document.getElementById("IPA_Spain").checked ? "es_ES" : "es_MX";
-  const entries = lang_data[lang_key] || [];
-  entries.forEach(entry => {
-    Object.keys(entry).forEach(char => {
-      normalized[char] = entry[char];
+/**
+ * Load database with variant selection (es_ES/es_MX)
+ */
+function loadDatabase() {
+  const variant = variantOption === 'IPA_Spain' ? 'ES' : 'MX';
+  loadIPADatabase({ 
+    basePath: `../json/es_${variant}.json`, 
+    onSuccess: (lookup) => { IPA_DB = lookup; translate(); } 
+  });
+}
+
+/**
+ * Translate input text
+ */
+function translate() {
+  const input = document.getElementById('cWords_tBox')?.value || '';
+  const ipaBox = document.getElementById('IPA_tBox');
+  if (!ipaBox) return;
+  
+  ipaBox.value = 'loading....';
+  
+  setTimeout(() => {
+    const result = processTextWordBased({
+      input,
+      lookupTable: IPA_DB,
+      withWords: !!document.getElementById('wf_c_words')?.checked
     });
+    ipaBox.value = result;
+  }, 10);
+}
+
+// ============================================
+// Initialization
+// ============================================
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Initialize dark mode
+  initDarkMode('dark-mode-toggle');
+  
+  // Set up input handler
+  onTextInputChange('cWords_tBox', translate);
+  
+  // Set up variant radio handlers (IPA_Spain / IPA_Mexico)
+  onMultipleChange('input[name="inlineRadioOptions"]', (e) => { 
+    variantOption = e.target.id; 
+    loadDatabase(); 
   });
-  return normalized;
-}
-
-function update_result() {
-  let c_w = get_IPA_tBox().split(" ");
-
-  set_IPA_tBox("loading....");
-
-  get_IPA_DB((obj) => {
-    let str = "";
-
-    for (var i = 0; i < c_w.length; i++) {
-      let word = c_w[i];
-
-      preprocess_input(word, (t_word) => {
-        if (word != "") {
-          if (typeof obj[t_word] != "undefined") {
-            let ipa = obj[t_word];
-
-            if (document.getElementById("wf_c_words").checked) {
-              str += "( " + word + " : " + ipa + " ) ";
-            } else {
-              str += ipa + " ";
-            }
-          } else {
-            str += word + " ";
-          }
-
-          set_IPA_tBox(str);
-        }
-      });
-    }
-
-    set_IPA_tBox(str);
-  });
-}
-
-function get_IPA_DB(s) {
-  var xmlhttp = new XMLHttpRequest();
-  xmlhttp.onreadystatechange = function () {
-    if (this.readyState == 4 && this.status == 200) {
-      var myObj = JSON.parse(this.responseText);
-      IPA_DB = normalize_ipa_data(myObj);
-      return s(IPA_DB);
-    }
-  };
-
-  const data_file = document.getElementById("IPA_Spain").checked
-    ? "../json/es_ES.json"
-    : "../json/es_MX.json";
-
-  xmlhttp.open("GET", data_file, true);
-  xmlhttp.send();
-}
-
-function get_IPA_tBox() {
-  return document.getElementById("cWords_tBox").value;
-}
-
-function set_IPA_tBox(v = IPA_result) {
-  document.getElementById("IPA_tBox").value = v;
-}
-
-function preprocess_input(x, callback) {
-  callback(x
-    .toLowerCase()
-    .replace(/[;:>"<`~!@#$%^&*()={}|\\[\]/.,?!]/g, "")
-    .replace(/\s+/g, " ")
-    .trim()
-  );
-}
-
-// Initialize event listeners when DOM is ready
-document.addEventListener("DOMContentLoaded", function () {
-  const cWords_tBox = document.getElementById("cWords_tBox");
-  const IPA_SpainRadio = document.getElementById("IPA_Spain");
-  const IPA_MexicoRadio = document.getElementById("IPA_Mexico");
-  const wf_c_words = document.getElementById("wf_c_words");
-  const darkModeToggle = document.getElementById("dark-mode-toggle");
-
-  // Dark mode toggle
-  const iconImg = darkModeToggle.querySelector(".icon");
-  const savedTheme = localStorage.getItem("theme");
-  if (savedTheme === "dark") {
-    document.body.classList.add("dark-mode");
-    iconImg.src = "../img/dark-mode.svg";
-  } else {
-    iconImg.src = "../img/light-mode.svg";
+  
+  // Set up word format checkbox
+  const wf_c_words = document.getElementById('wf_c_words');
+  if (wf_c_words) {
+    wf_c_words.addEventListener('change', translate);
   }
 
-  darkModeToggle.addEventListener("click", function () {
-    darkModeToggle.classList.add("btn-theme-transition");
-    document.body.classList.toggle("dark-mode");
-    const isDark = document.body.classList.contains("dark-mode");
-    iconImg.src = isDark
-      ? "../img/dark-mode.svg"
-      : "../img/light-mode.svg";
-    localStorage.setItem("theme", isDark ? "dark" : "light");
-  });
-
-  // Auto-update on input
-  cWords_tBox.addEventListener("input", update_result);
-
-  // Select all text on focus
-  cWords_tBox.addEventListener("focus", function () {
-    this.select();
-  });
-
-  // Update when radio buttons change
-  IPA_SpainRadio.addEventListener("change", update_result);
-  IPA_MexicoRadio.addEventListener("change", update_result);
-
-  wf_c_words.addEventListener("change", update_result);
-
-  // Initial load
-  update_result();
+  // Initial loading
+  loadDatabase();
 });

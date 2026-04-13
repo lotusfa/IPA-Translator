@@ -7,29 +7,20 @@ import {
   processTextWordBased,
   initDarkMode,
   onTextInputChange,
-  onMultipleChange,
-  getElementValue,
-  setElementValue,
-  isElementChecked
+  onMultipleChange
 } from '../js/ipa-core.js';
 
 let IPA_DB = {};
+let variantOption = 'IPA_fr_FR'; // Default: France
 
 /**
  * Load database with variant selection (fr_FR/fr_QC)
  */
 function loadDatabase() {
-  const variant = document.getElementById('IPA_fr_FR').checked ? 'FR' : 'QC';
-  loadIPADatabase({
-    basePath: `../json/fr_${variant}.json`,
-    onSuccess: (lookup) => {
-      IPA_DB = lookup;
-      translate();
-    },
-    onError: (err) => {
-      console.error('Failed to load database:', err);
-      setElementValue('IPA_tBox', 'Error loading database');
-    }
+  const variant = variantOption === 'IPA_fr_FR' ? 'FR' : 'QC';
+  loadIPADatabase({ 
+    basePath: `../json/fr_${variant}.json`, 
+    onSuccess: (lookup) => { IPA_DB = lookup; translate(); } 
   });
 }
 
@@ -37,16 +28,19 @@ function loadDatabase() {
  * Translate input text
  */
 function translate() {
-  const input = getElementValue('cWords_tBox');
-  setElementValue('IPA_tBox', 'loading....');
-
+  const input = document.getElementById('cWords_tBox')?.value || '';
+  const ipaBox = document.getElementById('IPA_tBox');
+  if (!ipaBox) return;
+  
+  ipaBox.value = 'loading....';
+  
   setTimeout(() => {
     const result = processTextWordBased({
       input,
       lookupTable: IPA_DB,
-      withWords: isElementChecked('wf_c_words')
+      withWords: !!document.getElementById('wf_c_words')?.checked
     });
-    setElementValue('IPA_tBox', result);
+    ipaBox.value = result;
   }, 10);
 }
 
@@ -57,13 +51,16 @@ function translate() {
 document.addEventListener('DOMContentLoaded', () => {
   // Initialize dark mode
   initDarkMode('dark-mode-toggle');
-
+  
   // Set up input handler
   onTextInputChange('cWords_tBox', translate);
-
-  // Set up radio button handlers for variant selection
-  onMultipleChange('input[name="inlineRadioOptions"]', loadDatabase);
-
+  
+  // Set up variant radio handlers (IPA_fr_FR / IPA_fr_QC)
+  onMultipleChange('input[name="inlineRadioOptions"]', (e) => { 
+    variantOption = e.target.id; 
+    loadDatabase(); 
+  });
+  
   // Set up word format checkbox
   const wf_c_words = document.getElementById('wf_c_words');
   if (wf_c_words) {
