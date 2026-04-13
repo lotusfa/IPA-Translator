@@ -20,18 +20,30 @@
     <hr />
 
     <div class="container">
-      <table id="DataTable" class="table table-striped">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Spanish Word</th>
-            <th scope="col">IPA</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-      <small>This may need few seconds for loading...</small>
+      <div class="row" style="margin-bottom: 15px;">
+        <div class="col" style="flex: 0 0 auto;">
+          <h5 style="margin: 0;"><a href="./index.html">← Volver al Traductor (Back to Translator)</a></h5>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <table class="table table-striped display" id="DataTable">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Palabra Española</th>
+                <th scope="col">IPA</th>
+              </tr>
+            </thead>
+            <tbody id="tbody">
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
+
+    <small>This may need few seconds for loading...</small>
 
     <footer class="footer">
       <div class="footer-grid">
