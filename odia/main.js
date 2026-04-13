@@ -4,13 +4,14 @@
 
 import {
   loadIPADatabase,
-  processTextCharBased,
-  formatIPAOutput,
+  processTextWordBased,
   preprocessText,
+  initDarkMode,
   onTextInputChange,
   onMultipleChange,
-  initDarkMode,
-  setElementValue
+  getElementValue,
+  setElementValue,
+  isElementChecked
 } from '../js/ipa-core.js';
 
 let IPA_DB = {};
@@ -36,26 +37,17 @@ function loadDatabase() {
  * Translate input text
  */
 function translate() {
-  const input = document.getElementById('cWords_tBox').value;
-  document.getElementById('IPA_tBox').value = 'loading....';
+  const input = getElementValue('cWords_tBox');
+  setElementValue('IPA_tBox', 'loading....');
   
-  // Small delay to allow UI to update before processing
+  // Small timeout to allow UI to update before processing
   setTimeout(() => {
-    const processed = processTextCharBased({
+    const result = processTextWordBased({
       input,
       lookupTable: IPA_DB,
-      withWords: document.getElementById('wf_c_words') && document.getElementById('wf_c_words').checked,
-      allowWordSearch: document.getElementById('allow_words_search') && document.getElementById('allow_words_search').checked,
-      maxWordLength: 6
+      withWords: isElementChecked('wf_c_words')
     });
-    
-    // Apply format transformation (IPA_org, IPA_num)
-    const output = formatIPAOutput({
-      processed,
-      format: document.querySelector('input[name="outputFormat"]:checked')?.value || 'IPA_org'
-    });
-    
-    setElementValue('IPA_tBox', output);
+    setElementValue('IPA_tBox', result);
   }, 10);
 }
 
@@ -69,9 +61,6 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Set up input handler
   onTextInputChange('cWords_tBox', translate);
-  
-  // Set up output format radio buttons
-  onMultipleChange('input[name="outputFormat"]', translate);
   
   // Set up word format checkbox
   const wf_c_words = document.getElementById('wf_c_words');

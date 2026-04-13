@@ -30,15 +30,15 @@
 
       <div class="row">
         <div class="col">
-          <table class="table table-striped display" id="DataTable">
+          <table id="DataTable" class="table table-striped">
             <thead>
               <tr>
+                <th scope="col">#</th>
                 <th scope="col">Marathi</th>
                 <th scope="col">IPA</th>
               </tr>
             </thead>
-            <tbody id="tbody">
-            </tbody>
+            <tbody></tbody>
           </table>
         </div>
       </div>
@@ -54,6 +54,22 @@
         <div class="footer-col">
           <h4>Other Languages</h4>
           <ul class="lang-list" id="lang-buttons-container">
+            <li><a href="../cantonese/index.html">Cantonese (廣東話)</a></li>
+            <li><a href="../mandarin/index.html">Mandarin (普通話)</a></li>
+            <li><a href="../english/index.html">English</a></li>
+            <li><a href="../french/index.html">French</a></li>
+            <li><a href="../esperanto/index.html">Esperanto</a></li>
+            <li><a href="../persian/index.html">Persian</a></li>
+            <li><a href="../spanish/index.html">Spanish</a></li>
+            <li><a href="../japanese/index.html">Japanese</a></li>
+            <li><a href="../arabic/index.html">Arabic (العربية)</a></li>
+            <li><a href="../finnish/index.html">Finnish</a></li>
+            <li><a href="../german/index.html">German</a></li>
+            <li><a href="../jamaican/index.html">Jamaican Creole</a></li>
+            <li><a href="../norwegian/index.html">Norwegian</a></li>
+            <li><a href="../swahili/index.html">Swahili</a></li>
+            <li><a href="../swedish/index.html">Swedish</a></li>
+            <li><a href="../vietnamese/index.html">Vietnamese (Tiếng Việt)</a></li>
           </ul>
         </div>
 
@@ -78,7 +94,7 @@
     <script src="../lib/jquery/jquery.min.js"></script>
     <script src="../lib/datatables/datatables.min.js"></script>
     <link rel="stylesheet" type="text/css" href="../lib/datatables/datatables.min.css"/>
-
+    
     <script type="text/javascript">
       // Dark mode toggle
       const darkModeToggle = document.getElementById('dark-mode-toggle');
@@ -95,31 +111,28 @@
         iconImg.src = lightModeIcon;
       }
 
-      darkModeToggle.addEventListener('click', () => {
+      darkModeToggle.addEventListener('click', function() {
         darkModeToggle.classList.add('btn-theme-transition');
         document.body.classList.toggle('dark-mode');
         const isDark = document.body.classList.contains('dark-mode');
-        iconImg.src = isDark ? darkModeIcon : lightModeIcon;
+        iconImg.src = isDark ? '../img/dark-mode.svg' : '../img/light-mode.svg';
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
       });
 
-      // Initialize DataTable
       $(document).ready(function() {
-          $('#DataTable').DataTable( {
-              "ajax": {
-                url: '../json/ma.json',
-                dataSrc: function (json) {
-                  const dataObj = json.ma[0];
-                  return Object.entries(dataObj).map(([entry, ipa], index) => [index + 1, entry, ipa]);
-              }
+        $('#DataTable').DataTable({
+          "ajax": {
+            url: '../json/ma.json',
+            dataSrc: function (json) {
+              const dataObj = json.ma[0];
+              return Object.entries(dataObj).map(([entry, ipa], index) => [index + 1, entry, ipa]);
             }
           }
-        );
-      } );
+        });
+      });
     </script>
     <script type="module">
       import { initLanguageButtons } from '../js/ipa-core.js';
-      
       initLanguageButtons({
         containerId: "lang-buttons-container",
         configPath: "../config/languages.json"
