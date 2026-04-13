@@ -1,33 +1,74 @@
-# IPA-Translator
-This project is use to translate difference languages paragraph to IPA.
+# IPA Translator
 
-## Getting Started
+A web-based tool for translating text from various languages into International Phonetic Alphabet (IPA) notation.
 
-Go to this <a href="https://toolbox.lotusfa.com/ipa/"> website</a> 
+## 🌍 Supported Languages
 
-## Languages
+### Languages
+- **Cantonese** (廣東話) - with regional variants
+- **Mandarin** (普通話) - Simplified (简体中文) and Traditional (繁體中文)
+- **English** - Standard pronunciation
+- **French** - France and Quebec variants
+- **Spanish** - Spain (Español) and Mexican (Español Mexicano) variants
+- **Vietnamese** (Tiếng Việt) - Central, Northern, and Southern dialects
+- **Arabic** (العربية)
+- **Esperanto**
+- **Finnish**
+- **German**
+- **Jamaican Creole**
+- **Japanese**
+- **Norwegian**
+- **Persian**
+- **Swahili**
+- **Swedish**
 
-- Cantonese: <a href="https://toolbox.lotusfa.com/ipa/cantonese/index.html">LINK </a>
+## 🚀 Getting Started
 
-- Mandarin: <a href="https://toolbox.lotusfa.com/ipa/mandarin/index.html">LINK </a>
+Visit the live website: [https://toolbox.lotusfa.com/ipa/](https://toolbox.lotusfa.com/ipa/)
 
-- English: <a href="https://toolbox.lotusfa.com/ipa/english/index.html">LINK </a>
+## 📚 Features
 
-- Esperanto: <a href="https://toolbox.lotusfa.com/ipa/esperanto/index.html">LINK </a>
+- **Text-to-IPA Conversion**: Enter text in supported languages and get instant IPA transcription
+- **Multiple Variants**: Support for regional dialects and pronunciation variations
+- **Dark Mode**: Toggle between light and dark themes
+- **Open Source**: Fully open-source with transparent implementation
+- **IPA Database**: Browse comprehensive IPA character reference lists for each language
 
-- Persian: <a href="https://toolbox.lotusfa.com/ipa/persian/index.html">LINK </a>
+## 🔗 Language Pages
 
-## Built With
+| Language | Translator | IPA Reference |
+|----------|-----------|---------------|
+| Cantonese | [Translator](cantonese/index.html) | [IPA List](cantonese/ipa_list.html) |
+| Mandarin (Simplified) | [Translator](mandarin/index.html) | [IPA List](mandarin/ipa_list_zh_hans.html) |
+| Mandarin (Traditional) | [Translator](mandarin/index.html) | [IPA List](mandarin/ipa_list_zh_hant.html) |
+| English | [Translator](english/index.html) | - |
+| French | [Translator](french/index.html) | [France](french/ipa_list_fr.html) / [Quebec](french/ipa_list_qc.html) |
+| Spanish | [Translator](spanish/index.html) | [Spain](spanish/ipa_list_es.html) / [Mexico](spanish/ipa_list_mx.html) |
+| Vietnamese | [Translator](vietnamese/index.html) | [Central](vietnamese/ipa_list_c.html) / [Northern](vietnamese/ipa_list_n.html) / [Southern](vietnamese/ipa_list_s.html) |
+| Arabic | [Translator](arabic/index.html) | [IPA List](arabic/ipa_list.html) |
+| Esperanto | [Translator](esperanto/index.html) | [IPA List](esperanto/ipa_list.html) |
+| Finnish | [Translator](finnish/index.html) | [IPA List](finnish/ipa_list.html) |
+| German | [Translator](german/index.html) | [IPA List](german/ipa_list.html) |
+| Jamaican | [Translator](jamaican/index.html) | [IPA List](jamaican/ipa_list.html) |
+| Japanese | [Translator](japanese/index.html) | [IPA List](japanese/ipa_list.html) |
+| Norwegian | [Translator](norwegian/index.html) | [IPA List](norwegian/ipa_list.html) |
+| Persian | [Translator](persian/index.html) | [IPA List](persian/ipa_list.html) |
+| Swahili | [Translator](swahili/index.html) | [IPA List](swahili/ipa_list.html) |
+| Swedish | [Translator](swedish/index.html) | [IPA List](swedish/ipa_list.html) |
 
-- IPA database: <a href="https://open-dict-data.github.io/">LINK </a>
+## 🙏 Credits & Acknowledgments
 
-- Boostrap: <a href="https://getbootstrap.com/"> LINK </a>
+### IPA Database
+This project is built on data from the **Open Dict Data** project:
+- **IPA Dictionary Data**: [https://github.com/open-dict-data/ipa-dict](https://github.com/open-dict-data/ipa-dict)
+- **Open Dict Data Website**: [https://open-dict-data.github.io/](https://open-dict-data.github.io/)
 
-## Useful Links
+### Additional Resources
 
-- 粵語拼音對照表: <a href="https://zh.m.wikipedia.org/wiki/%E7%B2%B5%E8%AA%9E%E6%8B%BC%E9%9F%B3%E5%B0%8D%E7%85%A7%E8%A1%A8">WIKI</a>
+**Cantonese Resources:**
+- 粵語拼音對照表: [Wikipedia](https://zh.m.wikipedia.org/wiki/%E7%B2%B5%E8%AA%9E%E6%8B%BC%E9%9F%B3%E5%B0%8D%E7%85%A7%E8%A1%A8)
+- 粵語審音配詞字庫: [CU Lexis](http://humanum.arts.cuhk.edu.hk/Lexis/lexi-can/)
 
-- 粵語審音配詞字庫: <a href="http://humanum.arts.cuhk.edu.hk/Lexis/lexi-can/">CU</a>
-
-- International Phonetic Alphabet: <a href="https://en.wikipedia.org/wiki/International_Phonetic_Alphabet">WIKI</a>
-
+**General Resources:**
+- International Phonetic Alphabet: [Wikipedia](https://en.wikipedia.org/wiki/International_Phonetic_Alphabet)
+- Bootstrap Framework: [getbootstrap.com](https://getbootstrap.com/)
