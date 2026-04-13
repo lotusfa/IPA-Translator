@@ -1,0 +1,112 @@
+/* ============================================
+ * IPA Translator - CSS Variables
+ * Centralized color and theme configuration
+ * ============================================
+ */
+
+:root {
+  /* Primary Colors */
+  --color-primary: #666;
+  --color-primary-dark: #555;
+  --color-primary-light: #777;
+  
+  /* Neutral Colors */
+  --color-text: #333;
+  --color-text-muted: #666;
+  --color-text-light: #999;
+  --color-bg: #fff;
+  --color-bg-secondary: #f5f5f5;
+  --color-border: #e1e1e8;
+  
+  /* Form Controls */
+  --color-input-bg: #fff;
+  --color-input-border: #ccc;
+  --color-input-placeholder: #999;
+  
+  /* Links and Buttons */
+  --color-link: #666;
+  --color-link-hover: #555;
+  --color-btn-bg: #f5f5f5;
+  --color-btn-hover: #e5e5e5;
+  --color-btn-border: #e1e1e8;
+  
+  /* Table Colors */
+  --color-table-header: #f5f5f5;
+  --color-table-hover: #f5f5f5;
+  --color-table-border: #e1e1e8;
+  
+  /* Shadows (minimal) */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.1);
+  
+  /* Transitions */
+  --transition-fast: 0.1s;
+  --transition-normal: 0.2s;
+  --transition-theme: 0.3s;
+  
+  /* Spacing */
+  --spacing-xs: 5px;
+  --spacing-sm: 10px;
+  --spacing-md: 15px;
+  --spacing-lg: 20px;
+  --spacing-xl: 30px;
+  
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --radius-round: 50%;
+  
+  /* Font Sizes */
+  --font-xs: 13px;
+  --font-sm: 14px;
+  --font-md: 15px;
+  --font-lg: 16px;
+  --font-xl: 18px;
+  --font-xxl: 24px;
+  
+  /* Max Widths */
+  --max-width: 1000px;
+}
+
+/* Dark Mode Variables */
+body.dark-mode {
+  --color-primary: #999;
+  --color-primary-dark: #888;
+  --color-primary-light: #aaa;
+  
+  --color-text: #e0e0e0;
+  --color-text-muted: #999;
+  --color-text-light: #666;
+  --color-bg: #1a1a1a;
+  --color-bg-secondary: #2d2d2d;
+  --color-border: #333;
+  
+  --color-input-bg: #2d2d2d;
+  --color-input-border: #444;
+  --color-input-placeholder: #666;
+  
+  --color-link: #999;
+  --color-link-hover: #aaa;
+  --color-btn-bg: #2d2d2d;
+  --color-btn-hover: #3d3d3d;
+  --color-btn-border: #444;
+  
+  --color-table-header: #2d2d2d;
+  --color-table-hover: #2d2d2d;
+  --color-table-border: #333;
+}
+
+/* Theme Transition Class */
+.theme-transition {
+  transition: 
+    background-color var(--transition-theme),
+    color var(--transition-theme);
+}
+
+/* Dark Mode Transition Class */
+body.dark-mode.theme-transition {
+  transition:
+    background-color var(--transition-theme),
+    color var(--transition-theme);
+}
