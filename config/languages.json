@@ -127,6 +127,22 @@
       "indexPath": "../vietnamese/index.html",
       "ipaListPath": "../vietnamese/ipa_list_s.html",
       "isActive": false
+    },
+    {
+      "code": "marathi",
+      "name": "Marathi (मराठी)",
+      "nativeName": "मराठी",
+      "indexPath": "../marathi/index.html",
+      "ipaListPath": "../marathi/ipa_list.html",
+      "isActive": false
+    },
+    {
+      "code": "odia",
+      "name": "Odia (ଓଡ଼ିଆ)",
+      "nativeName": "ଓଡ଼ିଆ",
+      "indexPath": "../odia/index.html",
+      "ipaListPath": "../odia/ipa_list.html",
+      "isActive": false
     }
   ]
 }

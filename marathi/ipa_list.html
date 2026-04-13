@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="en">
+<html lang="mr">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>粵語拼音列表 - Cantonese IPA List</title>
+    <title>IPA List - Marathi</title>
     <link rel="icon" href="../favicon.svg" />
     <link rel="stylesheet" href="../css/styles.css" />
     
@@ -12,8 +12,8 @@
   <body>
     <div class="header">
       <div class="titles">
-        <h1>粵語拼音列表</h1>
-        <h2>Cantonese IPA List</h2>
+        <h1>IPA List</h1>
+        <h2>Marathi IPA List</h2>
       </div>
       <button id="dark-mode-toggle" class="btn-theme" aria-label="Toggle dark mode">
         <img src="../img/light-mode.svg" class="icon" alt="" />
@@ -24,7 +24,7 @@
     <div class="container">
       <div class="row" style="margin-bottom: 15px;">
         <div class="col" style="flex: 0 0 auto;">
-          <h5 style="margin: 0;"><a href="./index.html">← 返回翻譯器 (Back to Translator)</a></h5>
+          <h5 style="margin: 0;"><a href="./index.html">← Back to Translator</a></h5>
         </div>
       </div>
 
@@ -33,8 +33,8 @@
           <table class="table table-striped display" id="DataTable">
             <thead>
               <tr>
-                <th scope="col">中文字 (Chinese)</th>
-                <th scope="col">拼音 (PINYIN)</th>
+                <th scope="col">Marathi</th>
+                <th scope="col">IPA</th>
               </tr>
             </thead>
             <tbody id="tbody">
@@ -47,23 +47,21 @@
     <footer class="footer">
       <div class="footer-grid">
         <div class="footer-col">
-          <h4>說明</h4>
-          <p>這是一個開源專案，用於將廣東話轉換為國際音標。</p>
+          <h4>Description</h4>
+          <p>This is an open-source project to translate Marathi to IPA.</p>
         </div>
 
         <div class="footer-col">
-          <h4>其他語言</h4>
+          <h4>Other Languages</h4>
           <ul class="lang-list" id="lang-buttons-container">
           </ul>
         </div>
 
         <div class="footer-col">
-          <h4>連結</h4>
+          <h4>Links</h4>
           <ul>
-            <li><a href="./ipa_list.html">IPA 資料庫</a></li>
-            <li><a href="https://zh.wikipedia.org/wiki/粵語拼音對照表">粵語拼音對照表 (WIKI)</a></li>
-            <li><a href="http://humanum.arts.cuhk.edu.hk/Lexis/lexi-can/">粵語審音配詞字庫 (CUHK)</a></li>
-            <li><a href="https://open-dict-data.github.io/ipa-lookup/yue/">粵語國際音標查詢</a></li>
+            <li><a href="./ipa_list.html">IPA Database (Marathi)</a></li>
+            <li><a href="https://en.wikipedia.org/wiki/Marathi_language">WIKI - Marathi Language</a></li>
           </ul>
         </div>
       </div>
@@ -109,9 +107,9 @@
       $(document).ready(function() {
           $('#DataTable').DataTable( {
               "ajax": {
-                url: '../json/yue.json',
+                url: '../json/ma.json',
                 dataSrc: function (json) {
-                  const dataObj = json.yue[0];
+                  const dataObj = json.ma[0];
                   return Object.entries(dataObj).map(([entry, ipa], index) => [index + 1, entry, ipa]);
               }
             }
