@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
   onTextInputChange('cWords_tBox', translate);
   
   // Set up radio button handlers for variant selection
-  onMultipleChange('input[name="inlineRadioOptions"]', translate);
+  onMultipleChange('input[name="inlineRadioOptions"]', loadDatabase);
   
   // Set up word format checkbox
   const wf_c_words = document.getElementById('wf_c_words');

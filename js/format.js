@@ -14,8 +14,7 @@ export function formatIPA_num(text) {
     .replace(/˧/g, "3")
     .replace(/˨/g, "2")
     .replace(/˩/g, "1")
-    .replace(/:/g, "")
-    .replace(/\//g, "");
+    .replace(/:/g, "");
 }
 
 /**
