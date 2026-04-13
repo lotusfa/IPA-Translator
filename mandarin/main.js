@@ -1,190 +1,83 @@
-let IPA_result = "";
+/**
+ * Mandarin IPA Translator - Refactored to use shared ipa-core module
+ */
+
+import {
+  loadIPADatabase,
+  processTextCharBased,
+  formatIPAOutput,
+  formatMandarinOutput,
+  initDarkMode,
+  onTextInputChange,
+  onMultipleChange
+} from '../js/ipa-core.js';
+
 let IPA_DB = {};
+let formatOption = 'IPA_num';
+let zhTypeOption = 'zh_type1';
 
-function normalize_ipa_data(lang_data) {
-  const normalized = {};
-  const zh_hans = lang_data.zh_hans || lang_data.zh_hant || [];
-  zh_hans.forEach(entry => {
-    Object.keys(entry).forEach(char => {
-      normalized[char] = entry[char];
+/**
+ * Load database with variant selection
+ */
+function loadDatabase() {
+  const variant = zhTypeOption === 'zh_type1' ? 'zh_hant' : 'zh_hans';
+  loadIPADatabase({ 
+    basePath: `../json/${variant}.json`, 
+    onSuccess: (lookup) => { IPA_DB = lookup; translate(); } 
+  });
+}
+
+/**
+ * Translate input text
+ */
+function translate() {
+  const cWordsBox = document.getElementById('cWords_tBox');
+  const ipaBox = document.getElementById('IPA_tBox');
+  if (!cWordsBox || !ipaBox) return;
+  
+  const input = cWordsBox.value;
+  ipaBox.value = 'loading....';
+  
+  setTimeout(() => {
+    const result = processTextCharBased({
+      input,
+      lookupTable: IPA_DB,
+      withWords: !!document.getElementById('wf_c_words')?.checked,
+      allowWordSearch: !!document.getElementById('allow_words_search')?.checked,
+      maxWordLength: 6
     });
-  });
-  return normalized;
+    // Use formatMandarinOutput for Mandarin-specific formatting (tone diacritics or numbers)
+    ipaBox.value = formatMandarinOutput(result);
+  }, 10);
 }
 
-function update_result () {
+// ============================================
+// Initialization
+// ============================================
 
-  let c_w = get_IPA_tBox ();
-  set_IPA_tBox ("loading....");
-  get_IPA_DB ((obj)=>{
-
-    let str = "";
-
-    for (var i = 0; i < c_w.length ; i++) {
-      if(typeof obj[c_w[i]] != "undefined"){
-
-        if (document.getElementById("allow_words_search").checked) {
-
-          let search_words = c_w[i];
-          let words_index = 0;
-          for (let len = 6; len >= 1; len--) {
-            if (i + len <= c_w.length) {
-              let word = c_w.substring(i, i + len);
-              if (typeof obj[word] != "undefined") {
-                search_words = word;
-                words_index = len - 1;
-                break;
-              }
-            }
-          }
-          if (document.getElementById("wf_c_words").checked) {
-            str += "(" + search_words + " " + obj[search_words] + " )";
-          }else  str += "" + obj[search_words] + " ";
-          i += words_index;
-
-        }else{
-          if (document.getElementById("wf_c_words").checked) {
-            str += c_w[i] + "" + obj[c_w[i]] + " ";
-          }else  str = str + "" + obj[c_w[i]] + " ";
-        }
-      }else str += c_w[i] + " ";
-    }
-    set_IPA_tBox (str);
-  });
-}
-
-function get_IPA_DB (s) {
-  var xmlhttp = new XMLHttpRequest();
-  xmlhttp.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-          var myObj = JSON.parse(this.responseText);
-          const IPA_DB = normalize_ipa_data(myObj);
-          return s(IPA_DB);
-      }
-  };
-
-  let link;
-  if (document.getElementById("zh_type1") && document.getElementById("zh_type1").checked) link = "../json/zh_hant.json";
-  else if (document.getElementById("zh_type2") && document.getElementById("zh_type2").checked) link = "../json/zh_hans.json";
-
-  xmlhttp.open("GET", link, true);
-  xmlhttp.send();
-}
-
-function get_IPA_tBox () {
-  return document.getElementById("cWords_tBox").value
-}
-
-function set_IPA_tBox (v) {
-  if (v === undefined || v === "") v = IPA_result;
-  let tBox_str = format_main(v);
-  document.getElementById("IPA_tBox").value = tBox_str;
-}
-
-function format_main(t_str){
-  let f_str = t_str;
-
-  let IPA_num = document.getElementById("IPA_num");
-  let IPA_org = document.getElementById("IPA_org");
-  let Jyutping = document.getElementById("Jyutping");
-  let Jyutping_num = document.getElementById("Jyutping_num");
-
-  if (IPA_num && IPA_num.checked) f_str = format_IPA_num (t_str);
-  else if (IPA_org && IPA_org.checked) f_str = format_IPA_org (t_str);
-  else if (Jyutping && Jyutping.checked) f_str = format_Jyutping (t_str);
-  else if (Jyutping_num && Jyutping_num.checked) f_str = format_Jyutping_num (t_str);
-  return f_str;
-}
-
-function format_IPA_org (x){
-  return x;
-}
-
-function format_IPA_num (x) {
-    x = x.replace(/˥/g, "5");
-    x = x.replace(/˧/g, "3");
-    x = x.replace(/˨/g, "2");
-    x = x.replace(/˩/g, "1");
-    x = x.replace(/:/g, "");
-    return x;
-}
-
-function format_Jyutping (x) {
-    x = x.replace(/˥˥/g, "ˉ");
-    x = x.replace(/˧˥/g, "ˊ");
-    x = x.replace(/˨˩˦/g, "ˇ");
-    x = x.replace(/˨˩˩/g, "ˇ");
-    x = x.replace(/˧˥/g, "ˇ");
-    x = x.replace(/˥˩/g, "ˋ");
-    x = x.replace(/˥˧/g, "ˋ");
-    x = x.replace(/˨˩/g, "˙");
-    x = x.replace(/˧˩/g, "˙");
-    x = x.replace(/˦˩/g, "˙");
-    x = x.replace(/˩˩/g, "˙");
-    x = x.replace(/˧/g, "˙");
-    x = x.replace(/:/g, "");
-    return x;
-}
-
-function format_Jyutping_num (x) {
-    x = format_Jyutping (x);
-
-    x = x.replace(/ˉ/g, "1");
-    x = x.replace(/ˊ/g, "2");
-    x = x.replace(/ˇ/g, "3");
-    x = x.replace(/ˋ/g, "4");
-    x = x.replace(/˙/g, "˙");
-    return x;
-}
-
-// Initialize event listeners when DOM is ready
-document.addEventListener('DOMContentLoaded', function() {
-  const cWords_tBox = document.getElementById('cWords_tBox');
-  const IPA_tBox = document.getElementById('IPA_tBox');
-  const formatRadios = document.querySelectorAll('input[name="format"]');
-  const zhTypeRadios = document.querySelectorAll('input[name="zhTypeOption"]');
+document.addEventListener('DOMContentLoaded', () => {
+  // Initialize dark mode
+  initDarkMode('dark-mode-toggle');
+  
+  // Set up input handler
+  onTextInputChange('cWords_tBox', translate);
+  
+  // Set up Format radio handlers
+  onMultipleChange('input[name="format"]', (e) => { formatOption = e.target.id; translate(); });
+  
+  // Set up 繁/簡 radio handlers
+  onMultipleChange('input[name="zhTypeOption"]', (e) => { zhTypeOption = e.target.id; loadDatabase(); });
+  
+  // Set up checkbox handlers
   const wf_c_words = document.getElementById('wf_c_words');
+  if (wf_c_words) {
+    wf_c_words.addEventListener('change', translate);
+  }
   const allow_words_search = document.getElementById('allow_words_search');
-  const darkModeToggle = document.getElementById('dark-mode-toggle');
-
-  // Dark mode toggle
-  const iconImg = darkModeToggle.querySelector('.icon');
-  const savedTheme = localStorage.getItem('theme');
-  if (savedTheme === 'dark') {
-    document.body.classList.add('dark-mode');
-    iconImg.src = '../img/dark-mode.svg';
-  } else {
-    iconImg.src = '../img/light-mode.svg';
+  if (allow_words_search) {
+    allow_words_search.addEventListener('change', translate);
   }
 
-  darkModeToggle.addEventListener('click', function() {
-    darkModeToggle.classList.add('btn-theme-transition');
-    document.body.classList.toggle('dark-mode');
-    const isDark = document.body.classList.contains('dark-mode');
-    iconImg.src = isDark ? '../img/dark-mode.svg' : '../img/light-mode.svg';
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
-  });
-
-  // Auto-update on input
-  cWords_tBox.addEventListener('input', update_result);
-
-  // Select all text on focus
-  cWords_tBox.addEventListener('focus', function() {
-    this.select();
-  });
-
-  // Update when any control changes
-  formatRadios.forEach(function(radio) {
-    radio.addEventListener('change', update_result);
-  });
-
-  zhTypeRadios.forEach(function(radio) {
-    radio.addEventListener('change', update_result);
-  });
-
-  wf_c_words.addEventListener('change', update_result);
-  allow_words_search.addEventListener('change', update_result);
-
-  // Initial load
-  update_result();
+  // Initial loading
+  loadDatabase();
 });

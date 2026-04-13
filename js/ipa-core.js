@@ -13,8 +13,13 @@
 export {
   formatIPA_num,
   formatIPA_org,
+  formatJyutpingCantonese,
+  formatJyutpingMandarin,
+  formatJyutpingMandarinNum,
   formatJyutping,
+  formatJyutping_num,
   formatIPAOutput,
+  formatMandarinOutput,
   formatVietnamese,
   formatVietnameseOutput
 } from './format.js';
