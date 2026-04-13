@@ -6,7 +6,7 @@
       "nativeName": "廣東話",
       "indexPath": "../cantonese/index.html",
       "ipaListPath": "../cantonese/ipa_list.html",
-      "isActive": true
+      "isActive": false
     },
     {
       "code": "mandarin",
