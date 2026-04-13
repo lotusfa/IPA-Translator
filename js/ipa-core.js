@@ -383,3 +383,98 @@ export function initDarkMode(toggleId) {
     localStorage.setItem("theme", isDark ? "dark" : "light");
   });
 }
+
+// ============================================
+// Language Navigation
+// ============================================
+
+/**
+ * Generate and insert language buttons for "Other Languages" section
+ * Reads from config/languages.json and dynamically builds the list
+ * 
+ * @param {object} options - Options:
+ *   @param {string} options.containerId - ID of container element (default: "lang-buttons-container")
+ *   @param {string} options.configPath - Path to languages.json config file (default: "../config/languages.json")
+ *   @param {string} options.wrapperTag - HTML tag to wrap each item (default: "li")
+ *   @param {function} [options.onSuccess] - Callback after successful generation
+ *   @param {function} [options.onError] - Callback on error
+ * 
+ * Example usage:
+ *   generateLanguageButtons({ containerId: "lang-list", configPath: "../config/languages.json" });
+ */
+export function generateLanguageButtons(options) {
+  const {
+    containerId = "lang-buttons-container",
+    configPath = "../config/languages.json",
+    wrapperTag = "li",
+    onSuccess = null,
+    onError = null
+  } = options;
+
+  const xmlhttp = new XMLHttpRequest();
+  
+  xmlhttp.onreadystatechange = function() {
+    if (this.readyState === 4 && this.status === 200) {
+      try {
+        const langConfig = JSON.parse(this.responseText);
+        const container = document.getElementById(containerId);
+        
+        if (!container) {
+          const errorMsg = `Container with ID "${containerId}" not found`;
+          console.error(errorMsg);
+          if (onError) onError(errorMsg);
+          return;
+        }
+
+        const languages = langConfig.languages || [];
+        let html = "";
+
+        languages.forEach(lang => {
+          const name = lang.name || lang.nativeName || lang.code;
+          const href = lang.indexPath || "#";
+          const isCurrent = lang.isActive === true;
+          const style = isCurrent ? 'style="font-weight: bold; color: var(--accent-color);"' : "";
+          
+          html += `<${wrapperTag} ${style}><a href="${href}">${name}</a></${wrapperTag}>`;
+        });
+
+        container.innerHTML = html;
+
+        if (onSuccess) onSuccess(languages);
+      } catch (e) {
+        const errorMsg = "Failed to parse language config: " + e.message;
+        console.error(errorMsg);
+        if (onError) onError(errorMsg);
+      }
+    } else if (this.readyState === 4) {
+      const errorMsg = "Failed to load language config: " + this.status;
+      console.error(errorMsg);
+      if (onError) onError(errorMsg);
+    }
+  };
+
+  xmlhttp.onerror = function() {
+    const errorMsg = "Network error loading language config";
+    console.error(errorMsg);
+    if (onError) onError(errorMsg);
+  };
+
+  xmlhttp.open("GET", configPath, true);
+  xmlhttp.send();
+}
+
+/**
+ * Initialize language buttons on page load
+ * Helper function to call generateLanguageButtons when DOM is ready
+ * 
+ * @param {object} options - Options for generateLanguageButtons
+ */
+export function initLanguageButtons(options) {
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", function() {
+      generateLanguageButtons(options);
+    });
+  } else {
+    generateLanguageButtons(options);
+  }
+}

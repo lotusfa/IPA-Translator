@@ -1,0 +1,132 @@
+{
+  "languages": [
+    {
+      "code": "cantonese",
+      "name": "Cantonese (廣東話)",
+      "nativeName": "廣東話",
+      "indexPath": "../cantonese/index.html",
+      "ipaListPath": "../cantonese/ipa_list.html",
+      "isActive": true
+    },
+    {
+      "code": "mandarin",
+      "name": "Mandarin",
+      "nativeName": "普通話",
+      "indexPath": "../mandarin/index.html",
+      "ipaListPath": "../mandarin/ipa_list_zh_hans.html",
+      "isActive": false
+    },
+    {
+      "code": "english",
+      "name": "English",
+      "nativeName": "English",
+      "indexPath": "../english/index.html",
+      "ipaListPath": "../english/ipa_list_us.html",
+      "isActive": false
+    },
+    {
+      "code": "french",
+      "name": "French",
+      "nativeName": "Français",
+      "indexPath": "../french/index.html",
+      "ipaListPath": "../french/ipa_list.html",
+      "isActive": false
+    },
+    {
+      "code": "esperanto",
+      "name": "Esperanto",
+      "nativeName": "Esperanto",
+      "indexPath": "../esperanto/index.html",
+      "ipaListPath": "../esperanto/ipa_list.html",
+      "isActive": false
+    },
+    {
+      "code": "persian",
+      "name": "Persian",
+      "nativeName": "فارسی",
+      "indexPath": "../persian/index.html",
+      "ipaListPath": "../persian/ipa_list.html",
+      "isActive": false
+    },
+    {
+      "code": "spanish",
+      "name": "Spanish",
+      "nativeName": "Español",
+      "indexPath": "../spanish/index.html",
+      "ipaListPath": "../spanish/ipa_list.html",
+      "isActive": false
+    },
+    {
+      "code": "japanese",
+      "name": "Japanese",
+      "nativeName": "日本語",
+      "indexPath": "../japanese/index.html",
+      "ipaListPath": "../japanese/ipa_list.html",
+      "isActive": false
+    },
+    {
+      "code": "arabic",
+      "name": "Arabic",
+      "nativeName": "العربية",
+      "indexPath": "../arabic/index.html",
+      "ipaListPath": "../arabic/ipa_list.html",
+      "isActive": false
+    },
+    {
+      "code": "finnish",
+      "name": "Finnish",
+      "nativeName": "Suomi",
+      "indexPath": "../finnish/index.html",
+      "ipaListPath": "../finnish/ipa_list.html",
+      "isActive": false
+    },
+    {
+      "code": "german",
+      "name": "German",
+      "nativeName": "Deutsch",
+      "indexPath": "../german/index.html",
+      "ipaListPath": "../german/ipa_list.html",
+      "isActive": false
+    },
+    {
+      "code": "jamaican",
+      "name": "Jamaican Creole",
+      "nativeName": "Jamaican",
+      "indexPath": "../jamaican/index.html",
+      "ipaListPath": "../jamaican/ipa_list.html",
+      "isActive": false
+    },
+    {
+      "code": "norwegian",
+      "name": "Norwegian",
+      "nativeName": "Norsk",
+      "indexPath": "../norwegian/index.html",
+      "ipaListPath": "../norwegian/ipa_list.html",
+      "isActive": false
+    },
+    {
+      "code": "swahili",
+      "name": "Swahili",
+      "nativeName": "Kiswahili",
+      "indexPath": "../swahili/index.html",
+      "ipaListPath": "../swahili/ipa_list.html",
+      "isActive": false
+    },
+    {
+      "code": "swedish",
+      "name": "Swedish",
+      "nativeName": "Svenska",
+      "indexPath": "../swedish/index.html",
+      "ipaListPath": "../swedish/ipa_list.html",
+      "isActive": false
+    },
+    {
+      "code": "vietnamese",
+      "name": "Vietnamese",
+      "nativeName": "Tiếng Việt",
+      "indexPath": "../vietnamese/index.html",
+      "ipaListPath": "../vietnamese/ipa_list_s.html",
+      "isActive": false
+    }
+  ]
+}
