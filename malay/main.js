@@ -1,5 +1,5 @@
 /**
- * Marathi IPA Translator - Refactored to use shared ipa-core module
+ * Malay IPA Translator - Refactored to use shared ipa-core module
  */
 
 import {
@@ -17,7 +17,7 @@ import {
 let IPA_DB = {};
 
 /**
- * Load database (static path for Marathi)
+ * Load database (static path for Malay)
  */
 function loadDatabase() {
   loadIPADatabase({

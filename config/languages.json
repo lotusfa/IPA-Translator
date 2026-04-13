@@ -129,11 +129,11 @@
       "isActive": false
     },
     {
-      "code": "marathi",
-      "name": "Marathi (मराठी)",
-      "nativeName": "मराठी",
-      "indexPath": "../marathi/index.html",
-      "ipaListPath": "../marathi/ipa_list.html",
+      "code": "malay",
+      "name": "Malay (Bahasa Melayu)",
+      "nativeName": "Bahasa Melayu",
+      "indexPath": "../malay/index.html",
+      "ipaListPath": "../malay/ipa_list.html",
       "isActive": false
     },
     {
