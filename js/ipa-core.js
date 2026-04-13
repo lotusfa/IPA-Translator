@@ -7,14 +7,16 @@
  */
 
 // ============================================
-// Re-export format functions from format-jyutping
+// Re-export format functions from format.js
 // ============================================
 
 export {
   formatIPA_num,
   formatIPA_org,
   formatJyutping,
-  formatIPAOutput
+  formatIPAOutput,
+  formatVietnamese,
+  formatVietnameseOutput
 } from './format.js';
 
 // ============================================
@@ -195,6 +197,74 @@ export function processTextCharBased(options) {
     // Add result
     if (matchedWord) {
       result += withWords ? `( ${matchedWord} ${matchedIPA} ) ` : `/${matchedIPA}/ `;
+      i += wordLength;
+    } else {
+      result += input[i] + " ";
+      i++;
+    }
+  }
+  
+  return result.trim();
+}
+
+/**
+ * Process Vietnamese text with variant-based loading
+ * Handles Vietnamese dialect variants (vi_C, vi_N, vi_S)
+ * Character-based processing similar to CJK languages
+ * 
+ * @param {object} options - Options:
+ *   @param {string} options.input - Input text
+ *   @param {object} options.lookupTable - IPA lookup table for current variant
+ *   @param {boolean} [options.withWords] - Show Vietnamese Words (default: false)
+ *   @param {boolean} [options.allowWordSearch] - Enable word search (default: false)
+ *   @param {number} [options.maxWordLength] - Max word length (default: 6)
+ * @returns {string} Processed result
+ */
+export function processTextVietnamese(options) {
+  const { 
+    input, 
+    lookupTable, 
+    withWords = false, 
+    allowWordSearch = false, 
+    maxWordLength = 6 
+  } = options;
+  
+  let result = "";
+  let i = 0;
+  
+  while (i < input.length) {
+    let matchedWord = null;
+    let matchedIPA = null;
+    let wordLength = 0;
+    
+    // Try multi-character word matching first
+    if (allowWordSearch) {
+      for (let len = maxWordLength; len >= 1; len--) {
+        if (i + len <= input.length) {
+          const word = input.substring(i, i + len);
+          if (lookupTable[word]) {
+            matchedWord = word;
+            matchedIPA = lookupTable[word];
+            wordLength = len;
+            break;
+          }
+        }
+      }
+    }
+    
+    // Fall back to single character
+    if (!matchedWord) {
+      const char = input[i];
+      if (lookupTable[char]) {
+        matchedWord = char;
+        matchedIPA = lookupTable[char];
+        wordLength = 1;
+      }
+    }
+    
+    // Add result
+    if (matchedWord) {
+      result += withWords ? `( ${matchedWord} : ${matchedIPA} ) ` : `/${matchedIPA}/ `;
       i += wordLength;
     } else {
       result += input[i] + " ";

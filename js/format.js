@@ -1,6 +1,6 @@
 /**
- * Format Jyutping - Format transformations for Cantonese IPA
- * Provides format conversion functions for IPA output
+ * Format Utilities - Format transformations for IPA output
+ * Provides format conversion functions for various languages
  */
 
 /**
@@ -60,6 +60,27 @@ export function formatJyutping(text) {
 }
 
 /**
+ * Format Vietnamese IPA to tone numbers (1-6)
+ * Converts Vietnamese tone diacritics to numeric format
+ * @param {string} text - Input IPA text
+ * @returns {string} Vietnamese IPA with tone numbers
+ */
+export function formatVietnamese(text) {
+  return text
+    .replace(/˧˥/g, "5")
+    .replace(/˧/g, "3")
+    .replace(/˨˩/g, "4")
+    .replace(/˩/g, "1")
+    .replace(/˧˧/g, "3")
+    .replace(/˦˥/g, "6")
+    .replace(/˦/g, "4")
+    .replace(/˧˩/g, "4")
+    .replace(/˨˧/g, "5")
+    .replace(/˥/g, "1")
+    .replace(/:/g, "");
+}
+
+/**
  * Get active format from radio buttons and apply transformation
  * Auto-detects which format radio button is checked
  * 
@@ -77,6 +98,25 @@ export function formatIPAOutput(text, options = {}) {
     return formatIPA_num(text);
   } else if (Jyutping && Jyutping.checked) {
     return formatJyutping(text);
+  } else if (IPA_org && IPA_org.checked) {
+    return formatIPA_org(text);
+  }
+  
+  return formatIPA_org(text);
+}
+
+/**
+ * Format Vietnamese output based on selected format
+ * @param {string} text - Text to format
+ * @param {object} [options] - Options (reserved for future use)
+ * @returns {string} Formatted text
+ */
+export function formatVietnameseOutput(text, options = {}) {
+  const IPA_num = document.getElementById('IPA_num');
+  const IPA_org = document.getElementById('IPA_org');
+  
+  if (IPA_num && IPA_num.checked) {
+    return formatVietnamese(text);
   } else if (IPA_org && IPA_org.checked) {
     return formatIPA_org(text);
   }
