@@ -55,23 +55,7 @@
 
         <div class="footer-col">
           <h4>Other Languages</h4>
-          <ul class="lang-list">
-            <li><a href="../cantonese/index.html">Cantonese (廣東話)</a></li>
-            <li><a href="../mandarin/index.html">Mandarin (普通話)</a></li>
-            <li><a href="../english/index.html">English</a></li>
-            <li><a href="../french/index.html">French</a></li>
-            <li><a href="../esperanto/index.html">Esperanto</a></li>
-            <li><a href="../persian/index.html">Persian</a></li>
-            <li><a href="../spanish/index.html">Spanish</a></li>
-            <li><a href="../japanese/index.html">Japanese</a></li>
-            <li><a href="../arabic/index.html">Arabic (العربية)</a></li>
-            <li><a href="../finnish/index.html">Finnish</a></li>
-            <li><a href="../german/index.html">German</a></li>
-            <li><a href="../jamaican/index.html">Jamaican Creole</a></li>
-            <li><a href="../norwegian/index.html">Norwegian</a></li>
-            <li><a href="../swahili/index.html">Swahili</a></li>
-            <li><a href="../swedish/index.html">Swedish</a></li>
-            <li><a href="../vietnamese/index.html">Vietnamese (Tiếng Việt)</a></li>
+          <ul class="lang-list" id="lang-buttons-container">
           </ul>
         </div>
 
@@ -95,5 +79,12 @@
     </footer>
 
     <script type="module" src="./main.js"></script>
+      <script type="module">
+      import { initLanguageButtons } from '../js/ipa-core.js';
+      initLanguageButtons({
+        containerId: "lang-buttons-container",
+        configPath: "../config/languages.json"
+      });
+    </script>
   </body>
 </html>

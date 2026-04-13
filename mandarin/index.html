@@ -18,7 +18,6 @@
       </button>
     </div>
     <hr />
-
     <div class="row">
       <div class="col">
         <div class="form-group">
@@ -26,7 +25,6 @@
           <textarea id="cWords_tBox" rows="10" placeholder="輸入普通話文字...">國際音標，早期又稱萬國音標，是一套用來標音的系統，以拉丁字母為基礎，由國際語音學學會設計來作為口語聲音的標準化標示方法。</textarea>
         </div>
       </div>
-
       <div class="col">
         <div class="form-group">
           <label>拼音 (PINYIN)</label>
@@ -34,7 +32,6 @@
         </div>
       </div>
     </div>
-
     <div class="row">
       <div class="col-md-6">
         <div class="form-check-inline" style="align-items: baseline; margin-bottom: 5px;">
@@ -67,7 +64,6 @@
         </div>
       </div>
     </div>
-
     <div class="row">
       <div class="col">
         <div class="form-check-inline">
@@ -80,7 +76,6 @@
         </div>
       </div>
     </div>
-
     <footer class="footer">
       <div class="footer-grid">
         <div class="footer-col">
@@ -88,29 +83,11 @@
           <p>這是一個開源專案，用於將普通話轉換為國際音標。</p>
           <p>This is an open-source project to translate Mandarin to IPA.</p>
         </div>
-
         <div class="footer-col">
           <h4>Other Languages</h4>
-          <ul class="lang-list">
-            <li><a href="../cantonese/index.html">Cantonese (廣東話)</a></li>
-            <li><a href="../mandarin/index.html">Mandarin (普通話)</a></li>
-            <li><a href="../english/index.html">English</a></li>
-            <li><a href="../french/index.html">French</a></li>
-            <li><a href="../esperanto/index.html">Esperanto</a></li>
-            <li><a href="../persian/index.html">Persian</a></li>
-            <li><a href="../spanish/index.html">Spanish</a></li>
-            <li><a href="../japanese/index.html">Japanese</a></li>
-            <li><a href="../arabic/index.html">Arabic (العربية)</a></li>
-            <li><a href="../finnish/index.html">Finnish</a></li>
-            <li><a href="../german/index.html">German</a></li>
-            <li><a href="../jamaican/index.html">Jamaican Creole</a></li>
-            <li><a href="../norwegian/index.html">Norwegian</a></li>
-            <li><a href="../swahili/index.html">Swahili</a></li>
-            <li><a href="../swedish/index.html">Swedish</a></li>
-            <li><a href="../vietnamese/index.html">Vietnamese (Tiếng Việt)</a></li>
+          <ul class="lang-list" id="lang-buttons-container">
           </ul>
         </div>
-
         <div class="footer-col">
           <h4>Useful Links</h4>
           <ul>
@@ -122,7 +99,6 @@
           </ul>
         </div>
       </div>
-
       <div class="footer-bottom">
         <p>
           <a href="https://github.com/lotusfa/IPA-Translator">GitHub</a>
@@ -131,7 +107,13 @@
         </p>
       </div>
     </footer>
-
     <script type="module" src="./main.js"></script>
+    <script type="module">
+      import { initLanguageButtons } from '../js/ipa-core.js';
+      initLanguageButtons({
+        containerId: "lang-buttons-container",
+        configPath: "../config/languages.json"
+      });
+    </script>
   </body>
 </html>
