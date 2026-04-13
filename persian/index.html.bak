@@ -11,7 +11,7 @@
     <div class="header">
       <div class="titles">
         <h1>نقش‌آوایی بین‌المللی</h1>
-        <h2>Persian IPA</h2>
+        <h2>International Phonetics</h2>
       </div>
       <button id="dark-mode-toggle" class="btn-theme" aria-label="Toggle dark mode">
         <img src="../img/light-mode.svg" class="icon" alt="" />
