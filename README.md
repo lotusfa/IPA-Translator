@@ -41,7 +41,7 @@ Visit the live website: [https://toolbox.lotusfa.com/ipa/](https://toolbox.lotus
 |----------|-----------|---------------|
 | Arabic | [Translator](https://toolbox.lotusfa.com/ipa/arabic/index.html) | [IPA List](https://toolbox.lotusfa.com/ipa/arabic/ipa_list.html) |
 | Cantonese | [Translator](https://toolbox.lotusfa.com/ipa/cantonese/index.html) | [IPA List](https://toolbox.lotusfa.com/ipa/cantonese/ipa_list.html) |
-| English | [Translator](https://toolbox.lotusfa.com/ipa/english/index.html) | [IPA List](https://toolbox.lotusfa.com/ipa/english/ipa_list.html) |
+| English | [Translator](https://toolbox.lotusfa.com/ipa/english/index.html) | [US](https://toolbox.lotusfa.com/ipa/english/ipa_list_us.html) / [UK](https://toolbox.lotusfa.com/ipa/english/ipa_list_uk.html) |
 | Esperanto | [Translator](https://toolbox.lotusfa.com/ipa/esperanto/index.html) | [IPA List](https://toolbox.lotusfa.com/ipa/esperanto/ipa_list.html) |
 | Finnish | [Translator](https://toolbox.lotusfa.com/ipa/finnish/index.html) | [IPA List](https://toolbox.lotusfa.com/ipa/finnish/ipa_list.html) |
 | French | [Translator](https://toolbox.lotusfa.com/ipa/french/index.html) | [France](https://toolbox.lotusfa.com/ipa/french/ipa_list_fr.html) / [Quebec](https://toolbox.lotusfa.com/ipa/french/ipa_list_qc.html) |
