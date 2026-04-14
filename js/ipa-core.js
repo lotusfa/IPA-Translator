@@ -167,7 +167,7 @@ export function processTextCharBased(options) {
 
     // Add result
     if (matchedWord) {
-      result += withWords ? `( ${matchedWord} ${matchedIPA} ) ` : `/${matchedIPA}/ `;
+      result += withWords ? `( ${matchedWord} ${matchedIPA} ) ` : `${matchedIPA} `;
       i += wordLength;
     } else {
       result += input[i] + " ";
