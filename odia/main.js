@@ -4,8 +4,7 @@
 
 import {
   loadIPADatabase,
-  processTextWordBased,
-  preprocessText,
+  processTextLongestMatch,
   initDarkMode,
   onTextInputChange,
   onMultipleChange,
@@ -39,10 +38,10 @@ function loadDatabase() {
 function translate() {
   const input = getElementValue('cWords_tBox');
   setElementValue('IPA_tBox', 'loading....');
-  
+
   // Small timeout to allow UI to update before processing
   setTimeout(() => {
-    const result = processTextWordBased({
+    const result = processTextLongestMatch({
       input,
       lookupTable: IPA_DB,
       withWords: isElementChecked('wf_c_words')
@@ -58,16 +57,16 @@ function translate() {
 document.addEventListener('DOMContentLoaded', () => {
   // Initialize dark mode
   initDarkMode('dark-mode-toggle');
-  
+
   // Set up input handler
   onTextInputChange('cWords_tBox', translate);
-  
+
   // Set up word format checkbox
   const wf_c_words = document.getElementById('wf_c_words');
   if (wf_c_words) {
     wf_c_words.addEventListener('change', translate);
   }
-  
+
   // Initial loading
   loadDatabase();
 });

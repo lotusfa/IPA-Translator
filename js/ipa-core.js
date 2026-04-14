@@ -42,10 +42,10 @@ export {
  */
 export function loadIPADatabase(options) {
   const { basePath, onSuccess, onError } = options;
-  
+
   var xmlhttp = new XMLHttpRequest();
-  
-  xmlhttp.onreadystatechange = function() {
+
+  xmlhttp.onreadystatechange = function () {
     if (this.readyState == 4 && this.status == 200) {
       var langData = JSON.parse(this.responseText);
       const lookup = normalizeIPAData(langData);
@@ -56,8 +56,8 @@ export function loadIPADatabase(options) {
       if (onError) onError(errorMsg);
     }
   };
-  
-  xmlhttp.onerror = function() {
+
+  xmlhttp.onerror = function () {
     const errorMsg = "Network error loading IPA database";
     console.error(errorMsg);
     if (onError) onError(errorMsg);
@@ -77,12 +77,12 @@ export function loadIPADatabase(options) {
  */
 export function normalizeIPAData(langData) {
   const normalized = {};
-  
+
   // Get the first (and typically only) key from the JSON
   // This works for all single-key formats: "yue", "en_US", "zh_hans", etc.
   const firstKey = Object.keys(langData)[0];
   const dataArray = firstKey ? langData[firstKey] : [];
-  
+
   // Flatten into lookup object
   if (Array.isArray(dataArray)) {
     dataArray.forEach(entry => {
@@ -91,7 +91,7 @@ export function normalizeIPAData(langData) {
       });
     });
   }
-  
+
   return normalized;
 }
 
@@ -106,43 +106,9 @@ export function normalizeIPAData(langData) {
  */
 export function preprocessText(text) {
   return text
-    .toLowerCase()
     .replace(/[;:>"<`~!@#$%^&*()={}|\\[\]/.,?!]/g, "")
     .replace(/\s+/g, " ")
     .trim();
-}
-
-/**
- * Process text with word-based lookup (for European languages)
- * Splits by space and processes each word
- * 
- * @param {object} options - Options:
- *   @param {string} options.input - Input text
- *   @param {object} options.lookupTable - IPA lookup table
- *   @param {boolean} [options.withWords] - Show word:ipa format (default: false)
- *   @param {function} [options.onProgress] - Callback for progress updates
- * @returns {string} Processed result
- */
-export function processTextWordBased(options) {
-  const { input, lookupTable, withWords = false, onProgress = null } = options;
-  
-  const words = input.split(" ").filter(w => w.length > 0);
-  let result = "";
-  
-  for (let i = 0; i < words.length; i++) {
-    const word = preprocessText(words[i]);
-    
-    if (word && lookupTable[word]) {
-      const ipa = lookupTable[word];
-      result += withWords ? `( ${words[i]} : ${ipa} ) ` : ipa + " ";
-    } else {
-      result += words[i] + " ";
-    }
-    
-    if (onProgress) onProgress(result);
-  }
-  
-  return result.trim();
 }
 
 /**
@@ -158,22 +124,22 @@ export function processTextWordBased(options) {
  * @returns {string} Processed result
  */
 export function processTextCharBased(options) {
-  const { 
-    input, 
-    lookupTable, 
-    withWords = false, 
-    allowWordSearch = false, 
-    maxWordLength = 6 
+  const {
+    input,
+    lookupTable,
+    withWords = false,
+    allowWordSearch = false,
+    maxWordLength = 6
   } = options;
-  
+
   let result = "";
   let i = 0;
-  
+
   while (i < input.length) {
     let matchedWord = null;
     let matchedIPA = null;
     let wordLength = 0;
-    
+
     // Try multi-character word matching first
     if (allowWordSearch) {
       for (let len = maxWordLength; len >= 1; len--) {
@@ -188,7 +154,7 @@ export function processTextCharBased(options) {
         }
       }
     }
-    
+
     // Fall back to single character
     if (!matchedWord) {
       const char = input[i];
@@ -198,7 +164,7 @@ export function processTextCharBased(options) {
         wordLength = 1;
       }
     }
-    
+
     // Add result
     if (matchedWord) {
       result += withWords ? `( ${matchedWord} ${matchedIPA} ) ` : `/${matchedIPA}/ `;
@@ -208,75 +174,80 @@ export function processTextCharBased(options) {
       i++;
     }
   }
-  
+
   return result.trim();
 }
 
 /**
- * Process Vietnamese text with variant-based loading
- * Handles Vietnamese dialect variants (vi_C, vi_N, vi_S)
- * Character-based processing similar to CJK languages
+ * Process Vietnamese text with longest match word-based lookup
+ * Optimized for Vietnamese language: splits by space, tries longest multi-word combinations
+ * Uses greedy approach - matches longest possible phrase first
  * 
  * @param {object} options - Options:
- *   @param {string} options.input - Input text
- *   @param {object} options.lookupTable - IPA lookup table for current variant
- *   @param {boolean} [options.withWords] - Show Vietnamese Words (default: false)
- *   @param {boolean} [options.allowWordSearch] - Enable word search (default: false)
- *   @param {number} [options.maxWordLength] - Max word length (default: 6)
- * @returns {string} Processed result
+ *   @param {string} options.input - Input Vietnamese text
+ *   @param {object} options.lookupTable - IPA lookup table with word->IPA mappings
+ *   @param {boolean} [options.withWords] - Show word:IPA format (default: false)
+ *   @param {function} [options.onProgress] - Callback for progress updates
+ * @returns {string} Processed result with IPA transcription
  */
-export function processTextVietnamese(options) {
-  const { 
-    input, 
-    lookupTable, 
-    withWords = false, 
-    allowWordSearch = false, 
-    maxWordLength = 6 
+export function processTextLongestMatch(options) {
+  const {
+    input,
+    lookupTable,
+    withWords = false,
+    onProgress = null
   } = options;
-  
+
+  // Split text into words (Vietnamese uses spaces as word separators)
+  const words = input.trim().split(/\s+/).filter(w => w.length > 0);
+
+  if (words.length === 0) {
+    return "";
+  }
+
   let result = "";
   let i = 0;
-  
-  while (i < input.length) {
-    let matchedWord = null;
+
+  while (i < words.length) {
     let matchedIPA = null;
-    let wordLength = 0;
-    
-    // Try multi-character word matching first
-    if (allowWordSearch) {
-      for (let len = maxWordLength; len >= 1; len--) {
-        if (i + len <= input.length) {
-          const word = input.substring(i, i + len);
-          if (lookupTable[word]) {
-            matchedWord = word;
-            matchedIPA = lookupTable[word];
-            wordLength = len;
-            break;
-          }
+    let matchedWord = null;
+    let matchLength = 0;
+
+    // Try longest possible word combination first (greedy approach)
+    // Vietnamese phrases can be multi-word, so we try from max length down to 1
+    const maxComboLength = Math.min(5, words.length - i); // Limit to 5 words max
+
+    for (let len = maxComboLength; len >= 1; len--) {
+      const candidate = words.slice(i, i + len).join(" ");
+
+      const candidatesToCheck = [
+        candidate,
+        preprocessText(candidate),
+        preprocessText(candidate).toLowerCase()
+      ];
+
+      for (const key of candidatesToCheck) {
+        if (lookupTable[key]) {
+          matchedIPA = lookupTable[key];
+          matchedWord = candidate;
+          matchLength = len;
+          break;
         }
       }
     }
-    
-    // Fall back to single character
-    if (!matchedWord) {
-      const char = input[i];
-      if (lookupTable[char]) {
-        matchedWord = char;
-        matchedIPA = lookupTable[char];
-        wordLength = 1;
-      }
-    }
-    
-    // Add result
-    if (matchedWord) {
-      result += withWords ? `( ${matchedWord} : ${matchedIPA} ) ` : `/${matchedIPA}/ `;
-      i += wordLength;
+
+    if (matchedIPA) {
+      result += withWords ? `( ${matchedWord} ${matchedIPA} ) ` : matchedIPA + " ";
+      i += matchLength; // Skip all matched words
     } else {
-      result += input[i] + " ";
+      // No match found, keep original word
+      result += words[i] + " ";
       i++;
     }
+
+    if (onProgress) onProgress(result);
   }
-  
+
   return result.trim();
 }
 
@@ -327,9 +298,9 @@ export function onTextInputChange(inputId, handler) {
   const input = document.getElementById(inputId);
   if (input) {
     input.addEventListener("input", handler);
-    
+
     // Select all on focus
-    input.addEventListener("focus", function() {
+    input.addEventListener("focus", function () {
       this.select();
     });
   }
@@ -358,10 +329,10 @@ export function onMultipleChange(selector, handler) {
 export function initDarkMode(toggleId) {
   const toggle = document.getElementById(toggleId);
   if (!toggle) return;
-  
+
   const iconImg = toggle.querySelector(".icon");
   const savedTheme = localStorage.getItem("theme");
-  
+
   // Set initial state
   if (savedTheme === "dark") {
     document.body.classList.add("dark-mode");
@@ -369,17 +340,17 @@ export function initDarkMode(toggleId) {
   } else {
     if (iconImg) iconImg.src = "../img/light-mode.svg";
   }
-  
+
   // Add click handler
-  toggle.addEventListener("click", function() {
+  toggle.addEventListener("click", function () {
     toggle.classList.add("btn-theme-transition");
     document.body.classList.toggle("dark-mode");
     const isDark = document.body.classList.contains("dark-mode");
-    
+
     if (iconImg) {
       iconImg.src = isDark ? "../img/dark-mode.svg" : "../img/light-mode.svg";
     }
-    
+
     localStorage.setItem("theme", isDark ? "dark" : "light");
   });
 }
@@ -412,13 +383,13 @@ export function generateLanguageButtons(options) {
   } = options;
 
   const xmlhttp = new XMLHttpRequest();
-  
-  xmlhttp.onreadystatechange = function() {
+
+  xmlhttp.onreadystatechange = function () {
     if (this.readyState === 4 && this.status === 200) {
       try {
         const langConfig = JSON.parse(this.responseText);
         const container = document.getElementById(containerId);
-        
+
         if (!container) {
           const errorMsg = `Container with ID "${containerId}" not found`;
           console.error(errorMsg);
@@ -434,7 +405,7 @@ export function generateLanguageButtons(options) {
           const href = lang.indexPath || "#";
           const isCurrent = lang.isActive === true;
           const style = isCurrent ? 'style="font-weight: bold; color: var(--accent-color);"' : "";
-          
+
           html += `<${wrapperTag} ${style}><a href="${href}">${name}</a></${wrapperTag}>`;
         });
 
@@ -453,7 +424,7 @@ export function generateLanguageButtons(options) {
     }
   };
 
-  xmlhttp.onerror = function() {
+  xmlhttp.onerror = function () {
     const errorMsg = "Network error loading language config";
     console.error(errorMsg);
     if (onError) onError(errorMsg);
@@ -471,7 +442,7 @@ export function generateLanguageButtons(options) {
  */
 export function initLanguageButtons(options) {
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function () {
       generateLanguageButtons(options);
     });
   } else {

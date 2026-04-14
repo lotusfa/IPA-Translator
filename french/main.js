@@ -1,10 +1,11 @@
 /**
  * French IPA Translator - Refactored to use shared ipa-core module
+ * Uses processTextLongestMatch for multi-word phrase matching
  */
 
 import {
   loadIPADatabase,
-  processTextWordBased,
+  processTextLongestMatch,
   initDarkMode,
   onTextInputChange,
   onMultipleChange
@@ -20,12 +21,15 @@ function loadDatabase() {
   const variant = variantOption === 'IPA_fr_FR' ? 'FR' : 'QC';
   loadIPADatabase({ 
     basePath: `../json/fr_${variant}.json`, 
-    onSuccess: (lookup) => { IPA_DB = lookup; translate(); } 
+    onSuccess: (lookup) => { 
+      IPA_DB = lookup; 
+      translate(); 
+    }
   });
 }
 
 /**
- * Translate input text
+ * Translate input text using longest-match algorithm
  */
 function translate() {
   const input = document.getElementById('cWords_tBox')?.value || '';
@@ -35,7 +39,7 @@ function translate() {
   ipaBox.value = 'loading....';
   
   setTimeout(() => {
-    const result = processTextWordBased({
+    const result = processTextLongestMatch({
       input,
       lookupTable: IPA_DB,
       withWords: !!document.getElementById('wf_c_words')?.checked

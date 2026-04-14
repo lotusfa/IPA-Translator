@@ -1,10 +1,11 @@
 /**
  * Esperanto IPA Translator - Refactored to use shared ipa-core module
+ * Uses processTextLongestMatch for multi-word phrase matching
  */
 
 import {
   loadIPADatabase,
-  processTextWordBased,
+  processTextLongestMatch,
   initDarkMode,
   onTextInputChange,
   onMultipleChange,
@@ -33,14 +34,14 @@ function loadDatabase() {
 }
 
 /**
- * Translate input text
+ * Translate input text using longest-match algorithm
  */
 function translate() {
   const input = getElementValue('cWords_tBox');
   setElementValue('IPA_tBox', 'loading....');
 
   setTimeout(() => {
-    const result = processTextWordBased({
+    const result = processTextLongestMatch({
       input,
       lookupTable: IPA_DB,
       withWords: isElementChecked('wf_c_words')

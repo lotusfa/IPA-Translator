@@ -4,7 +4,7 @@
 
 import {
   loadIPADatabase,
-  processTextWordBased,
+  processTextLongestMatch,
   initDarkMode,
   onTextInputChange,
   onMultipleChange
@@ -18,9 +18,9 @@ let variantOption = 'IPA_Spain'; // Default: Spain
  */
 function loadDatabase() {
   const variant = variantOption === 'IPA_Spain' ? 'ES' : 'MX';
-  loadIPADatabase({ 
-    basePath: `../json/es_${variant}.json`, 
-    onSuccess: (lookup) => { IPA_DB = lookup; translate(); } 
+  loadIPADatabase({
+    basePath: `../json/es_${variant}.json`,
+    onSuccess: (lookup) => { IPA_DB = lookup; translate(); }
   });
 }
 
@@ -31,11 +31,11 @@ function translate() {
   const input = document.getElementById('cWords_tBox')?.value || '';
   const ipaBox = document.getElementById('IPA_tBox');
   if (!ipaBox) return;
-  
+
   ipaBox.value = 'loading....';
-  
+
   setTimeout(() => {
-    const result = processTextWordBased({
+    const result = processTextLongestMatch({
       input,
       lookupTable: IPA_DB,
       withWords: !!document.getElementById('wf_c_words')?.checked
@@ -51,16 +51,16 @@ function translate() {
 document.addEventListener('DOMContentLoaded', () => {
   // Initialize dark mode
   initDarkMode('dark-mode-toggle');
-  
+
   // Set up input handler
   onTextInputChange('cWords_tBox', translate);
-  
+
   // Set up variant radio handlers (IPA_Spain / IPA_Mexico)
-  onMultipleChange('input[name="inlineRadioOptions"]', (e) => { 
-    variantOption = e.target.id; 
-    loadDatabase(); 
+  onMultipleChange('input[name="inlineRadioOptions"]', (e) => {
+    variantOption = e.target.id;
+    loadDatabase();
   });
-  
+
   // Set up word format checkbox
   const wf_c_words = document.getElementById('wf_c_words');
   if (wf_c_words) {

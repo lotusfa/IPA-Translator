@@ -4,7 +4,7 @@
 
 import {
   loadIPADatabase,
-  processTextWordBased,
+  processTextLongestMatch,
   initDarkMode,
   onTextInputChange,
   onMultipleChange,
@@ -40,7 +40,7 @@ function translate() {
   setElementValue('IPA_tBox', 'loading....');
 
   setTimeout(() => {
-    const result = processTextWordBased({
+    const result = processTextLongestMatch({
       input,
       lookupTable: IPA_DB,
       withWords: isElementChecked('wf_c_words')
