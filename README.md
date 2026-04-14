@@ -5,22 +5,23 @@ A web-based tool for translating text from various languages into International 
 ## 🌍 Supported Languages
 
 ### Languages
-- **Cantonese** (廣東話) - with regional variants
-- **Mandarin** (普通話) - Simplified (简体中文) and Traditional (繁體中文)
-- **English** - Standard pronunciation
-- **French** - France and Quebec variants
-- **Spanish** - Spain (Español) and Mexican (Español Mexicano) variants
-- **Vietnamese** (Tiếng Việt) - Central, Northern, and Southern dialects
 - **Arabic** (العربية)
+- **Cantonese** (廣東話) - with regional variants
+- **English** - Standard pronunciation
 - **Esperanto**
 - **Finnish**
+- **French** - France and Quebec variants
 - **German**
 - **Jamaican Creole**
 - **Japanese**
+- **Malay** (Bahasa Melayu)
+- **Mandarin** (普通話) - Simplified (简体中文) and Traditional (繁體中文)
 - **Norwegian**
+- **Odia** (ଓଡ଼ିଆ)
 - **Persian**
 - **Swahili**
 - **Swedish**
+- **Vietnamese** (Tiếng Việt) - Central, Northern, and Southern dialects
 
 ## 🚀 Getting Started
 
@@ -38,23 +39,24 @@ Visit the live website: [https://toolbox.lotusfa.com/ipa/](https://toolbox.lotus
 
 | Language | Translator | IPA Reference |
 |----------|-----------|---------------|
-| Cantonese | [Translator](cantonese/index.html) | [IPA List](cantonese/ipa_list.html) |
-| Mandarin (Simplified) | [Translator](mandarin/index.html) | [IPA List](mandarin/ipa_list_zh_hans.html) |
-| Mandarin (Traditional) | [Translator](mandarin/index.html) | [IPA List](mandarin/ipa_list_zh_hant.html) |
-| English | [Translator](english/index.html) | - |
-| French | [Translator](french/index.html) | [France](french/ipa_list_fr.html) / [Quebec](french/ipa_list_qc.html) |
-| Spanish | [Translator](spanish/index.html) | [Spain](spanish/ipa_list_es.html) / [Mexico](spanish/ipa_list_mx.html) |
-| Vietnamese | [Translator](vietnamese/index.html) | [Central](vietnamese/ipa_list_c.html) / [Northern](vietnamese/ipa_list_n.html) / [Southern](vietnamese/ipa_list_s.html) |
 | Arabic | [Translator](arabic/index.html) | [IPA List](arabic/ipa_list.html) |
+| Cantonese | [Translator](cantonese/index.html) | [IPA List](cantonese/ipa_list.html) |
+| English | [Translator](english/index.html) | - |
 | Esperanto | [Translator](esperanto/index.html) | [IPA List](esperanto/ipa_list.html) |
 | Finnish | [Translator](finnish/index.html) | [IPA List](finnish/ipa_list.html) |
+| French | [Translator](french/index.html) | [France](french/ipa_list_fr.html) / [Quebec](french/ipa_list_qc.html) |
 | German | [Translator](german/index.html) | [IPA List](german/ipa_list.html) |
 | Jamaican | [Translator](jamaican/index.html) | [IPA List](jamaican/ipa_list.html) |
 | Japanese | [Translator](japanese/index.html) | [IPA List](japanese/ipa_list.html) |
+| Malay | [Translator](malay/index.html) | [IPA List](malay/ipa_list.html) |
+| Mandarin (Simplified) | [Translator](mandarin/index.html) | [IPA List](mandarin/ipa_list_zh_hans.html) |
+| Mandarin (Traditional) | [Translator](mandarin/index.html) | [IPA List](mandarin/ipa_list_zh_hant.html) |
 | Norwegian | [Translator](norwegian/index.html) | [IPA List](norwegian/ipa_list.html) |
+| Odia | [Translator](odia/index.html) | [IPA List](odia/ipa_list.html) |
 | Persian | [Translator](persian/index.html) | [IPA List](persian/ipa_list.html) |
 | Swahili | [Translator](swahili/index.html) | [IPA List](swahili/ipa_list.html) |
 | Swedish | [Translator](swedish/index.html) | [IPA List](swedish/ipa_list.html) |
+| Vietnamese | [Translator](vietnamese/index.html) | [Central](vietnamese/ipa_list_c.html) / [Northern](vietnamese/ipa_list_n.html) / [Southern](vietnamese/ipa_list_s.html) |
 
 ## 🙏 Credits & Acknowledgments
 
@@ -71,4 +73,3 @@ This project is built on data from the **Open Dict Data** project:
 
 **General Resources:**
 - International Phonetic Alphabet: [Wikipedia](https://en.wikipedia.org/wiki/International_Phonetic_Alphabet)
-- Bootstrap Framework: [getbootstrap.com](https://getbootstrap.com/)
