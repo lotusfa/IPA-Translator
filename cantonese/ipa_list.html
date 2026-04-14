@@ -30,6 +30,7 @@
 
       <div class="row">
         <div class="col">
+          <div class="table-responsive">
           <table class="table table-striped display" id="DataTable">
           <thead>
             <tr>
@@ -41,6 +42,7 @@
             <tbody id="tbody">
             </tbody>
           </table>
+          </div>
         </div>
       </div>
     </div>
@@ -115,7 +117,19 @@
                   const dataObj = json.yue[0];
                   return Object.entries(dataObj).map(([entry, ipa], index) => [index + 1, entry, ipa]);
               }
-            }
+            },
+            "paging": true,
+            "pageLength": 10,
+            "lengthMenu": [[10, 25, 50, 100], [10, 25, 50, 100]],
+            "ordering": true,
+            "searching": true,
+            "info": true,
+            "responsive": true,
+            "columnDefs": [
+              { "orderable": true, "targets": [0] },
+              { "orderable": true, "targets": [1] },
+              { "orderable": true, "targets": [2] }
+            ]
           }
         );
       } );

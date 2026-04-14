@@ -618,3 +618,109 @@ body.dark-mode .dataTables_paginate .pagination .disabled a {
 body.dark-mode .dataTables_filter input {
   background-color: #ccc;
 }
+/* ============================================
+ * Responsive table for mobile - 3-column grid
+ * Display index, word, and IPA inline on mobile
+ * ============================================ */
+@media (max-width: 768px) {
+  /* 3-column grid layout for IPA tables (visually 2 columns since index is hidden) */
+  table.display {
+    display: grid !important;
+    gap: 8px;
+    width: 100% !important;
+    margin: 0 !important;
+  }
+
+  /* Table header grid matches row grid for proper alignment */
+  table.display thead {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;  /* Word | IPA (index hidden) */
+    background: var(--color-table-header, #f5f5f5);
+    font-weight: 600;
+    border-bottom: 2px solid #e1e1e8 !important;
+  }
+
+  table.display thead tr {
+    display: contents;
+  }
+
+  /* Table body - display all rows as grid */
+  table.display tbody {
+    display: contents;
+  }
+
+  /* Each row grid matches header grid for proper alignment */
+  table.display tr {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;  /* Word | IPA (index hidden) */
+    gap: 8px;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Table cells - flexbox centering with borders */
+  table.display td,
+  table.display th {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 6px !important;
+    text-align: center !important;
+    border: 1px solid #e1e1e8 !important;
+    background: transparent !important;
+  }
+
+  /* Remove default table border-bottom for grid cells */
+  table.display td {
+    border-bottom: none !important;
+  }
+
+  /* Hide index column on mobile for cleaner layout */
+  table.display thead tr th:first-child,
+  table.display tr td:first-child {
+    display: none !important;
+  }
+
+  /* Word column - allow text wrapping to 2 lines */
+  table.display tr td:nth-child(2) {
+    word-break: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.3;
+  }
+
+  /* IPA column - allow word wrapping */
+  table.display tr td:nth-child(3) {
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+
+  /* Compact DataTable controls on mobile */
+  .dataTables_wrapper {
+    padding: 5px 0;
+  }
+
+  .dataTables_length,
+  .dataTables_filter,
+  .dataTables_info,
+  .dataTables_paginate {
+    float: none !important;
+    text-align: center !important;
+    margin: 10px 0 !important;
+  }
+
+  .dataTables_filter input {
+    width: 100% !important;
+    max-width: 250px !important;
+    margin: 8px 0 0 0 !important;
+  }
+
+  .dataTables_paginate .pagination {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .dataTables_paginate .pagination a {
+    padding: 6px 10px;
+    font-size: 13px;
+  }
+}
