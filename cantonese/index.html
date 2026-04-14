@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>粵語拼音翻譯器 - Cantonese IPA Translator</title>
+    <meta name="description" content="Add IPA to cantonese.（廣東話文章↔拼音）轉換器">
     <link rel="icon" href="../favicon.svg" />
     <link rel="stylesheet" href="../css/styles.css" />
   </head>
@@ -23,15 +24,14 @@
       <div class="col">
         <div class="form-group">
           <label>中文字 (Chinese)</label>
-          <textarea id="cWords_tBox" rows="10" placeholder="輸入廣東話文字...">
-國際音標，早期又稱萬國音標，是一套用來標音的系統，以拉丁字母為基礎，由國際語音學學會設計來作為口語聲音的標準化標示方法。</textarea
-          >
+          <textarea id="cWords_tBox" rows="10" placeholder="輸入廣東話文字...">國際音標，又叫萬國音標，通常用英文縮寫 IPA，係語言學一套方便標示全世界每種語音嘅標音符號。
+          </textarea>
         </div>
       </div>
 
       <div class="col">
         <div class="form-group">
-          <label>拼音 (IPA)</label>
+          <label>標音（IPA）</label>
           <textarea id="IPA_tBox" rows="10" disabled></textarea>
         </div>
       </div>
@@ -40,7 +40,7 @@
     <div class="row">
       <div class="col-md-6">
         <div class="form-check-inline" style="align-items: baseline; margin-bottom: 5px;">
-          <span style="font-weight: 500; margin-right: 5px;">Format:</span>
+          <span style="font-weight: 500; margin-right: 5px;">格式：</span>
           <input type="radio" name="format" id="IPA_num" checked />
           <label for="IPA_num">/nei13/</label>
         </div>
@@ -56,11 +56,11 @@
       <div class="col-md-6">
         <div class="form-check-inline">
           <input type="checkbox" id="wf_c_words" checked />
-          <label for="wf_c_words">With Chinese Words</label>
+          <label for="wf_c_words">保留中文字</label>
         </div>
         <div class="form-check-inline">
           <input type="checkbox" id="allow_words_search" checked />
-          <label for="allow_words_search">Allow Words Search</label>
+          <label for="allow_words_search">分詞</label>
         </div>
       </div>
     </div>
@@ -69,8 +69,8 @@
       <div class="footer-grid">
         <div class="footer-col">
           <h4>說明 (Description)</h4>
-          <p>這是一個開源專案，用於將廣東話轉換為國際音標。</p>
-          <p>This is an open-source project to translate Cantonese to IPA.</p>
+          <p>此開源項目爲中文字標注粵語萬國音標。</p>
+          <p>This open-source project adds Cantonese IPA to Chinese text.</p>
         </div>
 
         <div class="footer-col">
