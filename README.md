@@ -39,24 +39,24 @@ Visit the live website: [https://toolbox.lotusfa.com/ipa/](https://toolbox.lotus
 
 | Language | Translator | IPA Reference |
 |----------|-----------|---------------|
-| Arabic | [Translator](arabic/index.html) | [IPA List](arabic/ipa_list.html) |
-| Cantonese | [Translator](cantonese/index.html) | [IPA List](cantonese/ipa_list.html) |
-| English | [Translator](english/index.html) | - |
-| Esperanto | [Translator](esperanto/index.html) | [IPA List](esperanto/ipa_list.html) |
-| Finnish | [Translator](finnish/index.html) | [IPA List](finnish/ipa_list.html) |
-| French | [Translator](french/index.html) | [France](french/ipa_list_fr.html) / [Quebec](french/ipa_list_qc.html) |
-| German | [Translator](german/index.html) | [IPA List](german/ipa_list.html) |
-| Jamaican | [Translator](jamaican/index.html) | [IPA List](jamaican/ipa_list.html) |
-| Japanese | [Translator](japanese/index.html) | [IPA List](japanese/ipa_list.html) |
-| Malay | [Translator](malay/index.html) | [IPA List](malay/ipa_list.html) |
-| Mandarin (Simplified) | [Translator](mandarin/index.html) | [IPA List](mandarin/ipa_list_zh_hans.html) |
-| Mandarin (Traditional) | [Translator](mandarin/index.html) | [IPA List](mandarin/ipa_list_zh_hant.html) |
-| Norwegian | [Translator](norwegian/index.html) | [IPA List](norwegian/ipa_list.html) |
-| Odia | [Translator](odia/index.html) | [IPA List](odia/ipa_list.html) |
-| Persian | [Translator](persian/index.html) | [IPA List](persian/ipa_list.html) |
-| Swahili | [Translator](swahili/index.html) | [IPA List](swahili/ipa_list.html) |
-| Swedish | [Translator](swedish/index.html) | [IPA List](swedish/ipa_list.html) |
-| Vietnamese | [Translator](vietnamese/index.html) | [Central](vietnamese/ipa_list_c.html) / [Northern](vietnamese/ipa_list_n.html) / [Southern](vietnamese/ipa_list_s.html) |
+| Arabic | [Translator](https://toolbox.lotusfa.com/ipa/arabic/index.html) | [IPA List](https://toolbox.lotusfa.com/ipa/arabic/ipa_list.html) |
+| Cantonese | [Translator](https://toolbox.lotusfa.com/ipa/cantonese/index.html) | [IPA List](https://toolbox.lotusfa.com/ipa/cantonese/ipa_list.html) |
+| English | [Translator](https://toolbox.lotusfa.com/ipa/english/index.html) | [IPA List](https://toolbox.lotusfa.com/ipa/english/ipa_list.html) |
+| Esperanto | [Translator](https://toolbox.lotusfa.com/ipa/esperanto/index.html) | [IPA List](https://toolbox.lotusfa.com/ipa/esperanto/ipa_list.html) |
+| Finnish | [Translator](https://toolbox.lotusfa.com/ipa/finnish/index.html) | [IPA List](https://toolbox.lotusfa.com/ipa/finnish/ipa_list.html) |
+| French | [Translator](https://toolbox.lotusfa.com/ipa/french/index.html) | [France](https://toolbox.lotusfa.com/ipa/french/ipa_list_fr.html) / [Quebec](https://toolbox.lotusfa.com/ipa/french/ipa_list_qc.html) |
+| German | [Translator](https://toolbox.lotusfa.com/ipa/german/index.html) | [IPA List](https://toolbox.lotusfa.com/ipa/german/ipa_list.html) |
+| Jamaican | [Translator](https://toolbox.lotusfa.com/ipa/jamaican/index.html) | [IPA List](https://toolbox.lotusfa.com/ipa/jamaican/ipa_list.html) |
+| Japanese | [Translator](https://toolbox.lotusfa.com/ipa/japanese/index.html) | [IPA List](https://toolbox.lotusfa.com/ipa/japanese/ipa_list.html) |
+| Malay | [Translator](https://toolbox.lotusfa.com/ipa/malay/index.html) | [IPA List](https://toolbox.lotusfa.com/ipa/malay/ipa_list.html) |
+| Mandarin (Simplified) | [Translator](https://toolbox.lotusfa.com/ipa/mandarin/index.html) | [IPA List](https://toolbox.lotusfa.com/ipa/mandarin/ipa_list_zh_hans.html) |
+| Mandarin (Traditional) | [Translator](https://toolbox.lotusfa.com/ipa/mandarin/index.html) | [IPA List](https://toolbox.lotusfa.com/ipa/mandarin/ipa_list_zh_hant.html) |
+| Norwegian | [Translator](https://toolbox.lotusfa.com/ipa/norwegian/index.html) | [IPA List](https://toolbox.lotusfa.com/ipa/norwegian/ipa_list.html) |
+| Odia | [Translator](https://toolbox.lotusfa.com/ipa/odia/index.html) | [IPA List](https://toolbox.lotusfa.com/ipa/odia/ipa_list.html) |
+| Persian | [Translator](https://toolbox.lotusfa.com/ipa/persian/index.html) | [IPA List](https://toolbox.lotusfa.com/ipa/persian/ipa_list.html) |
+| Swahili | [Translator](https://toolbox.lotusfa.com/ipa/swahili/index.html) | [IPA List](https://toolbox.lotusfa.com/ipa/swahili/ipa_list.html) |
+| Swedish | [Translator](https://toolbox.lotusfa.com/ipa/swedish/index.html) | [IPA List](https://toolbox.lotusfa.com/ipa/swedish/ipa_list.html) |
+| Vietnamese | [Translator](https://toolbox.lotusfa.com/ipa/vietnamese/index.html) | [Central](https://toolbox.lotusfa.com/ipa/vietnamese/ipa_list_c.html) / [Northern](https://toolbox.lotusfa.com/ipa/vietnamese/ipa_list_n.html) / [Southern](https://toolbox.lotusfa.com/ipa/vietnamese/ipa_list_s.html) |
 
 ## 🙏 Credits & Acknowledgments
 
