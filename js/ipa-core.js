@@ -219,7 +219,7 @@ export function processTextLongestMatch(options) {
 
     for (let len = maxComboLength; len >= 1; len--) {
       const candidate = words.slice(i, i + len).join(" ");
-
+      
       const candidatesToCheck = [
         candidate,
         preprocessText(candidate),
@@ -234,6 +234,8 @@ export function processTextLongestMatch(options) {
           break;
         }
       }
+
+      if (matchedIPA) break;
     }
 
     if (matchedIPA) {
