@@ -130,7 +130,19 @@
                   const dataObj = json.or[0];
                   return Object.entries(dataObj).map(([entry, ipa], index) => [index + 1, entry, ipa]);
               }
-            }
+            },
+            "paging": true,
+            "pageLength": 10,
+            "lengthMenu": [[10, 25, 50, 100], [10, 25, 50, 100]],
+            "ordering": true,
+            "searching": true,
+            "info": true,
+            "responsive": true,
+            "columnDefs": [
+              { "orderable": true, "targets": [0] },
+              { "orderable": true, "targets": [1] },
+              { "orderable": true, "targets": [2] }
+            ]
           }
         );
       } );

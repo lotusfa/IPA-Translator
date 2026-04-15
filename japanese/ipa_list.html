@@ -26,19 +26,23 @@
       </div>
 
     <div class="container">
-      <div class="table-responsive">
-      <table id="DataTable" class="table table-striped">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Japanese Word</th>
-            <th scope="col">IPA</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
+      <div class="row">
+        <div class="col">
+          <div class="table-responsive">
+          <table class="table table-striped display" id="DataTable">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">日本語単語 (Japanese)</th>
+              <th scope="col">IPA</th>
+            </tr>
+          </thead>
+            <tbody id="tbody">
+            </tbody>
+          </table>
+          </div>
+        </div>
       </div>
-      <small>This may need few seconds for loading...</small>
     </div>
 
     <footer class="footer">
@@ -98,17 +102,31 @@
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
       });
 
+      // Initialize DataTable
       $(document).ready(function() {
-        $('#DataTable').DataTable({
-          "ajax": {
-            url: '../json/ja.json',
-            dataSrc: function (json) {
-              const dataObj = json.ja[0];
-              return Object.entries(dataObj).map(([entry, ipa], index) => [index + 1, entry, ipa]);
-            }
+          $('#DataTable').DataTable( {
+              "ajax": {
+                url: '../json/ja.json',
+                dataSrc: function (json) {
+                  const dataObj = json.ja[0];
+                  return Object.entries(dataObj).map(([entry, ipa], index) => [index + 1, entry, ipa]);
+              }
+            },
+            "paging": true,
+            "pageLength": 10,
+            "lengthMenu": [[10, 25, 50, 100], [10, 25, 50, 100]],
+            "ordering": true,
+            "searching": true,
+            "info": true,
+            "responsive": true,
+            "columnDefs": [
+              { "orderable": true, "targets": [0] },
+              { "orderable": true, "targets": [1] },
+              { "orderable": true, "targets": [2] }
+            ]
           }
-        });
-      });
+        );
+      } );
     </script>
     <script type="module">
       import { initLanguageButtons } from '../js/ipa-core.js';
