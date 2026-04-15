@@ -626,7 +626,7 @@ body.dark-mode .dataTables_filter input {
   /* 3-column grid layout for IPA tables (visually 2 columns since index is hidden) */
   table.display {
     display: grid !important;
-    gap: 8px;
+    gap: 0px;
     width: 100% !important;
     margin: 0 !important;
   }
@@ -653,7 +653,7 @@ body.dark-mode .dataTables_filter input {
   table.display tr {
     display: grid;
     grid-template-columns: 1fr 1.2fr;  /* Word | IPA (index hidden) */
-    gap: 8px;
+    gap: 0px;
     padding: 0 !important;
     margin: 0 !important;
   }
