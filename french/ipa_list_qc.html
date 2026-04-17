@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Liste de Mots Français IPA - French IPA List (Qu&#233;bec)</title>
+    <title>Liste de Mots Français - French IPA List</title>
+    <meta name="description" content="French IPA word list with Quebec pronunciation, covering Canadian French dialects." />
     <link rel="icon" href="../favicon.svg" />
     <link rel="stylesheet" href="../css/styles.css" />
   </head>
@@ -11,7 +12,7 @@
     <div class="header">
       <div class="titles">
         <h1>Liste de Mots Français</h1>
-        <h2>French IPA List (Qu&#233;bec)</h2>
+        <h2>Français (Québec)</h2>
       </div>
       <button id="dark-mode-toggle" class="btn-theme" aria-label="Toggle dark mode">
         <img src="../img/light-mode.svg" class="icon" alt="" />
@@ -22,7 +23,7 @@
     <div class="container">
     <div class="row" style="margin-bottom: 15px;">
         <div class="col" style="flex: 0 0 auto;">
-          <h5 style="margin: 0;"><a href="./index.html">← Retour au Traducteur (Back to Translator)</a></h5>
+          <h5 style="margin: 0;"><a href="./index.html">← Retour au Traducteur / Back to Translator</a></h5>
         </div>
       </div>
 
@@ -33,34 +34,35 @@
         <thead>
           <tr>
             <th scope="col">#</th>
-            <th scope="col">French Word</th>
-            <th scope="col">IPA</th>
+            <th scope="col">Mot Français / French Word</th>
+            <th scope="col">IPA / Phonetic</th>
           </tr>
         </thead>
         <tbody></tbody>
       </table>
+      </div>
       <small>This may need few seconds for loading...</small>
     </div>
 
     <footer class="footer">
       <div class="footer-grid">
         <div class="footer-col">
-          <h4>Description</h4>
-          <p>French IPA word list with Qu&#233;bec pronunciation.</p>
+          <h4>Description / 說明</h4>
+          <p>French IPA word list with Quebec pronunciation, covering Canadian French / Français canadien dialects.</p>
         </div>
 
         <div class="footer-col">
-          <h4>Other Languages</h4>
+          <h4>Other Languages / 其他語言</h4>
           <ul class="lang-list" id="lang-buttons-container"></ul>
-            
+
         </div>
 
         <div class="footer-col">
-          <h4>Liens utiles (Useful Links)</h4>
+          <h4>Links / 連結</h4>
           <ul>
-            <li><a href="./ipa_list_fr.html">IPA Database (FR)</a></li>
-            <li><a href="./ipa_list_qc.html">IPA Database (QC)</a></li>
-            <li><a href="https://en.wikipedia.org/wiki/Help:IPA/French">WIKI - IPA/French</a></li>
+            <li><a href="./ipa_list_fr.html">IPA Database (FR) / Français de France</a></li>
+            <li><a href="./ipa_list_qc.html">IPA Database (QC) / Base de données IPA</a></li>
+            <li><a href="https://fr.wikipedia.org/wiki/Aide:IPA_pour_le_fran%C3%A7ais">Wikipedia - IPA/French</a></li>
             <li><a href="https://open-dict-data.github.io/ipa-lookup/fr/">French IPA Lookup</a></li>
           </ul>
         </div>
@@ -78,7 +80,7 @@
     <script src="../lib/jquery/jquery.min.js"></script>
     <script src="../lib/datatables/datatables.min.js"></script>
     <link rel="stylesheet" type="text/css" href="../lib/datatables/datatables.min.css"/>
-    
+
     <script type="text/javascript">
       // Dark mode toggle
       const darkModeToggle = document.getElementById('dark-mode-toggle');

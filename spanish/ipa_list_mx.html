@@ -3,15 +3,16 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Lista de Palabras Espa&#241;olas IPA - Spanish IPA List (M&eacute;xico)</title>
+    <title>Lista de Palabras Españolas - Spanish IPA List</title>
+    <meta name="description" content="Spanish IPA word list with Mexico pronunciation, covering Español de México dialects." />
     <link rel="icon" href="../favicon.svg" />
     <link rel="stylesheet" href="../css/styles.css" />
   </head>
   <body>
     <div class="header">
       <div class="titles">
-        <h1>Lista de Palabras Espa&#241;olas</h1>
-        <h2>Spanish IPA List (M&eacute;xico)</h2>
+        <h1>Lista de Palabras Españolas</h1>
+        <h2>Español (México)</h2>
       </div>
       <button id="dark-mode-toggle" class="btn-theme" aria-label="Toggle dark mode">
         <img src="../img/light-mode.svg" class="icon" alt="" />
@@ -20,9 +21,9 @@
     <hr />
 
     <div class="container">
-      <div class="row" style="margin-bottom: 15px;">
+    <div class="row" style="margin-bottom: 15px;">
         <div class="col" style="flex: 0 0 auto;">
-          <h5 style="margin: 0;"><a href="./index.html">← Volver al Traductor (Back to Translator)</a></h5>
+          <h5 style="margin: 0;"><a href="./index.html">← Volver al Traductor / Back to Translator</a></h5>
         </div>
       </div>
 
@@ -30,41 +31,38 @@
         <div class="col">
           <div class="table-responsive">
           <table class="table table-striped display" id="DataTable">
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">Palabra Española</th>
-                <th scope="col">IPA</th>
-              </tr>
-            </thead>
-            <tbody id="tbody">
-            </tbody>
-          </table>
-        </div>
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Palabra Española / Spanish Word</th>
+            <th scope="col">IPA / Fonética</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
       </div>
+      <small>This may need few seconds for loading...</small>
     </div>
-
-    <small>This may need few seconds for loading...</small>
 
     <footer class="footer">
       <div class="footer-grid">
         <div class="footer-col">
-          <h4>Descripci&oacute;n</h4>
-          <p>Spanish IPA word list with M&eacute;xico pronunciation.</p>
+          <h4>Descripción / Description</h4>
+          <p>Spanish IPA word list with Mexico pronunciation, covering Español de México dialects.</p>
         </div>
 
         <div class="footer-col">
-          <h4>Otros idiomas (Other Languages)</h4>
+          <h4>Otros idiomas / Other Languages</h4>
           <ul class="lang-list" id="lang-buttons-container"></ul>
-            
+
         </div>
 
         <div class="footer-col">
-          <h4>Enlaces &uacute;tiles (Useful Links)</h4>
+          <h4>Enlaces útiles / Useful Links</h4>
           <ul>
-            <li><a href="./ipa_list_es.html">IPA Database (ES)</a></li>
-            <li><a href="./ipa_list_mx.html">IPA Database (MX)</a></li>
-            <li><a href="https://en.wikipedia.org/wiki/Help:IPA/Spanish">WIKI - IPA/Spanish</a></li>
+            <li><a href="./ipa_list_es.html">IPA Database (ES) / Español de España</a></li>
+            <li><a href="./ipa_list_mx.html">IPA Database (MX) / Base de datos IPA</a></li>
+            <li><a href="https://es.wikipedia.org/wiki/Ayuda:IPA_para_el_espa%C3%B1ol">Wikipedia - IPA/Spanish</a></li>
             <li><a href="https://open-dict-data.github.io/ipa-lookup/es/">Spanish IPA Lookup</a></li>
           </ul>
         </div>
@@ -82,7 +80,7 @@
     <script src="../lib/jquery/jquery.min.js"></script>
     <script src="../lib/datatables/datatables.min.js"></script>
     <link rel="stylesheet" type="text/css" href="../lib/datatables/datatables.min.css"/>
-    
+
     <script type="text/javascript">
       // Dark mode toggle
       const darkModeToggle = document.getElementById('dark-mode-toggle');

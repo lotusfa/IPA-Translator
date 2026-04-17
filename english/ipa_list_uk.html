@@ -3,14 +3,15 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>IPA Word List - English (UK)</title>
+    <title>English IPA List - English</title>
+    <meta name="description" content="English IPA word list with UK pronunciation, covering British English dialects." />
     <link rel="icon" href="../favicon.svg" />
     <link rel="stylesheet" href="../css/styles.css" />
   </head>
   <body>
     <div class="header">
       <div class="titles">
-        <h1>IPA Word List</h1>
+        <h1>English IPA Word List</h1>
         <h2>English (UK)</h2>
       </div>
       <button id="dark-mode-toggle" class="btn-theme" aria-label="Toggle dark mode">
@@ -33,36 +34,38 @@
         <thead>
           <tr>
             <th scope="col">#</th>
-            <th scope="col">English Word</th>
-            <th scope="col">IPA</th>
+            <th scope="col">English Word / 英語單詞</th>
+            <th scope="col">IPA / 音標</th>
           </tr>
         </thead>
 
             <tbody id="tbody">
             </tbody>
       </table>
+      </div>
       <small>This may need few seconds for loading...</small>
     </div>
 
     <footer class="footer">
       <div class="footer-grid">
         <div class="footer-col">
-          <h4>Description</h4>
-          <p>English IPA word list with UK pronunciation.</p>
+          <h4>Description / 說明</h4>
+          <p>English IPA word list with UK pronunciation, covering British English dialects.</p>
         </div>
 
         <div class="footer-col">
-          <h4>Other Languages</h4>
+          <h4>Other Languages / 其他語言</h4>
           <ul class="lang-list" id="lang-buttons-container"></ul>
-            
+
         </div>
 
         <div class="footer-col">
-          <h4>Useful Links</h4>
+          <h4>Links / 連結</h4>
           <ul>
-            <li><a href="./ipa_list_us.html">IPA Database (US)</a></li>
-            <li><a href="./ipa_list_uk.html">IPA Database (UK)</a></li>
-            <li><a href="https://en.wikipedia.org/wiki/Help:IPA/English">WIKI - IPA/English</a></li>
+            <li><a href="./ipa_list.html">IPA Database / IPA 資料庫</a></li>
+            <li><a href="./ipa_list_us.html">IPA Database (US) / 美國英語</a></li>
+            <li><a href="./ipa_list_uk.html">IPA Database (UK) / 英國英語</a></li>
+            <li><a href="https://en.wikipedia.org/wiki/Help:IPA/English">Wikipedia - IPA/English</a></li>
             <li><a href="https://open-dict-data.github.io/ipa-lookup/en/">English IPA Lookup</a></li>
           </ul>
         </div>
@@ -80,7 +83,7 @@
     <script src="../lib/jquery/jquery.min.js"></script>
     <script src="../lib/datatables/datatables.min.js"></script>
     <link rel="stylesheet" type="text/css" href="../lib/datatables/datatables.min.css"/>
-    
+
     <script type="text/javascript">
       // Wait for DOM to be ready before accessing elements
       document.addEventListener('DOMContentLoaded', function() {
