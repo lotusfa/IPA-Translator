@@ -13,8 +13,7 @@ export function formatIPA_num(text) {
     .replace(/˥/g, "5")
     .replace(/˧/g, "3")
     .replace(/˨/g, "2")
-    .replace(/˩/g, "1")
-    .replace(/:/g, "");
+    .replace(/˩/g, "1");
 }
 
 /**
@@ -55,8 +54,7 @@ export function formatJyutpingCantonese(text) {
     .replace(/p˨/g, "p9")
     .replace(/˥/g, "1")
     .replace(/˧/g, "3")
-    .replace(/˨/g, "6")
-    .replace(/:/g, "");
+    .replace(/˨/g, "6");
 }
 
 /**
@@ -78,8 +76,7 @@ export function formatJyutpingMandarin(text) {
     .replace(/˧˩/g, "˙")           // Neutral tone (variant)
     .replace(/˦˩/g, "˙")           // Neutral tone (variant)
     .replace(/˩˩/g, "˙")           // Neutral tone (variant)
-    .replace(/˧/g, "˙")            // Neutral tone (catch-all)
-    .replace(/:/g, "");
+    .replace(/˧/g, "˙");            // Neutral tone (catch-all)=
 }
 
 /**
@@ -368,8 +365,7 @@ export function formatYueJyutping(text) {
     .replace(/p˨/g, "p9")
     .replace(/˥/g, "1")
     .replace(/˧/g, "3")
-    .replace(/˨/g, "6")
-    .replace(/:/g, "");
+    .replace(/˨/g, "6");
 }
 
 /**
