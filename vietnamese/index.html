@@ -3,15 +3,15 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>IPA Translator - Vietnamese (Tiếng Việt)</title>
+    <title>Hệ phiên IPA Tiếng Việt - Vietnamese IPA Transliterator</title>
     <link rel="icon" href="../favicon.svg" />
     <link rel="stylesheet" href="../css/styles.css" />
   </head>
   <body>
     <div class="header">
       <div class="titles">
-        <h1>Phiên âm IPA</h1>
-        <h2>Vietnamese (Tiếng Việt)</h2>
+        <h1>Hệ phiên IPA Tiếng Việt</h1>
+        <h2>Vietnamese IPA Transliterator</h2>
       </div>
       <button id="dark-mode-toggle" class="btn-theme" aria-label="Toggle dark mode">
         <img src="../img/light-mode.svg" class="icon" alt="" />
@@ -22,8 +22,8 @@
     <div class="row">
       <div class="col">
         <div class="form-group">
-          <label>Văn tiếng Việt / Vietnamese text</label>
-          <textarea id="cWords_tBox" rows="10" placeholder="Enter Vietnamese text...">
+          <label>Văn bản tiếng Việt / Vietnamese text</label>
+          <textarea id="cWords_tBox" rows="10" placeholder="Nhập văn bản tiếng Việt...">
 Bảng phiên âm quốc tế (IPA), trước đây được gọi là Bảng phiên âm toàn cầu, là một hệ thống phiên âm ngữ âm. Nó dựa trên bảng chữ cái Latinh và được Hiệp hội Ngữ âm Quốc tế thiết kế như một phương pháp tiêu chuẩn hóa để biểu diễn âm thanh lời nói.
           </textarea>
         </div>
@@ -31,7 +31,7 @@ Bảng phiên âm quốc tế (IPA), trước đây được gọi là Bảng ph
 
       <div class="col">
         <div class="form-group">
-          <label>IPA</label>
+          <label>Phiên âm IPA (IPA)</label>
           <textarea id="IPA_tBox" rows="10" disabled></textarea>
         </div>
       </div>
@@ -40,32 +40,32 @@ Bảng phiên âm quốc tế (IPA), trước đây được gọi là Bảng ph
     <div class="row">
       <div class="col-md-6">
         <div class="form-check-inline" style="margin-bottom: 10px;">
-          <label style="font-weight: 500; margin-right: 10px;">Variant:</label>
+          <span style="font-weight: 500; margin-right: 10px;">Phương ngữ / Dialect:</span>
           <input type="radio" name="variant" id="variant_C" value="vi_C" checked />
-          <label for="variant_C">Central</label>
+          <label for="variant_C">Trung (Central)</label>
           <input type="radio" name="variant" id="variant_N" value="vi_N" />
-          <label for="variant_N">Northern</label>
+          <label for="variant_N">Bắc (Northern)</label>
           <input type="radio" name="variant" id="variant_S" value="vi_S" />
-          <label for="variant_S">Southern</label>
+          <label for="variant_S">Nam (Southern)</label>
         </div>
         <div class="form-check-inline" style="align-items: baseline; margin-bottom: 5px;">
-          <span style="font-weight: 500; margin-right: 10px;">Format:</span>
+          <span style="font-weight: 500; margin-right: 10px;">Định dạng / Format:</span>
           <input type="radio" name="format" id="IPA_num" checked />
-          <label for="IPA_num">/nei13/</label>
+          <label for="IPA_num">Số phiên âm (/nei13/)</label>
         </div>
         <div class="form-check-inline">
           <input type="radio" name="format" id="IPA_org" />
-          <label for="IPA_org">/nei˩˧/</label>
+          <label for="IPA_org">Phiên âm IPA (/nei˩˧/)</label>
         </div>
       </div>
       <div class="col-md-6">
         <div class="form-check-inline">
           <input type="checkbox" id="wf_c_words" checked />
-          <label for="wf_c_words">With Vietnamese Words</label>
+          <label for="wf_c_words">Hiển thị văn bản gốc / Show Original</label>
         </div>
         <div class="form-check-inline">
           <input type="checkbox" id="allow_words_search" checked />
-          <label for="allow_words_search">Allow Words Search</label>
+          <label for="allow_words_search">Ghép theo từ / Word Match</label>
         </div>
       </div>
     </div>
@@ -74,8 +74,8 @@ Bảng phiên âm quốc tế (IPA), trước đây được gọi là Bảng ph
       <div class="footer-grid">
         <div class="footer-col">
           <h4>Mô tả / Description</h4>
-          <p>Đây là một dự án mã nguồn mở để dịch tiếng Việt sang IPA.</p>
-          <p>This is an open-source project to translate Vietnamese to IPA.</p>
+          <p>Đây là dự án mã nguồn mở chuyển phiên tiếng Việt (Tiếng Việt) sang phiên âm IPA, hỗ trợ phương ngữ miền Bắc, Trung, Nam.</p>
+          <p>This open-source project converts Vietnamese (Tiếng Việt) to IPA, supporting Central, Northern, and Southern dialects.</p>
         </div>
 
         <div class="footer-col">
@@ -85,13 +85,12 @@ Bảng phiên âm quốc tế (IPA), trước đây được gọi là Bảng ph
         </div>
 
         <div class="footer-col">
-          <h4>Links</h4>
+          <h4>Liên kết / Links</h4>
           <ul>
-            <li><a href="./ipa_list_c.html">IPA Database (Central)</a></li>
-            <li><a href="./ipa_list_n.html">IPA Database (Northern)</a></li>
-            <li><a href="./ipa_list_s.html">IPA Database (Southern)</a></li>
-            <li><a href="https://zh.wikipedia.org/wiki/越南語">Vietnamese Wikipedia</a></li>
-            <li><a href="https://www.fon.daoweb.com/index.php?language=viet">Vietnamese Phonology</a></li>
+            <li><a href="./ipa_list_c.html">Cơ sở dữ liệu IPA (Trung)</a></li>
+            <li><a href="./ipa_list_n.html">Cơ sở dữ liệu IPA (Bắc)</a></li>
+            <li><a href="./ipa_list_s.html">Cơ sở dữ liệu IPA (Nam)</a></li>
+            <li><a href="https://vi.wikipedia.org/wiki/B%E1%BA%A3ng_phi%C3%AAn_%C3%A2m_qu%E1%BB%91c_t%E1%BA%BF">Bảng phiên âm quốc tế</a></li>
           </ul>
         </div>
       </div>
