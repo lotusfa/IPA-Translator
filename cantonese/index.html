@@ -3,15 +3,15 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>粵語拼音翻譯器 - Cantonese IPA Translator</title>
-    <meta name="description" content="Add IPA to cantonese.（廣東話文章↔拼音）轉換器">
+    <title>粵語國際音標翻譯器 - Cantonese IPA Translator</title>
+    <meta name="description" content="Add IPA to cantonese.（廣東話文章↔國際音標）轉換器">
     <link rel="icon" href="../favicon.svg" />
     <link rel="stylesheet" href="../css/styles.css" />
   </head>
   <body>
     <div class="header">
       <div class="titles">
-        <h1>粵語拼音翻譯器</h1>
+        <h1>粵語國際音標翻譯器</h1>
         <h2>Cantonese IPA Translator</h2>
       </div>
       <button id="dark-mode-toggle" class="btn-theme" aria-label="Toggle dark mode">
@@ -40,17 +40,17 @@
     <div class="row">
       <div class="col-md-6">
         <div class="form-check-inline" style="align-items: baseline; margin-bottom: 5px;">
-          <span style="font-weight: 500; margin-right: 5px;">格式：</span>
+          <span style="font-weight: 500; margin-right: 5px;">輸出格式：</span>
           <input type="radio" name="format" id="IPA_num" checked />
-          <label for="IPA_num">/nei13/</label>
+          <label for="IPA_num">音標數字 (/nei13/)</label>
         </div>
         <div class="form-check-inline">
           <input type="radio" name="format" id="IPA_org" />
-          <label for="IPA_org">/nei˩˧/</label>
+          <label for="IPA_org">國際音標 (/nei˩˧/)</label>
         </div>
         <div class="form-check-inline">
           <input type="radio" name="format" id="Jyutping" />
-          <label for="Jyutping">/nei5/</label>
+          <label for="Jyutping">粵拼數字 (/nei5/)</label>
         </div>
       </div>
       <div class="col-md-6">
@@ -60,7 +60,7 @@
         </div>
         <div class="form-check-inline">
           <input type="checkbox" id="allow_words_search" checked />
-          <label for="allow_words_search">分詞</label>
+          <label for="allow_words_search">以詞組匹配</label>
         </div>
       </div>
     </div>
@@ -83,7 +83,7 @@
           <h4>連結</h4>
           <ul>
             <li><a href="./ipa_list.html">IPA 資料庫</a></li>
-            <li><a href="https://zh.wikipedia.org/wiki/粵語拼音對照表">粵語拼音對照表 (WIKI)</a></li>
+            <li><a href="https://zh.wikipedia.org/wiki/%E5%9C%8B%E9%9A%9B%E9%9F%B3%E6%A8%99">國際音標 (Wikipedia)</a></li>
             <li><a href="http://humanum.arts.cuhk.edu.hk/Lexis/lexi-can/">粵語審音配詞字庫 (CUHK)</a></li>
             <li><a href="https://open-dict-data.github.io/ipa-lookup/yue/">粵語國際音標查詢</a></li>
           </ul>
