@@ -21,7 +21,13 @@ export {
   formatIPAOutput,
   formatMandarinOutput,
   formatVietnamese,
-  formatVietnameseOutput
+  formatVietnameseOutput,
+  formatYueOutput,
+  formatYueJyutping,
+  formatYueGuangzhou,
+  formatYueAcademy,
+  formatYueYale,
+  formatYueLiu
 } from './format.js';
 
 // ============================================

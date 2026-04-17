@@ -6,6 +6,7 @@ import {
   loadIPADatabase,
   processTextCharBased,
   formatIPAOutput,
+  formatYueOutput,
   preprocessText,
   onTextInputChange,
   onMultipleChange,
@@ -36,7 +37,7 @@ function loadDatabase() {
 function translate() {
   const input = document.getElementById('cWords_tBox').value;
   document.getElementById('IPA_tBox').value = 'loading....';
-  
+
   // Small delay to allow UI to update before processing
   setTimeout(() => {
     const processed = processTextCharBased({
@@ -46,9 +47,9 @@ function translate() {
       allowWordSearch: document.getElementById('allow_words_search') && document.getElementById('allow_words_search').checked,
       maxWordLength: 6
     });
-    
-    // Apply format transformation (IPA_org, IPA_num, Jyutping, Jyutping_num)
-    const formatted = formatIPAOutput(processed);
+
+    // Apply format transformation (use formatYueOutput for multi-scheme support)
+    const formatted = formatYueOutput(processed);
     document.getElementById('IPA_tBox').value = formatted;
   }, 10);
 }
