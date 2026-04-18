@@ -299,33 +299,33 @@ export function formatYueJyutping(text) {
   return processSegments(text, 'jyutping');
 }
 
-// 廣州話拼音專用：把 z/c/s 在 i/ü/yu 前面自動轉成 j/q/x
+// 廣州話拼音專用：把 z/c/s 在 i/ü 前面自動轉成 j/q/x
 function processGuangzhouVariant(text) {
   if (!text || typeof text !== 'string') return text;
 
-  // 這個正則專門針對你的格式： /si5/  或  /sug1/  等
-  // 匹配： / (z|c|s) (i|ü|yu?|y) ... /
+  /**
+   * 改進邏輯：
+   * 1. ([/\s]) : 匹配斜槓 / 或空格，確保這是音節的起點。
+   * 2. ([zcs]) : 捕獲聲母 z, c, s。
+   * 3. ([iü][^/\s]*) : 匹配以 i 或 ü 開頭的韻母，直到遇到下一個空格或斜槓。
+   */
   return text.replace(
-    /\/([zcs])([iüy][^\/\s]*?)(?=\s*\/)/gi,
-    (match, initial, rest) => {
+    /([/\s])([zcs])([iü][^/\s]*)/gi,
+    (match, prefix, initial, rest) => {
       const lowerInit = initial.toLowerCase();
       
-      // 判斷是否真的是前高元音開頭（i、ü、y、yu）
-      if (!/^[iüy]/i.test(rest)) {
-        return match; // 不符合規則，保持不變
-      }
-
       let newInitial = lowerInit;
       if (lowerInit === 'z') newInitial = 'j';
       else if (lowerInit === 'c') newInitial = 'q';
       else if (lowerInit === 's') newInitial = 'x';
 
-      // 保留原本的大小寫（雖然通常是小寫）
+      // 處理大小寫保持
       if (initial === initial.toUpperCase() && initial !== initial.toLowerCase()) {
         newInitial = newInitial.toUpperCase();
       }
 
-      return `/${newInitial}${rest}`;
+      // 返回 原始前綴 + 轉換後的聲母 + 韻母餘下部分
+      return `${prefix}${newInitial}${rest}`;
     }
   );
 }
