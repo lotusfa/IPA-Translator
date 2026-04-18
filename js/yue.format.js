@@ -121,7 +121,7 @@ const SCHEME_MAPS = {
       'p': 'b', 'pʰ': 'p', 'm': 'm', 'f': 'f',
       't': 'd', 'tʰ': 't', 'n': 'n', 'l': 'l',
       'k': 'g', 'kʰ': 'k', 'ŋ': 'ng', 'h': 'h',
-      'ts': 'z/j', 'tsʰ': 'c/q', 's': 's/x',
+      'ts': 'z', 'tsʰ': 'c', 's': 's',
       'kʷ': 'gu', 'kʷʰ': 'ku', 'j': 'y', 'w': 'w', 'ʔ': ''
     },
     vowels: {
@@ -299,9 +299,42 @@ export function formatYueJyutping(text) {
   return processSegments(text, 'jyutping');
 }
 
+// 廣州話拼音專用：把 z/c/s 在 i/ü/yu 前面自動轉成 j/q/x
+function processGuangzhouVariant(text) {
+  if (!text || typeof text !== 'string') return text;
+
+  // 這個正則專門針對你的格式： /si5/  或  /sug1/  等
+  // 匹配： / (z|c|s) (i|ü|yu?|y) ... /
+  return text.replace(
+    /\/([zcs])([iüy][^\/\s]*?)(?=\s*\/)/gi,
+    (match, initial, rest) => {
+      const lowerInit = initial.toLowerCase();
+      
+      // 判斷是否真的是前高元音開頭（i、ü、y、yu）
+      if (!/^[iüy]/i.test(rest)) {
+        return match; // 不符合規則，保持不變
+      }
+
+      let newInitial = lowerInit;
+      if (lowerInit === 'z') newInitial = 'j';
+      else if (lowerInit === 'c') newInitial = 'q';
+      else if (lowerInit === 's') newInitial = 'x';
+
+      // 保留原本的大小寫（雖然通常是小寫）
+      if (initial === initial.toUpperCase() && initial !== initial.toLowerCase()) {
+        newInitial = newInitial.toUpperCase();
+      }
+
+      return `/${newInitial}${rest}`;
+    }
+  );
+}
+
+// 主函數修改版
 export function formatYueGuangzhou(text) {
   text = normalizeIPA(text);
-  return processSegments(text, 'guangzhou');
+  let result = processSegments(text, 'guangzhou');
+  return processGuangzhouVariant(result)
 }
 
 export function formatYueAcademy(text) {
