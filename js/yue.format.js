@@ -57,7 +57,7 @@ const IPA_TO_SCHEME = {
     'ɔ:t': 'od', 'ɔ:k': 'og',
     'u:': 'u', 'u:i': 'ui', 'u:n': 'un', 'u:t': 'ud',
     'ʊŋ': 'ung', 'ʊk': 'ug',
-    'œ:': 'ê', 'œ:ŋ': 'êng', 'œ:k': 'ê', 'œ:t': 'êd',
+    'œ:': 'ê', 'œ:ŋ': 'êng', 'œ:k': 'êg', 'œ:t': 'êd',
     'ɵy': 'êu', 'ɵn': 'ên', 'ɵt': 'êd',
     'y:': 'ü', 'y:n': 'ün', 'y:t': 'üd',
     'm̩': 'm', 'ŋ̩': 'ng',
@@ -82,6 +82,7 @@ const IPA_TO_SCHEME = {
     'œ:': 'oe', 'œ:ŋ': 'oeng', 'œ:k': 'oek', 'œ:t': 'oet',
     'ɵy': 'oey', 'ɵn': 'oen', 'ɵt': 'oet',
     'y:': 'y', 'y:n': 'yn', 'y:t': 'yt',
+    'ig': 'ig',
     'm̩': 'm', 'ŋ̩': 'ng',
     'p': 'b', 'pʰ': 'p', 'm': 'm', 'f': 'f',
     't': 'd', 'tʰ': 't', 'n': 'n', 'l': 'l',
@@ -282,16 +283,17 @@ export function formatIPA_org(text) {
 
 export function formatJyutpingCantonese(text) {
   return text
+    .replace(/k˨˩/g, "k4").replace(/t˨˩/g, "t4").replace(/p˨˩/g, "p4")
     .replace(/˥˧/g, "1").replace(/˥˥/g, "1")
     .replace(/˧˥/g, "2")
-    .replace(/˧˧/g, "3").replace(/˧/g, "3")
+    .replace(/˧˧/g, "3")
     .replace(/˨˩/g, "4").replace(/˩˩/g, "4")
     .replace(/˩˧/g, "5").replace(/˨˧/g, "5")
     .replace(/˨˨/g, "6")
     .replace(/k˥/g, "k7").replace(/k˧/g, "k8").replace(/k˨/g, "k9")
     .replace(/t˥/g, "t7").replace(/t˧/g, "t8").replace(/t˨/g, "t9")
     .replace(/p˥/g, "p7").replace(/p˧/g, "p8").replace(/p˨/g, "p9")
-    .replace(/˥/g, "1").replace(/˨/g, "6");
+    .replace(/˧/g, "3").replace(/˥˧/g, "1").replace(/˨/g, "6").replace(/˩/g, "4");
 }
 
 export function formatJyutpingMandarin(text) {
