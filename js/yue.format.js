@@ -288,12 +288,12 @@ export function formatJyutpingCantonese(text) {
     .replace(/˧˥/g, "2")
     .replace(/˧˧/g, "3")
     .replace(/˨˩/g, "4").replace(/˩˩/g, "4")
-    .replace(/˩˧/g, "5").replace(/˨˧/g, "5")
+    .replace(/˨˧/g, "5")
     .replace(/˨˨/g, "6")
     .replace(/k˥/g, "k7").replace(/k˧/g, "k8").replace(/k˨/g, "k9")
     .replace(/t˥/g, "t7").replace(/t˧/g, "t8").replace(/t˨/g, "t9")
     .replace(/p˥/g, "p7").replace(/p˧/g, "p8").replace(/p˨/g, "p9")
-    .replace(/˧/g, "3").replace(/˥˧/g, "1").replace(/˨/g, "6").replace(/˩/g, "4");
+    .replace(/˩˧/g, "5").replace(/˧/g, "3").replace(/˥˧/g, "1").replace(/˨/g, "6").replace(/˩/g, "4");
 }
 
 export function formatJyutpingMandarin(text) {

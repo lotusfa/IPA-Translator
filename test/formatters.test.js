@@ -84,6 +84,59 @@ assert('formatJyutpingCantonese: t˥ → t7', formatJyutpingCantonese('t˥'), 't
 assert('formatJyutpingCantonese: p˥ → p7', formatJyutpingCantonese('p˥'), 'p7');
 
 // ============================================
+// Test formatJyutpingCantonese - 聲調對照表例字
+// ============================================
+console.log('\n=== Testing formatJyutpingCantonese - 聲調對照表例字 ===');
+
+// 陰平 53/55: 分 ˥˧/˥ → 1
+assert('formatJyutpingCantonese: 分 ˥˧ → 1', formatJyutpingCantonese('˥˧'), '1');
+
+// 陰上 35: 粉 ˧˥ → 2
+assert('formatJyutpingCantonese: 粉 ˧˥ → 2', formatJyutpingCantonese('˧˥'), '2');
+
+// 陰去 33: 訓 ˧ → 3
+assert('formatJyutpingCantonese: 訓 ˧ → 3', formatJyutpingCantonese('˧'), '3');
+
+// 陽平 21: 墳 ˨˩ → 4
+assert('formatJyutpingCantonese: 墳 ˨˩ → 4', formatJyutpingCantonese('˨˩'), '4');
+
+// 陽上 13: 憤 ˩˧ → 5
+assert('formatJyutpingCantonese: 憤 ˩˧ → 5', formatJyutpingCantonese('˩˧'), '5');
+
+// 陽去 22: 份 ˨ → 6
+assert('formatJyutpingCantonese: 份 ˨ → 6', formatJyutpingCantonese('˨'), '6');
+
+// 上陰入 5: 忽 ˥ → 7
+assert('formatJyutpingCantonese: 忽 k˥ → k7', formatJyutpingCantonese('k˥'), 'k7');
+
+// 下陰入 3: 發 ˧ → 8
+assert('formatJyutpingCantonese: 發 k˧ → k8', formatJyutpingCantonese('k˧'), 'k8');
+
+// 陽入 2: 佛 ˨ → 9
+assert('formatJyutpingCantonese: 佛 k˨ → k9', formatJyutpingCantonese('k˨'), 'k9');
+
+// 陰去 33: 訓 ˧ → 3
+assert('formatJyutpingCantonese: 訓 ˧ → 3', formatJyutpingCantonese('˧'), '3');
+
+// 陽平 21: 墳 ˨˩ → 4
+assert('formatJyutpingCantonese: 墳 ˨˩ → 4', formatJyutpingCantonese('˨˩'), '4');
+
+// 陽上 13: 憤 ˩˧ → 5
+assert('formatJyutpingCantonese: 憤 ˩˧ → 5', formatJyutpingCantonese('˩˧'), '5');
+
+// 陽去 22: 份 ˨ → 6
+assert('formatJyutpingCantonese: 份 ˨ → 6', formatJyutpingCantonese('˨'), '6');
+
+// 上陰入 5: 忽 ˥ → 7
+assert('formatJyutpingCantonese: 忽 k˥ → k7', formatJyutpingCantonese('k˥'), 'k7');
+
+// 下陰入 3: 發 ˧ → 8
+assert('formatJyutpingCantonese: 發 k˧ → k8', formatJyutpingCantonese('k˧'), 'k8');
+
+// 陽入 2: 佛 ˨ → 6
+assert('formatJyutpingCantonese: 佛 k˨ → k9', formatJyutpingCantonese('k˨'), 'k9');
+
+// ============================================
 // Test formatYueJyutping (IPA → 粵拼)
 // 声母对照表例字测试
 // ============================================
