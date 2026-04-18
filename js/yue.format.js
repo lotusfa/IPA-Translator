@@ -71,6 +71,19 @@ function removeTones(ipa) {
   return result;
 }
 
+
+/**
+ * Normalize user-friendly IPA input
+ * Converts "kw" -> "kʷ" and "kwʰ" -> "kʷʰ" for better user experience
+ */
+function normalizeIPA(input) {
+  // Replace "kwʰ" with "kʷʰ" first (longer pattern)
+  input = input.replace(/kwʰ/g, 'kʷʰ');
+  // Replace "kw" with "kʷ" (but not if followed by a tone marker)
+  input = input.replace(/kw(?!˥|˧|˨|˩|˥˧|˧˥|˩˧|˨˩)/g, 'kʷ');
+  return input;
+}
+
 /**
  * Scheme mappings
  */
@@ -277,22 +290,27 @@ function processSegments(text, scheme) {
 // ============================================
 
 export function formatYueJyutping(text) {
+  text = normalizeIPA(text);
   return processSegments(text, 'jyutping');
 }
 
 export function formatYueGuangzhou(text) {
+  text = normalizeIPA(text);
   return processSegments(text, 'guangzhou');
 }
 
 export function formatYueAcademy(text) {
+  text = normalizeIPA(text);
   return processSegments(text, 'academy');
 }
 
 export function formatYueYale(text) {
+  text = normalizeIPA(text);
   return processSegments(text, 'yale');
 }
 
 export function formatYueLiu(text) {
+  text = normalizeIPA(text);
   return processSegments(text, 'liu');
 }
 
