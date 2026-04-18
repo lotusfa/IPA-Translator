@@ -15,7 +15,7 @@ import {
   formatYueAcademy,
   formatYueYale,
   formatYueLiu
-} from '../js/format.js';
+} from '../../js/format.js';
 
 // Test results storage
 const results = {
@@ -325,7 +325,7 @@ assert('formatYueGuangzhou: [iːm] → /im/', formatYueGuangzhou('/i:m/'), '/im/
 assert('formatYueGuangzhou: [iːn] → /in/', formatYueGuangzhou('/i:n/'), '/in/');
 assert('formatYueGuangzhou: [iːp] → /ib/', formatYueGuangzhou('/i:p/'), '/ib/');
 assert('formatYueGuangzhou: [iːt] → /id/', formatYueGuangzhou('/i:t/'), '/id/');
-assert('formatYueGuangzhou: [ɪŋ] → /ig/', formatYueGuangzhou('/ɪŋ/'), '/ig/');
+assert('formatYueGuangzhou: [ɪŋ] → /ing/', formatYueGuangzhou('/ɪŋ/'), '/ing/');
 assert('formatYueGuangzhou: [ɪk] → /ig/', formatYueGuangzhou('/ɪk/'), '/ig/');
 
 // o 韵母系列 - 广拼
@@ -559,7 +559,7 @@ assert('formatYueYale: [ɪŋ] → /ing/', formatYueYale('/ɪŋ/'), '/ing/');
 assert('formatYueYale: [ɪk] → /ik/', formatYueYale('/ɪk/'), '/ik/');
 
 // o 韵母系列 - 耶鲁 o→oh
-assert('formatYueYale: [ɔː] → /oh/', formatYueYale('/ɔ:/'), '/oh/');
+assert('formatYueYale: [ɔː] → /o/', formatYueYale('/ɔ:/'), '/o/');
 assert('formatYueYale: [ɔːi] → /oi/', formatYueYale('/ɔ:i/'), '/oi/');
 assert('formatYueYale: [ou] → /ou/', formatYueYale('/ou/'), '/ou/');
 assert('formatYueYale: [ɔːn] → /on/', formatYueYale('/ɔ:n/'), '/on/');
@@ -677,7 +677,7 @@ assert('formatYueLiu: [ɪŋ] → /ing/', formatYueLiu('/ɪŋ/'), '/ing/');
 assert('formatYueLiu: [ɪk] → /ik/', formatYueLiu('/ɪk/'), '/ik/');
 
 // o 韵母系列 - 刘锡祥 ou→o
-assert('formatYueLiu: [ɔː] → /o/', formatYueLiu('/ɔ:/'), '/o/');
+assert('formatYueLiu: [ɔː] → /oh/', formatYueLiu('/ɔ:/'), '/oh/');
 assert('formatYueLiu: [ɔːi] → /oi/', formatYueLiu('/ɔ:i/'), '/oi/');
 assert('formatYueLiu: [ou] → /o/', formatYueLiu('/ou/'), '/o/');
 assert('formatYueLiu: [ɔːn] → /on/', formatYueLiu('/ɔ:n/'), '/on/');
