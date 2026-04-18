@@ -115,12 +115,13 @@ const SCHEME_MAPS = {
       'm̩': 'm', 'ŋ̩': 'ng'
     }
   },
+
   guangzhou: {
     initials: {
       'p': 'b', 'pʰ': 'p', 'm': 'm', 'f': 'f',
       't': 'd', 'tʰ': 't', 'n': 'n', 'l': 'l',
       'k': 'g', 'kʰ': 'k', 'ŋ': 'ng', 'h': 'h',
-      'ts': 'z', 'tsʰ': 'c', 's': 's',
+      'ts': 'z/j', 'tsʰ': 'c/q', 's': 's/x',
       'kʷ': 'gu', 'kʷʰ': 'ku', 'j': 'y', 'w': 'w', 'ʔ': ''
     },
     vowels: {
@@ -131,17 +132,18 @@ const SCHEME_MAPS = {
       'ɛ:': 'é', 'ei': 'éi', 'ɛ:u': 'éo', 'ɛ:m': 'ém', 'ɛ:n': 'én', 'ɛ:ŋ': 'éng',
       'ɛ:p': 'éb', 'ɛ:t': 'éd', 'ɛ:k': 'ég',
       'i:': 'i', 'i:u': 'iu', 'i:m': 'im', 'i:n': 'in', 'i:p': 'ib', 'i:t': 'id',
-      'ɪŋ': 'ig', 'ɪk': 'ig',
+      'ɪŋ': 'ing', 'ɪk': 'ig',
       'ɔ:': 'o', 'ɔ:i': 'oi', 'ou': 'ou', 'ɔ:n': 'on', 'ɔ:ŋ': 'ong',
       'ɔ:t': 'od', 'ɔ:k': 'og',
       'u:': 'u', 'u:i': 'ui', 'u:n': 'un', 'u:t': 'ud',
       'ʊŋ': 'ung', 'ʊk': 'ug',
-      'œ:': 'ê', 'œ:ŋ': 'êng', 'œ:k': 'êg', 'œ:t': 'êd',
+      'œ:': 'ê', 'œ:ŋ': 'êng', 'œ:k': 'êg', 'œ:t': '-',
       'ɵy': 'êu', 'ɵn': 'ên', 'ɵt': 'êd',
       'y:': 'ü', 'y:n': 'ün', 'y:t': 'üd',
       'm̩': 'm', 'ŋ̩': 'ng'
     }
   },
+
   academy: {
     initials: {
       'p': 'b', 'pʰ': 'p', 'm': 'm', 'f': 'f',
@@ -169,6 +171,7 @@ const SCHEME_MAPS = {
       'm̩': 'm', 'ŋ̩': 'ng'
     }
   },
+
   yale: {
     initials: {
       'p': 'b', 'pʰ': 'p', 'm': 'm', 'f': 'f',
@@ -186,7 +189,8 @@ const SCHEME_MAPS = {
       'ɛ:p': 'ep', 'ɛ:t': 'et', 'ɛ:k': 'ek',
       'i:': 'i', 'i:u': 'iu', 'i:m': 'im', 'i:n': 'in', 'i:p': 'ip', 'i:t': 'it',
       'ɪŋ': 'ing', 'ɪk': 'ik',
-      'ɔ:': 'oh', 'ɔ:i': 'oi', 'ou': 'ou', 'ɔ:n': 'on', 'ɔ:ŋ': 'ong',
+      'ɔ:': 'o',
+      'ɔ:i': 'oi', 'ou': 'ou', 'ɔ:n': 'on', 'ɔ:ŋ': 'ong',
       'ɔ:t': 'ot', 'ɔ:k': 'ok',
       'u:': 'u', 'u:i': 'ui', 'u:n': 'un', 'u:t': 'ut',
       'ʊŋ': 'ung', 'ʊk': 'uk',
@@ -196,6 +200,7 @@ const SCHEME_MAPS = {
       'm̩': 'm', 'ŋ̩': 'ng'
     }
   },
+
   liu: {
     initials: {
       'p': 'b', 'pʰ': 'p', 'm': 'm', 'f': 'f',
@@ -213,7 +218,7 @@ const SCHEME_MAPS = {
       'ɛ:p': 'ep', 'ɛ:t': 'et', 'ɛ:k': 'ek',
       'i:': 'i', 'i:u': 'iu', 'i:m': 'im', 'i:n': 'in', 'i:p': 'ip', 'i:t': 'it',
       'ɪŋ': 'ing', 'ɪk': 'ik',
-      'ɔ:': 'o', 'ɔ:i': 'oi', 'ou': 'o', 'ɔ:n': 'on', 'ɔ:ŋ': 'ong',
+      'ɔ:': 'oh', 'ɔ:i': 'oi', 'ou': 'o', 'ɔ:n': 'on', 'ɔ:ŋ': 'ong',
       'ɔ:t': 'ot', 'ɔ:k': 'ok',
       'u:': 'oo', 'u:i': 'ooi', 'u:n': 'oon', 'u:t': 'oot',
       'ʊŋ': 'ung', 'ʊk': 'uk',
