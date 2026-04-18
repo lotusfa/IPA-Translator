@@ -152,13 +152,18 @@ function getTone(ipa) {
     if (ipa.includes(consonant + '˧')) return '8';
     if (ipa.includes(consonant + '˨')) return '9';
   }
-  // Check normal tones
+  // Check normal tones - multi-char tones first to avoid partial matches
   if (ipa.includes('˥˧') || ipa.includes('˥˥')) return '1';
   if (ipa.includes('˧˥')) return '2';
-  if (ipa.includes('˧')) return '3';
+  if (ipa.includes('˧˧')) return '3';
   if (ipa.includes('˨˩') || ipa.includes('˩˩')) return '4';
   if (ipa.includes('˩˧') || ipa.includes('˨˧')) return '5';
-  if (ipa.includes('˨˨') || ipa.includes('˨')) return '6';
+  if (ipa.includes('˨˨')) return '6';
+  // Single tone characters as fallback (after multi-char)
+  if (ipa.includes('˧')) return '3';
+  if (ipa.includes('˨')) return '6';
+  if (ipa.includes('˩')) return '4';
+  if (ipa.includes('˥')) return '1';
   return '';
 }
 
