@@ -286,69 +286,66 @@ function removeTones(ipa) {
 
 /**
  * Convert a single IPA syllable to Jyutping
+ * Decomposes IPA into initial + final and looks up each part
  */
 function ipaSylToJyutping(ipa) {
   const tone = getToneNum(ipa);
   const isEntering = /k˥|k˧|k˨|t˥|t˧|t˨|p˥|p˧|p˨/.test(ipa);
-  const base = removeTones(ipa);
 
-  // Try direct match first
+  // Strip tone marks to get base IPA
+  function stripTones(str) {
+    return str
+      .replace(/˥˧/g, '').replace(/˥˥/g, '')
+      .replace(/˧˥/g, '').replace(/˧˧/g, '').replace(/˧/g, '')
+      .replace(/˨˩/g, '').replace(/˩˩/g, '').replace(/˩˧/g, '').replace(/˨˧/g, '')
+      .replace(/˨˨/g, '').replace(/˨/g, '')
+      .replace(/˥/g, '').replace(/˩/g, '');
+  }
+
+  const base = stripTones(ipa);
+
+  // First try direct lookup (for complete syllables in map)
   if (IPA_SEG_TO_JYUTPING[base]) {
     let result = IPA_SEG_TO_JYUTPING[base];
-
-    // Add tone
     if (isEntering) {
-      // Determine entering tone (7/8/9) based on tone mark
-      if (ipa.match(/˥/)) result = result.replace(/[1-6]$/, '') + '7';
-      else if (ipa.match(/˧/)) result = result.replace(/[1-6]$/, '') + '8';
-      else if (ipa.match(/˨/)) result = result.replace(/[1-6]$/, '') + '9';
-    } else if (tone && !/[1-6]$/.test(result)) {
+      if (ipa.match(/˥/)) result += '7';
+      else if (ipa.match(/˧/)) result += '8';
+      else if (ipa.match(/˨/)) result += '9';
+    } else if (tone && tone > 0 && tone <= 6) {
       result += tone;
     }
-
     return result;
   }
 
-  // Try component-wise conversion
-  let result = '';
-  let remaining = base;
+  // Decompose into initial + final
+  const initials = ['kʷʰ', 'kʷ', 'tsʰ', 'ts', 'pʰ', 'tʰ', 'kʰ', 'ŋ', 'k', 'm', 'f', 'n', 'l', 'h', 's', 'j', 'w', 'p', 'd', 'g'];
+  let initial = '';
+  let finalPart = base;
 
-  // Try to match long patterns first
-  const patterns = [
-    'a:ŋ', 'a:n', 'a:m', 'a:u', 'a:i', 'a:k', 'a:t', 'a:p', 'a:',
-    'ɐŋ', 'ɐn', 'ɐm', 'ɐk', 'ɐt', 'ɐp', 'ɐu', 'ɐi',
-    'ɛ:ŋ', 'ɛ:n', 'ɛ:m', 'ɛ:k', 'ɛ:t', 'ɛ:p', 'ɛ:u', 'ɛ:',
-    'i:n', 'i:m', 'i:p', 'i:t', 'i:u', 'i:',
-    'ɪŋ', 'ɪk',
-    'ɔ:ŋ', 'ɔ:n', 'ɔ:k', 'ɔ:t', 'ɔ:i', 'ɔ:',
-    'ʊŋ', 'ʊk', 'u:n', 'u:i', 'u:t', 'u:',
-    'œ:ŋ', 'œ:k', 'œ:t', 'œ:',
-    'ɵy', 'ɵn', 'ɵt',
-    'y:n', 'y:t', 'y:',
-    'ei', 'ou', 'oi', 'iu', 'im', 'in', 'ing',
-    'ip', 'it', 'ik', 'um', 'ung', 'uk',
-    'oe', 'oeng', 'oek', 'oet',
-    'eoi', 'eon', 'eot', 'yun', 'yut',
-    'm̩', 'ŋ̩'
-  ];
-
-  for (const pat of patterns) {
-    if (remaining.includes(pat) && IPA_SEG_TO_JYUTPING[pat]) {
-      result = IPA_SEG_TO_JYUTPING[pat];
+  for (const init of initials) {
+    if (base.startsWith(init)) {
+      initial = IPA_SEG_TO_JYUTPING[init] || init;
+      finalPart = base.substring(init.length);
       break;
     }
   }
 
+  // Look up final
+  const finalMap = IPA_SEG_TO_JYUTPING[finalPart];
+
+  // Combine results
+  let result = initial + (finalMap || finalPart);
+
   // Add tone
   if (isEntering) {
-    if (ipa.match(/˥/)) { if (!/[789]$/.test(result)) result += '7'; }
-    else if (ipa.match(/˧/)) { if (!/[789]$/.test(result)) result += '8'; }
-    else if (ipa.match(/˨/)) { if (!/[789]$/.test(result)) result += '9'; }
-  } else if (tone && !/[1-6]$/.test(result)) {
+    if (ipa.match(/˥/)) result += '7';
+    else if (ipa.match(/˧/)) result += '8';
+    else if (ipa.match(/˨/)) result += '9';
+  } else if (tone && tone > 0 && tone <= 6) {
     result += tone;
   }
 
-  return result || base;
+  return result;
 }
 
 /**
@@ -363,6 +360,10 @@ export function formatYueJyutping(text) {
         const ipa = segment.substring(1, endSlash);
         const rest = segment.substring(endSlash);
         return '/' + ipaSylToJyutping(ipa) + rest;
+      } else if (endSlash === -1) {
+        // No closing slash - entire segment after first / is the IPA
+        const ipa = segment.substring(1);
+        return '/' + ipaSylToJyutping(ipa);
       }
     }
     return segment;
@@ -429,7 +430,7 @@ function jyutpingToGuangzhou(jyutping) {
     }
   }
 
-  const result = initial + jyutpingFinalToGuangzhou(base || finalPart);
+  const result = initial + jyutpingFinalToGuangzhou(finalPart);
   return tone ? result + tone : result;
 }
 
@@ -486,7 +487,7 @@ function jyutpingToAcademy(jyutping) {
     }
   }
 
-  const result = initial + jyutpingFinalToAcademy(base || finalPart);
+  const result = initial + jyutpingFinalToAcademy(finalPart);
   return tone ? result + tone : result;
 }
 
@@ -543,19 +544,8 @@ function jyutpingToYale(jyutping) {
     }
   }
 
-  let result = initial + jyutpingFinalToYale(base || finalPart);
-
-  // Add Yale tone marks
-  if (tone) {
-    if (tone === 1) result = result.replace(/^(.*?)([aeiouüêœ])/i, '$1ā');
-    else if (tone === 2) result = result.replace(/^(.*?)([aeiouüêœ])/i, '$1á');
-    else if (tone === 3) result = result.replace(/^(.*?)([aeiouüêœ])/i, '$1a');
-    else if (tone === 4) result = result.replace(/^(.*?)([aeiouüêœ])/i, '$1à') + 'h';
-    else if (tone === 5) result = result.replace(/^(.*?)([aeiouüêœ])/i, '$1á') + 'h';
-    else if (tone === 6) result = result.replace(/^(.*?)([aeiouüêœ])/i, '$1à') + 'h';
-  }
-
-  return result;
+  const result = initial + jyutpingFinalToYale(finalPart);
+  return tone ? result + tone : result;
 }
 
 /**
@@ -611,7 +601,7 @@ function jyutpingToLiu(jyutping) {
     }
   }
 
-  const result = initial + jyutpingFinalToLiu(base || finalPart);
+  const result = initial + jyutpingFinalToLiu(finalPart);
   return tone ? result + tone : result;
 }
 
@@ -663,72 +653,104 @@ export function formatYueOutput(text, options = {}) {
 
 /**
  * Format Cantonese to Guangzhou (廣拼)
+ * Accepts either IPA (with slashes) or plain Jyutping
  */
 export function formatYueGuangzhou(text) {
-  const jyutping = formatYueJyutping(text);
-  return jyutping.split(/(?=\/)/g).map(segment => {
-    if (segment.startsWith('/')) {
-      const endSlash = segment.indexOf('/', 1);
-      if (endSlash > 0) {
-        const jp = segment.substring(1, endSlash);
-        const rest = segment.substring(endSlash);
-        return '/' + jyutpingToGuangzhou(jp) + rest;
+  // Detect if input is IPA (with slashes) or plain Jyutping
+  if (text.includes('/')) {
+    // IPA input - convert to Jyutping first
+    const jyutping = formatYueJyutping(text);
+    return jyutping.split(/(?=\/)/g).map(segment => {
+      if (segment.startsWith('/')) {
+        const endSlash = segment.indexOf('/', 1);
+        if (endSlash > 0) {
+          const jp = segment.substring(1, endSlash);
+          const rest = segment.substring(endSlash);
+          return '/' + jyutpingToGuangzhou(jp) + rest;
+        }
       }
-    }
-    return segment;
-  }).join('');
+      return segment;
+    }).join('');
+  } else {
+    // Plain Jyutping input - convert directly
+    return jyutpingToGuangzhou(text);
+  }
 }
 
 /**
  * Format Cantonese to Academy (教院)
+ * Accepts either IPA (with slashes) or plain Jyutping
  */
 export function formatYueAcademy(text) {
-  const jyutping = formatYueJyutping(text);
-  return jyutping.split(/(?=\/)/g).map(segment => {
-    if (segment.startsWith('/')) {
-      const endSlash = segment.indexOf('/', 1);
-      if (endSlash > 0) {
-        const jp = segment.substring(1, endSlash);
-        const rest = segment.substring(endSlash);
-        return '/' + jyutpingToAcademy(jp) + rest;
+  // Detect if input is IPA (with slashes) or plain Jyutping
+  if (text.includes('/')) {
+    // IPA input - convert to Jyutping first
+    const jyutping = formatYueJyutping(text);
+    return jyutping.split(/(?=\/)/g).map(segment => {
+      if (segment.startsWith('/')) {
+        const endSlash = segment.indexOf('/', 1);
+        if (endSlash > 0) {
+          const jp = segment.substring(1, endSlash);
+          const rest = segment.substring(endSlash);
+          return '/' + jyutpingToAcademy(jp) + rest;
+        }
       }
-    }
-    return segment;
-  }).join('');
+      return segment;
+    }).join('');
+  } else {
+    // Plain Jyutping input - convert directly
+    return jyutpingToAcademy(text);
+  }
 }
 
 /**
  * Format Cantonese to Yale (耶魯)
+ * Accepts either IPA (with slashes) or plain Jyutping
  */
 export function formatYueYale(text) {
-  const jyutping = formatYueJyutping(text);
-  return jyutping.split(/(?=\/)/g).map(segment => {
-    if (segment.startsWith('/')) {
-      const endSlash = segment.indexOf('/', 1);
-      if (endSlash > 0) {
-        const jp = segment.substring(1, endSlash);
-        const rest = segment.substring(endSlash);
-        return '/' + jyutpingToYale(jp) + rest;
+  // Detect if input is IPA (with slashes) or plain Jyutping
+  if (text.includes('/')) {
+    // IPA input - convert to Jyutping first
+    const jyutping = formatYueJyutping(text);
+    return jyutping.split(/(?=\/)/g).map(segment => {
+      if (segment.startsWith('/')) {
+        const endSlash = segment.indexOf('/', 1);
+        if (endSlash > 0) {
+          const jp = segment.substring(1, endSlash);
+          const rest = segment.substring(endSlash);
+          return '/' + jyutpingToYale(jp) + rest;
+        }
       }
-    }
-    return segment;
-  }).join('');
+      return segment;
+    }).join('');
+  } else {
+    // Plain Jyutping input - convert directly
+    return jyutpingToYale(text);
+  }
 }
 
 /**
  * Format Cantonese to Liu (劉錫祥)
+ * Accepts either IPA (with slashes) or plain Jyutping
  */
 export function formatYueLiu(text) {
-  const jyutping = formatYueJyutping(text);
-  return jyutping.split(/(?=\/)/g).map(segment => {
-    if (segment.startsWith('/')) {
-      const endSlash = segment.indexOf('/', 1);
-      if (endSlash > 0) {
-        const jp = segment.substring(1, endSlash);
-        const rest = segment.substring(endSlash);
-        return '/' + jyutpingToLiu(jp) + rest;
+  // Detect if input is IPA (with slashes) or plain Jyutping
+  if (text.includes('/')) {
+    // IPA input - convert to Jyutping first
+    const jyutping = formatYueJyutping(text);
+    return jyutping.split(/(?=\/)/g).map(segment => {
+      if (segment.startsWith('/')) {
+        const endSlash = segment.indexOf('/', 1);
+        if (endSlash > 0) {
+          const jp = segment.substring(1, endSlash);
+          const rest = segment.substring(endSlash);
+          return '/' + jyutpingToLiu(jp) + rest;
+        }
       }
-    }
-    return segment;
-  }).join('');
+      return segment;
+    }).join('');
+  } else {
+    // Plain Jyutping input - convert directly
+    return jyutpingToLiu(text);
+  }
 }
