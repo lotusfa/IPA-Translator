@@ -658,23 +658,45 @@ export function formatYueOutput(text, options = {}) {
 export function formatYueGuangzhou(text) {
   // Detect if input is IPA (with slashes) or plain Jyutping
   if (text.includes('/')) {
-    // IPA input - convert to Jyutping first
-    const jyutping = formatYueJyutping(text);
-    return jyutping.split(/(?=\/)/g).map(segment => {
-      if (segment.startsWith('/')) {
-        const endSlash = segment.indexOf('/', 1);
-        if (endSlash > 0) {
-          const jp = segment.substring(1, endSlash);
-          const rest = segment.substring(endSlash);
-          return '/' + jyutpingToGuangzhou(jp) + rest;
-        }
-      }
-      return segment;
-    }).join('');
+    // Input with slashes - check if it's IPA format
+    const hasIPATones = /˥|˧|˨|˩/.test(text);
+    const hasIPALongVowel = /:/.test(text); // IPA long vowel marker (e.g., a:)
+
+    if (hasIPATones || hasIPALongVowel) {
+      // IPA input - convert to Jyutping first
+      const jyutping = formatYueJyutping(text);
+      return processSlashSegments(jyutping, jyutpingToGuangzhou);
+    } else {
+      // Already Jyutping format with slashes - convert directly
+      return processSlashSegments(text, jyutpingToGuangzhou);
+    }
   } else {
     // Plain Jyutping input - convert directly
     return jyutpingToGuangzhou(text);
   }
+}
+
+/**
+ * Helper to process segments between slashes
+ */
+function processSlashSegments(text, converter) {
+  return text.split(/(?=\/)/g).map(segment => {
+    if (segment.startsWith('/')) {
+      const endSlash = segment.indexOf('/', 1);
+      if (endSlash > 1) {
+        // Has content between slashes (e.g., /aa/)
+        const jp = segment.substring(1, endSlash);
+        const rest = segment.substring(endSlash);
+        return '/' + converter(jp) + rest;
+      } else if (endSlash === -1) {
+        // No closing slash - entire segment after first / is the content
+        const jp = segment.substring(1);
+        return '/' + converter(jp);
+      }
+      // endSlash === 1 means just / followed by non-IPA content, skip conversion
+    }
+    return segment;
+  }).join('');
 }
 
 /**
@@ -684,19 +706,18 @@ export function formatYueGuangzhou(text) {
 export function formatYueAcademy(text) {
   // Detect if input is IPA (with slashes) or plain Jyutping
   if (text.includes('/')) {
-    // IPA input - convert to Jyutping first
-    const jyutping = formatYueJyutping(text);
-    return jyutping.split(/(?=\/)/g).map(segment => {
-      if (segment.startsWith('/')) {
-        const endSlash = segment.indexOf('/', 1);
-        if (endSlash > 0) {
-          const jp = segment.substring(1, endSlash);
-          const rest = segment.substring(endSlash);
-          return '/' + jyutpingToAcademy(jp) + rest;
-        }
-      }
-      return segment;
-    }).join('');
+    // Input with slashes - check if it's IPA format
+    const hasIPATones = /˥|˧|˨|˩/.test(text);
+    const hasIPALongVowel = /:/.test(text); // IPA long vowel marker
+
+    if (hasIPATones || hasIPALongVowel) {
+      // IPA input - convert to Jyutping first
+      const jyutping = formatYueJyutping(text);
+      return processSlashSegments(jyutping, jyutpingToAcademy);
+    } else {
+      // Already Jyutping format with slashes - convert directly
+      return processSlashSegments(text, jyutpingToAcademy);
+    }
   } else {
     // Plain Jyutping input - convert directly
     return jyutpingToAcademy(text);
@@ -710,19 +731,18 @@ export function formatYueAcademy(text) {
 export function formatYueYale(text) {
   // Detect if input is IPA (with slashes) or plain Jyutping
   if (text.includes('/')) {
-    // IPA input - convert to Jyutping first
-    const jyutping = formatYueJyutping(text);
-    return jyutping.split(/(?=\/)/g).map(segment => {
-      if (segment.startsWith('/')) {
-        const endSlash = segment.indexOf('/', 1);
-        if (endSlash > 0) {
-          const jp = segment.substring(1, endSlash);
-          const rest = segment.substring(endSlash);
-          return '/' + jyutpingToYale(jp) + rest;
-        }
-      }
-      return segment;
-    }).join('');
+    // Input with slashes - check if it's IPA format
+    const hasIPATones = /˥|˧|˨|˩/.test(text);
+    const hasIPALongVowel = /:/.test(text); // IPA long vowel marker
+
+    if (hasIPATones || hasIPALongVowel) {
+      // IPA input - convert to Jyutping first
+      const jyutping = formatYueJyutping(text);
+      return processSlashSegments(jyutping, jyutpingToYale);
+    } else {
+      // Already Jyutping format with slashes - convert directly
+      return processSlashSegments(text, jyutpingToYale);
+    }
   } else {
     // Plain Jyutping input - convert directly
     return jyutpingToYale(text);
@@ -736,19 +756,18 @@ export function formatYueYale(text) {
 export function formatYueLiu(text) {
   // Detect if input is IPA (with slashes) or plain Jyutping
   if (text.includes('/')) {
-    // IPA input - convert to Jyutping first
-    const jyutping = formatYueJyutping(text);
-    return jyutping.split(/(?=\/)/g).map(segment => {
-      if (segment.startsWith('/')) {
-        const endSlash = segment.indexOf('/', 1);
-        if (endSlash > 0) {
-          const jp = segment.substring(1, endSlash);
-          const rest = segment.substring(endSlash);
-          return '/' + jyutpingToLiu(jp) + rest;
-        }
-      }
-      return segment;
-    }).join('');
+    // Input with slashes - check if it's IPA format
+    const hasIPATones = /˥|˧|˨|˩/.test(text);
+    const hasIPALongVowel = /:/.test(text); // IPA long vowel marker
+
+    if (hasIPATones || hasIPALongVowel) {
+      // IPA input - convert to Jyutping first
+      const jyutping = formatYueJyutping(text);
+      return processSlashSegments(jyutping, jyutpingToLiu);
+    } else {
+      // Already Jyutping format with slashes - convert directly
+      return processSlashSegments(text, jyutpingToLiu);
+    }
   } else {
     // Plain Jyutping input - convert directly
     return jyutpingToLiu(text);

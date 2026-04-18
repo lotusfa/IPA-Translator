@@ -400,6 +400,270 @@ assert('formatYueLiu: yun → uen', formatYueLiu('yun1'), 'uen1');
 assert('formatYueLiu: yut → uet', formatYueLiu('yut1'), 'uet1');
 
 // ============================================
+// Test IPA → Different Schemes (声母对照表例字)
+// ============================================
+console.log('\n=== Testing IPA → Different Schemes (声母对照表) ===');
+
+// 声母对照表例字测试
+// 巴 [p] → 粵拼:b, 廣拼:b, 教院:b, 耶魯:b, 劉錫祥:b
+assert('formatYueJyutping(/p/): /b/', formatYueJyutping('/p/'), '/b/');
+assert('formatYueGuangzhou(/p/): /b/', formatYueGuangzhou('/p/'), '/b/');
+assert('formatYueAcademy(/p/): /b/', formatYueAcademy('/p/'), '/b/');
+assert('formatYueYale(/p/): /b/', formatYueYale('/p/'), '/b/');
+assert('formatYueLiu(/p/): /b/', formatYueLiu('/p/'), '/b/');
+
+// 趴 [pʰ] → 粵拼:p, 廣拼:p, 教院:p, 耶魯:p, 劉錫祥:p
+assert('formatYueJyutping(/pʰ/): /p/', formatYueJyutping('/pʰ/'), '/p/');
+assert('formatYueGuangzhou(/pʰ/): /p/', formatYueGuangzhou('/pʰ/'), '/p/');
+assert('formatYueAcademy(/pʰ/): /p/', formatYueAcademy('/pʰ/'), '/p/');
+assert('formatYueYale(/pʰ/): /p/', formatYueYale('/pʰ/'), '/p/');
+assert('formatYueLiu(/pʰ/): /p/', formatYueLiu('/pʰ/'), '/p/');
+
+// 媽 [m] → 粵拼:m, 廣拼:m, 教院:m, 耶魯:m, 劉錫祥:m
+assert('formatYueJyutping(/m/): /m/', formatYueJyutping('/m/'), '/m/');
+assert('formatYueGuangzhou(/m/): /m/', formatYueGuangzhou('/m/'), '/m/');
+assert('formatYueAcademy(/m/): /m/', formatYueAcademy('/m/'), '/m/');
+assert('formatYueYale(/m/): /m/', formatYueYale('/m/'), '/m/');
+assert('formatYueLiu(/m/): /m/', formatYueLiu('/m/'), '/m/');
+
+// 花 [f] → 粵拼:f, 廣拼:f, 教院:f, 耶魯:f, 劉錫祥:f
+assert('formatYueJyutping(/f/): /f/', formatYueJyutping('/f/'), '/f/');
+assert('formatYueGuangzhou(/f/): /f/', formatYueGuangzhou('/f/'), '/f/');
+assert('formatYueAcademy(/f/): /f/', formatYueAcademy('/f/'), '/f/');
+assert('formatYueYale(/f/): /f/', formatYueYale('/f/'), '/f/');
+assert('formatYueLiu(/f/): /f/', formatYueLiu('/f/'), '/f/');
+
+// 打 [t] → 粵拼:d, 廣拼:d, 教院:d, 耶魯:d, 劉錫祥:d
+assert('formatYueJyutping(/t/): /d/', formatYueJyutping('/t/'), '/d/');
+assert('formatYueGuangzhou(/t/): /d/', formatYueGuangzhou('/t/'), '/d/');
+assert('formatYueAcademy(/t/): /d/', formatYueAcademy('/t/'), '/d/');
+assert('formatYueYale(/t/): /d/', formatYueYale('/t/'), '/d/');
+assert('formatYueLiu(/t/): /d/', formatYueLiu('/t/'), '/d/');
+
+// 他 [tʰ] → 粵拼:t, 廣拼:t, 教院:t, 耶魯:t, 劉錫祥:t
+assert('formatYueJyutping(/tʰ/): /t/', formatYueJyutping('/tʰ/'), '/t/');
+assert('formatYueGuangzhou(/tʰ/): /t/', formatYueGuangzhou('/tʰ/'), '/t/');
+assert('formatYueAcademy(/tʰ/): /t/', formatYueAcademy('/tʰ/'), '/t/');
+assert('formatYueYale(/tʰ/): /t/', formatYueYale('/tʰ/'), '/t/');
+assert('formatYueLiu(/tʰ/): /t/', formatYueLiu('/tʰ/'), '/t/');
+
+// 拿 [n] → 粵拼:n, 廣拼:n, 教院:n, 耶魯:n, 劉錫祥:n
+assert('formatYueJyutping(/n/): /n/', formatYueJyutping('/n/'), '/n/');
+assert('formatYueGuangzhou(/n/): /n/', formatYueGuangzhou('/n/'), '/n/');
+assert('formatYueAcademy(/n/): /n/', formatYueAcademy('/n/'), '/n/');
+assert('formatYueYale(/n/): /n/', formatYueYale('/n/'), '/n/');
+assert('formatYueLiu(/n/): /n/', formatYueLiu('/n/'), '/n/');
+
+// 啦 [l] → 粵拼:l, 廣拼:l, 教院:l, 耶魯:l, 劉錫祥:l
+assert('formatYueJyutping(/l/): /l/', formatYueJyutping('/l/'), '/l/');
+assert('formatYueGuangzhou(/l/): /l/', formatYueGuangzhou('/l/'), '/l/');
+assert('formatYueAcademy(/l/): /l/', formatYueAcademy('/l/'), '/l/');
+assert('formatYueYale(/l/): /l/', formatYueYale('/l/'), '/l/');
+assert('formatYueLiu(/l/): /l/', formatYueLiu('/l/'), '/l/');
+
+// 家 [k] → 粵拼:g, 廣拼:g, 教院:g, 耶魯:g, 劉錫祥:g
+assert('formatYueJyutping(/k/): /g/', formatYueJyutping('/k/'), '/g/');
+assert('formatYueGuangzhou(/k/): /g/', formatYueGuangzhou('/k/'), '/g/');
+assert('formatYueAcademy(/k/): /g/', formatYueAcademy('/k/'), '/g/');
+assert('formatYueYale(/k/): /g/', formatYueYale('/k/'), '/g/');
+assert('formatYueLiu(/k/): /g/', formatYueLiu('/k/'), '/g/');
+
+// 卡 [kʰ] → 粵拼:k, 廣拼:k, 教院:k, 耶魯:k, 劉錫祥:k
+assert('formatYueJyutping(/kʰ/): /k/', formatYueJyutping('/kʰ/'), '/k/');
+assert('formatYueGuangzhou(/kʰ/): /k/', formatYueGuangzhou('/kʰ/'), '/k/');
+assert('formatYueAcademy(/kʰ/): /k/', formatYueAcademy('/kʰ/'), '/k/');
+assert('formatYueYale(/kʰ/): /k/', formatYueYale('/kʰ/'), '/k/');
+assert('formatYueLiu(/kʰ/): /k/', formatYueLiu('/kʰ/'), '/k/');
+
+// 牙 [ŋ] → 粵拼:ng, 廣拼:ng, 教院:ng, 耶魯:ng, 劉錫祥:ng
+assert('formatYueJyutping(/ŋ/): /ng/', formatYueJyutping('/ŋ/'), '/ng/');
+assert('formatYueGuangzhou(/ŋ/): /ng/', formatYueGuangzhou('/ŋ/'), '/ng/');
+assert('formatYueAcademy(/ŋ/): /ng/', formatYueAcademy('/ŋ/'), '/ng/');
+assert('formatYueYale(/ŋ/): /ng/', formatYueYale('/ŋ/'), '/ng/');
+assert('formatYueLiu(/ŋ/): /ng/', formatYueLiu('/ŋ/'), '/ng/');
+
+// 哈 [h] → 粵拼:h, 廣拼:h, 教院:h, 耶魯:h, 劉錫祥:h
+assert('formatYueJyutping(/h/): /h/', formatYueJyutping('/h/'), '/h/');
+assert('formatYueGuangzhou(/h/): /h/', formatYueGuangzhou('/h/'), '/h/');
+assert('formatYueAcademy(/h/): /h/', formatYueAcademy('/h/'), '/h/');
+assert('formatYueYale(/h/): /h/', formatYueYale('/h/'), '/h/');
+assert('formatYueLiu(/h/): /h/', formatYueLiu('/h/'), '/h/');
+
+// 渣 [ts] → 粵拼:z, 廣拼:z/j, 教院:dz, 耶魯:j, 劉錫祥:j
+assert('formatYueJyutping(/ts/): /z/', formatYueJyutping('/ts/'), '/z/');
+assert('formatYueGuangzhou(/ts/): /z/', formatYueGuangzhou('/ts/'), '/z/');
+assert('formatYueAcademy(/ts/): /dz/', formatYueAcademy('/ts/'), '/dz/');
+assert('formatYueYale(/ts/): /j/', formatYueYale('/ts/'), '/j/');
+assert('formatYueLiu(/ts/): /j/', formatYueLiu('/ts/'), '/j/');
+
+// 差 [tsʰ] → 粵拼:c, 廣拼:c/q, 教院:ts, 耶魯:ch, 劉錫祥:ch
+assert('formatYueJyutping(/tsʰ/): /c/', formatYueJyutping('/tsʰ/'), '/c/');
+assert('formatYueGuangzhou(/tsʰ/): /c/', formatYueGuangzhou('/tsʰ/'), '/c/');
+assert('formatYueAcademy(/tsʰ/): /ts/', formatYueAcademy('/tsʰ/'), '/ts/');
+assert('formatYueYale(/tsʰ/): /ch/', formatYueYale('/tsʰ/'), '/ch/');
+assert('formatYueLiu(/tsʰ/): /ch/', formatYueLiu('/tsʰ/'), '/ch/');
+
+// 沙 [s] → 粵拼:s, 廣拼:s/x, 教院:s, 耶魯:s, 劉錫祥:s
+assert('formatYueJyutping(/s/): /s/', formatYueJyutping('/s/'), '/s/');
+assert('formatYueGuangzhou(/s/): /s/', formatYueGuangzhou('/s/'), '/s/');
+assert('formatYueAcademy(/s/): /s/', formatYueAcademy('/s/'), '/s/');
+assert('formatYueYale(/s/): /s/', formatYueYale('/s/'), '/s/');
+assert('formatYueLiu(/s/): /s/', formatYueLiu('/s/'), '/s/');
+
+// 瓜 [kʷ] → 粵拼:gw, 廣拼:gu, 教院:gw, 耶魯:gw, 劉錫祥:gw
+assert('formatYueJyutping(/kʷ/): /gw/', formatYueJyutping('/kʷ/'), '/gw/');
+assert('formatYueGuangzhou(/kʷ/): /gu/', formatYueGuangzhou('/kʷ/'), '/gu/');
+assert('formatYueAcademy(/kʷ/): /gw/', formatYueAcademy('/kʷ/'), '/gw/');
+assert('formatYueYale(/kʷ/): /gw/', formatYueYale('/kʷ/'), '/gw/');
+assert('formatYueLiu(/kʷ/): /gw/', formatYueLiu('/kʷ/'), '/gw/');
+
+// 夸 [kʷʰ] → 粵拼:kw, 廣拼:ku, 教院:kw, 耶魯:kw, 劉錫祥:kw
+assert('formatYueJyutping(/kʷʰ/): /kw/', formatYueJyutping('/kʷʰ/'), '/kw/');
+assert('formatYueGuangzhou(/kʷʰ/): /ku/', formatYueGuangzhou('/kʷʰ/'), '/ku/');
+assert('formatYueAcademy(/kʷʰ/): /kw/', formatYueAcademy('/kʷʰ/'), '/kw/');
+assert('formatYueYale(/kʷʰ/): /kw/', formatYueYale('/kʷʰ/'), '/kw/');
+assert('formatYueLiu(/kʷʰ/): /kw/', formatYueLiu('/kʷʰ/'), '/kw/');
+
+// 也 [j] → 粵拼:j, 廣拼:y, 教院:j, 耶魯:y, 劉錫祥:y
+assert('formatYueJyutping(/j/): /j/', formatYueJyutping('/j/'), '/j/');
+assert('formatYueGuangzhou(/j/): /y/', formatYueGuangzhou('/j/'), '/y/');
+assert('formatYueAcademy(/j/): /j/', formatYueAcademy('/j/'), '/j/');
+assert('formatYueYale(/j/): /y/', formatYueYale('/j/'), '/y/');
+assert('formatYueLiu(/j/): /y/', formatYueLiu('/j/'), '/y/');
+
+// 蛙 [w] → 粵拼:w, 廣拼:w, 教院:w, 耶魯:w, 劉錫祥:w
+assert('formatYueJyutping(/w/): /w/', formatYueJyutping('/w/'), '/w/');
+assert('formatYueGuangzhou(/w/): /w/', formatYueGuangzhou('/w/'), '/w/');
+assert('formatYueAcademy(/w/): /w/', formatYueAcademy('/w/'), '/w/');
+assert('formatYueYale(/w/): /w/', formatYueYale('/w/'), '/w/');
+assert('formatYueLiu(/w/): /w/', formatYueLiu('/w/'), '/w/');
+
+// ============================================
+// Test IPA → Different Schemes (韵母对照表例字)
+// ============================================
+console.log('\n=== Testing IPA → Different Schemes (韵母对照表) ===');
+
+// 韻母對照表例字测试
+// 啊 [aː] → 粵拼:aa, 廣拼:a, 教院:aa, 耶魯:a, 劉錫祥:a
+assert('formatYueJyutping(/a:/): /aa/', formatYueJyutping('/a:/'), '/aa/');
+assert('formatYueGuangzhou(/a:/): /a/', formatYueGuangzhou('/a:/'), '/a/');
+assert('formatYueAcademy(/a:/): /aa/', formatYueAcademy('/a:/'), '/aa/');
+assert('formatYueYale(/a:/): /a/', formatYueYale('/a:/'), '/a/');
+assert('formatYueLiu(/a:/): /a/', formatYueLiu('/a:/'), '/a/');
+
+// 挨 [aːi] → 粵拼:aai, 廣拼:ai, 教院:aai, 耶魯:aai, 劉錫祥:aai
+assert('formatYueJyutping(/a:i/): /aai/', formatYueJyutping('/a:i/'), '/aai/');
+assert('formatYueGuangzhou(/a:i/): /ai/', formatYueGuangzhou('/a:i/'), '/ai/');
+assert('formatYueAcademy(/a:i/): /aai/', formatYueAcademy('/a:i/'), '/aai/');
+assert('formatYueYale(/a:i/): /aai/', formatYueYale('/a:i/'), '/aai/');
+assert('formatYueLiu(/a:i/): /aai/', formatYueLiu('/a:i/'), '/aai/');
+
+// 啱 [aːm] → 粵拼:aam, 廣拼:am, 教院:aam, 耶魯:aam, 劉錫祥:aam
+assert('formatYueJyutping(/a:m/): /aam/', formatYueJyutping('/a:m/'), '/aam/');
+assert('formatYueGuangzhou(/a:m/): /am/', formatYueGuangzhou('/a:m/'), '/am/');
+assert('formatYueAcademy(/a:m/): /aam/', formatYueAcademy('/a:m/'), '/aam/');
+assert('formatYueYale(/a:m/): /aam/', formatYueYale('/a:m/'), '/aam/');
+assert('formatYueLiu(/a:m/): /aam/', formatYueLiu('/a:m/'), '/aam/');
+
+// 晏 [aːn] → 粵拼:aan, 廣拼:an, 教院:aan, 耶魯:aan, 劉錫祥:aan
+assert('formatYueJyutping(/a:n/): /aan/', formatYueJyutping('/a:n/'), '/aan/');
+assert('formatYueGuangzhou(/a:n/): /an/', formatYueGuangzhou('/a:n/'), '/an/');
+assert('formatYueAcademy(/a:n/): /aan/', formatYueAcademy('/a:n/'), '/aan/');
+assert('formatYueYale(/a:n/): /aan/', formatYueYale('/a:n/'), '/aan/');
+assert('formatYueLiu(/a:n/): /aan/', formatYueLiu('/a:n/'), '/aan/');
+
+// 罌 [aːŋ] → 粵拼:aang, 廣拼:ang, 教院:aang, 耶魯:aang, 劉錫祥:aang
+assert('formatYueJyutping(/a:ŋ/): /aang/', formatYueJyutping('/a:ŋ/'), '/aang/');
+assert('formatYueGuangzhou(/a:ŋ/): /ang/', formatYueGuangzhou('/a:ŋ/'), '/ang/');
+assert('formatYueAcademy(/a:ŋ/): /aang/', formatYueAcademy('/a:ŋ/'), '/aang/');
+assert('formatYueYale(/a:ŋ/): /aang/', formatYueYale('/a:ŋ/'), '/aang/');
+assert('formatYueLiu(/a:ŋ/): /aang/', formatYueLiu('/a:ŋ/'), '/aang/');
+
+// 鴨 [aːp] → 粵拼:aap, 廣拼:ab, 教院:aap, 耶魯:aap, 劉錫祥:aap
+assert('formatYueJyutping(/a:p/): /aap/', formatYueJyutping('/a:p/'), '/aap/');
+assert('formatYueGuangzhou(/a:p/): /ab/', formatYueGuangzhou('/a:p/'), '/ab/');
+assert('formatYueAcademy(/a:p/): /aap/', formatYueAcademy('/a:p/'), '/aap/');
+assert('formatYueYale(/a:p/): /aap/', formatYueYale('/a:p/'), '/aap/');
+assert('formatYueLiu(/a:p/): /aap/', formatYueLiu('/a:p/'), '/aap/');
+
+// 壓 [aːt] → 粵拼:aat, 廣拼:ad, 教院:aat, 耶魯:aat, 劉錫祥:aat
+assert('formatYueJyutping(/a:t/): /aat/', formatYueJyutping('/a:t/'), '/aat/');
+assert('formatYueGuangzhou(/a:t/): /ad/', formatYueGuangzhou('/a:t/'), '/ad/');
+assert('formatYueAcademy(/a:t/): /aat/', formatYueAcademy('/a:t/'), '/aat/');
+assert('formatYueYale(/a:t/): /aat/', formatYueYale('/a:t/'), '/aat/');
+assert('formatYueLiu(/a:t/): /aat/', formatYueLiu('/a:t/'), '/aat/');
+
+// 軛 [aːk] → 粵拼:aak, 廣拼:ag, 教院:aak, 耶魯:aak, 劉錫祥:aak
+assert('formatYueJyutping(/a:k/): /aak/', formatYueJyutping('/a:k/'), '/aak/');
+assert('formatYueGuangzhou(/a:k/): /ag/', formatYueGuangzhou('/a:k/'), '/ag/');
+assert('formatYueAcademy(/a:k/): /aak/', formatYueAcademy('/a:k/'), '/aak/');
+assert('formatYueYale(/a:k/): /aak/', formatYueYale('/a:k/'), '/aak/');
+assert('formatYueLiu(/a:k/): /aak/', formatYueLiu('/a:k/'), '/aak/');
+
+// 歐 [ɐu] → 粵拼:au, 廣拼:eo, 教院:au, 耶魯:au, 劉錫祥:au
+assert('formatYueJyutping(/ɐu/): /au/', formatYueJyutping('/ɐu/'), '/au/');
+assert('formatYueGuangzhou(/ɐu/): /eo/', formatYueGuangzhou('/ɐu/'), '/eo/');
+assert('formatYueAcademy(/ɐu/): /au/', formatYueAcademy('/ɐu/'), '/au/');
+assert('formatYueYale(/ɐu/): /au/', formatYueYale('/ɐu/'), '/au/');
+assert('formatYueLiu(/ɐu/): /au/', formatYueLiu('/ɐu/'), '/au/');
+
+// 衣 [iː] → 粵拼:i, 廣拼:i, 教院:i, 耶魯:i, 劉錫祥:i
+assert('formatYueJyutping(/i:/): /i/', formatYueJyutping('/i:/'), '/i/');
+assert('formatYueGuangzhou(/i:/): /i/', formatYueGuangzhou('/i:/'), '/i/');
+assert('formatYueAcademy(/i:/): /i/', formatYueAcademy('/i:/'), '/i/');
+assert('formatYueYale(/i:/): /i/', formatYueYale('/i:/'), '/i/');
+assert('formatYueLiu(/i:/): /i/', formatYueLiu('/i:/'), '/i/');
+
+// 腰 [iːu] → 粵拼:iu, 廣拼:iu, 教院:iu, 耶魯:iu, 劉錫祥:iu
+assert('formatYueJyutping(/i:u/): /iu/', formatYueJyutping('/i:u/'), '/iu/');
+assert('formatYueGuangzhou(/i:u/): /iu/', formatYueGuangzhou('/i:u/'), '/iu/');
+assert('formatYueAcademy(/i:u/): /iu/', formatYueAcademy('/i:u/'), '/iu/');
+assert('formatYueYale(/i:u/): /iu/', formatYueYale('/i:u/'), '/iu/');
+assert('formatYueLiu(/i:u/): /iu/', formatYueLiu('/i:u/'), '/iu/');
+
+// 安 [ɔːn] → 粵拼:on, 廣拼:on, 教院:on, 耶魯:on, 劉錫祥:on
+assert('formatYueJyutping(/ɔ:n/): /on/', formatYueJyutping('/ɔ:n/'), '/on/');
+assert('formatYueGuangzhou(/ɔ:n/): /on/', formatYueGuangzhou('/ɔ:n/'), '/on/');
+assert('formatYueAcademy(/ɔ:n/): /on/', formatYueAcademy('/ɔ:n/'), '/on/');
+assert('formatYueYale(/ɔ:n/): /on/', formatYueYale('/ɔ:n/'), '/on/');
+assert('formatYueLiu(/ɔ:n/): /on/', formatYueLiu('/ɔ:n/'), '/on/');
+
+// 烏 [uː] → 粵拼:u, 廣拼:u, 教院:u, 耶魯:u, 劉錫祥:oo
+assert('formatYueJyutping(/u:/): /u/', formatYueJyutping('/u:/'), '/u/');
+assert('formatYueGuangzhou(/u:/): /u/', formatYueGuangzhou('/u:/'), '/u/');
+assert('formatYueAcademy(/u:/): /u/', formatYueAcademy('/u:/'), '/u/');
+assert('formatYueYale(/u:/): /u/', formatYueYale('/u:/'), '/u/');
+assert('formatYueLiu(/u:/): /oo/', formatYueLiu('/u:/'), '/oo/');
+
+// 靴 [œː] → 粵拼:oe, 廣拼:ê, 教院:oe, 耶魯:eu, 劉錫祥:euh
+assert('formatYueJyutping(/œ:/): /oe/', formatYueJyutping('/œ:/'), '/oe/');
+assert('formatYueGuangzhou(/œ:/): /ê/', formatYueGuangzhou('/œ:/'), '/ê/');
+assert('formatYueAcademy(/œ:/): /oe/', formatYueAcademy('/œ:/'), '/oe/');
+assert('formatYueYale(/œ:/): /eu/', formatYueYale('/œ:/'), '/eu/');
+assert('formatYueLiu(/œ:/): /euh/', formatYueLiu('/œ:/'), '/euh/');
+
+// 於 [yː] → 粵拼:yu, 廣拼:ü, 教院:y, 耶魯:yu, 劉錫祥:ue
+assert('formatYueJyutping(/y:/): /yu/', formatYueJyutping('/y:/'), '/yu/');
+assert('formatYueGuangzhou(/y:/): /ü/', formatYueGuangzhou('/y:/'), '/ü/');
+assert('formatYueAcademy(/y:/): /y/', formatYueAcademy('/y:/'), '/y/');
+assert('formatYueYale(/y:/): /yu/', formatYueYale('/y:/'), '/yu/');
+assert('formatYueLiu(/y:/): /ue/', formatYueLiu('/y:/'), '/ue/');
+
+// 唔 [m̩] → 粵拼:m, 廣拼:m, 教院:m, 耶魯:m, 劉錫祥:m
+assert('formatYueJyutping(/m̩/): /m/', formatYueJyutping('/m̩/'), '/m/');
+assert('formatYueGuangzhou(/m̩/): /m/', formatYueGuangzhou('/m̩/'), '/m/');
+assert('formatYueAcademy(/m̩/): /m/', formatYueAcademy('/m̩/'), '/m/');
+assert('formatYueYale(/m̩/): /m/', formatYueYale('/m̩/'), '/m/');
+assert('formatYueLiu(/m̩/): /m/', formatYueLiu('/m̩/'), '/m/');
+
+// 吳 [ŋ̩] → 粵拼:ng, 廣拼:ng, 教院:ng, 耶魯:ng, 劉錫祥:ng
+assert('formatYueJyutping(/ŋ̩/): /ng/', formatYueJyutping('/ŋ̩/'), '/ng/');
+assert('formatYueGuangzhou(/ŋ̩/): /ng/', formatYueGuangzhou('/ŋ̩/'), '/ng/');
+assert('formatYueAcademy(/ŋ̩/): /ng/', formatYueAcademy('/ŋ̩/'), '/ng/');
+assert('formatYueYale(/ŋ̩/): /ng/', formatYueYale('/ŋ̩/'), '/ng/');
+assert('formatYueLiu(/ŋ̩/): /ng/', formatYueLiu('/ŋ̩/'), '/ng/');
+
+// ============================================
 // Summary
 // ============================================
 console.log('\n========================================');
