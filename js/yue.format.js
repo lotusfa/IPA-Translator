@@ -342,9 +342,19 @@ export function formatYueAcademy(text) {
   return processSegments(text, 'academy');
 }
 
+function postProcessYale(text) {
+  return text
+    // 處理耶魯常見的 yyu, yyun, yyut 問題
+    .replace(/yyu/g, 'yu')
+    // 如果你的代碼產生了 yyi 或 wwu
+    .replace(/yyi/g, 'yi')
+    .replace(/wwu/g, 'wu');
+}
+
 export function formatYueYale(text) {
   text = normalizeIPA(text);
-  return processSegments(text, 'yale');
+  let result =  processSegments(text, 'yale');
+  return postProcessYale(result);
 }
 
 export function formatYueLiu(text) {
