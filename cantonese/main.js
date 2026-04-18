@@ -5,7 +5,6 @@
 import {
   loadIPADatabase,
   processTextCharBased,
-  formatIPAOutput,
   formatYueOutput,
   preprocessText,
   onTextInputChange,

@@ -70,6 +70,30 @@ export function formatVietnamese(text) {
 }
 
 /**
+ * Get active format from radio buttons
+ * @param {string} text - Text to format
+ * @returns {string} Formatted text
+ */
+export function formatIPAOutput(text, options = {}) {
+  const IPA_num = document.getElementById('IPA_num');
+  const IPA_org = document.getElementById('IPA_org');
+  const Jyutping = document.getElementById('Jyutping');
+  const Jyutping_num = document.getElementById('Jyutping_num');
+
+  if (IPA_num && IPA_num.checked) {
+    return formatIPA_num(text);
+  } else if (Jyutping_num && Jyutping_num.checked) {
+    return formatJyutping_num(text);
+  } else if (Jyutping && Jyutping.checked) {
+    return formatJyutpingCantonese(text);
+  } else if (IPA_org && IPA_org.checked) {
+    return formatIPA_org(text);
+  }
+
+  return formatIPA_org(text);
+}
+
+/**
  * Format Mandarin output
  */
 export function formatMandarinOutput(text, options = {}) {
