@@ -5,12 +5,12 @@
 import {
   loadIPADatabase,
   processTextCharBased,
-  formatIPAOutput,
-  formatMandarinOutput,
   initDarkMode,
   onTextInputChange,
   onMultipleChange
 } from '../js/ipa-core.js';
+
+import { formatMandarinOutput } from '../js/zh.format.js';
 
 let IPA_DB = {};
 let formatOption = 'IPA_num';
