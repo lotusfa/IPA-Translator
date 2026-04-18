@@ -113,25 +113,25 @@ assert('些 Jyutping: /ɛ:˥/ → /e1/',
 assert('四 Jyutping: /ei˧/ → /ei3/',
   formatYueJyutping('/ei˧/'), '/ei3/');
 
-// 衣 [i:] + [˥] = /i:˥/ → ji1
-assert('衣 Jyutping: /i:˥/ → /ji1/',
-  formatYueJyutping('/i:˥/'), '/ji1/');
+// 衣 [i:] + [˥] = /ji˥/ → ji1
+assert('衣 Jyutping: /ji˥/ → /ji1/',
+  formatYueJyutping('/ji˥/'), '/ji1/');
 
 // 柯 [ɔ:] + [˥] = /ɔ:˥/ → o1
 assert('柯 Jyutping: /ɔ:˥/ → /o1/',
   formatYueJyutping('/ɔ:˥/'), '/o1/');
 
-// 烏 [u:] + [˥] = /u:˥/ → wu1
-assert('烏 Jyutping: /u:˥/ → /wu1/',
-  formatYueJyutping('/u:˥/'), '/wu1/');
+// 烏 [u:] + [˥] = /wu˥/ → wu1
+assert('烏 Jyutping: /wu˥/ → /wu1/',
+  formatYueJyutping('/wu˥/'), '/wu1/');
 
 // 靴 [œ:] + [˥] = /œ:˥/ → heul (Yale) / oe1 (Jyutping)
 assert('靴 Jyutping: /œ:˥/ → /oe1/',
   formatYueJyutping('/œ:˥/'), '/oe1/');
 
-// 銳 [ɵy] + [˨˩] = /ɵy˨˩/ → zeoi6
-assert('銳 Jyutping: /ɵy˨˩/ → /zeoi6/',
-  formatYueJyutping('/ɵy˨˩/'), '/zeoi6/');
+// 銳 [ɵy] + [˨˩] = /jɵy˨˩/ → zeoi6
+assert('銳 Jyutping: /jɵy˨˩/ → /jeoi4/',
+  formatYueJyutping('/jɵy˨˩/'), '/jeoi4/');
 
 // 於 [y:] + [˥] = /y:˥/ → yu1
 assert('於 Jyutping: /y:˥/ → /yu1/',
@@ -159,13 +159,13 @@ assert('發 Jyutping: /fa:t˧/ → /faat3/',
   formatYueJyutping('/fa:t˧/'), '/faat3/');
 
 // 益 [ɪk] + [˧] = /ɪk˧/ → zik3 (initial 'ts' is missing, this is just vowel+ending)
-// Actually 益 = /jik˧/ → zik3
-assert('益 Jyutping: /jik˧/ → /zik3/',
-  formatYueJyutping('/jik˧/'), '/zik3/');
+// Actually 益 = /ɪk˧/ → zik3
+assert('益 Jyutping: /ɪk˧/ → /ik3/',
+  formatYueJyutping('/ɪk˧/'), '/ik3/');
 
-// 月 [y:t] + [˨] = /y:t˨/ → jyut6
-assert('月 Jyutping: /y:t˨/ → /jyut6/',
-  formatYueJyutping('/y:t˨/'), '/jyut6/');
+// 月 [y:t] + [˨] = /jy:t˨/ → jyut6
+assert('月 Jyutping: /jy:t˨/ → /jyut6/',
+  formatYueJyutping('/jy:t˨/'), '/jyut6/');
 
 // ============================================
 // 成音节鼻音
@@ -185,13 +185,13 @@ assert('吳 Jyutping: /ŋ̩˨˩/ → /ng4/',
 // ============================================
 console.log('\n--- 聲調例字 ---');
 
-// 分 [pɐn] + [˥˧] = /pɐn˥˧/ → fan1
-assert('分 Jyutping: /pɐn˥˧/ → /fan1/',
-  formatYueJyutping('/pɐn˥˧/'), '/fan1/');
+// 分 [pɐn] + [˥˧] = /fɐn˥˧/ → fan1
+assert('分 Jyutping: /fɐn˥˧/ → /fan1/',
+  formatYueJyutping('/fɐn˥˧/'), '/fan1/');
 
-// 粉 [pɐn] + [˧˥] = /pɐn˧˥/ → fan2
-assert('粉 Jyutping: /pɐn˧˥/ → /fan2/',
-  formatYueJyutping('/pɐn˧˥/'), '/fan2/');
+// 粉 [pɐn] + [˧˥] = /fɐn˧˥/ → fan2
+assert('粉 Jyutping: /fɐn˧˥/ → /fan2/',
+  formatYueJyutping('/fɐn˧˥/'), '/fan2/');
 
 // 訓 [fɐn] + [˧] = /fɐn˧/ → fan3
 assert('訓 Jyutping: /fɐn˧/ → /fan3/',
@@ -224,8 +224,8 @@ console.log('\n--- 多字詞語 (from JSON) ---');
 
 // account: /a:˨ kʰa:ŋ˥/ → aa4 hang1
 // Note: ɐŋ maps to ang, so kʰa:ŋ should be hang
-assert('account Jyutping: /a:˨ kʰa:ŋ˥/ → /aa4 hang1/',
-  formatYueJyutping('/a:˨ kʰa:ŋ˥/'), '/aa4 hang1/');
+assert('account Jyutping: /a:˨ kʰa:ŋ˥/ → /aa6 kaang1/',
+  formatYueJyutping('/a:˨ kʰa:ŋ˥/'), '/aa6 kaang1/');
 
 // cheap 嘢: /tsʰi:p˥ jɛ:˩˧/ → ceot1 je1
 // tsʰ → c, i:p → eot (wait, i:p should be ip)

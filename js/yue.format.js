@@ -231,11 +231,18 @@ function ipaSylToScheme(ipa, scheme) {
   let initial = '';
   let rest = base;
 
-  for (const init of IPA_INITIALS) {
-    if (base.startsWith(init)) {
-      initial = init;
-      rest = base.substring(init.length);
-      break;
+  // First, check for syllabic nasals (m̩, ŋ̩) - they have no initial
+  if (base === 'm̩' || base === 'ŋ̩' || base.startsWith('m̩') || base.startsWith('ŋ̩')) {
+    // Syllabic nasal is the entire base (no separate initial)
+    initial = '';
+    rest = base;
+  } else {
+    for (const init of IPA_INITIALS) {
+      if (base.startsWith(init)) {
+        initial = init;
+        rest = base.substring(init.length);
+        break;
+      }
     }
   }
 
