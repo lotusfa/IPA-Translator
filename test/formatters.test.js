@@ -77,11 +77,11 @@ assert('formatJyutpingCantonese: ˩˧ → 5', formatJyutpingCantonese('˩˧'), '
 assert('formatJyutpingCantonese: ˨˨ → 6', formatJyutpingCantonese('˨˨'), '6');
 
 // Entering tones
-assert('formatJyutpingCantonese: k˥ → k7', formatJyutpingCantonese('k˥'), 'k7');
-assert('formatJyutpingCantonese: k˧ → k8', formatJyutpingCantonese('k˧'), 'k8');
-assert('formatJyutpingCantonese: k˨ → k9', formatJyutpingCantonese('k˨'), 'k9');
-assert('formatJyutpingCantonese: t˥ → t7', formatJyutpingCantonese('t˥'), 't7');
-assert('formatJyutpingCantonese: p˥ → p7', formatJyutpingCantonese('p˥'), 'p7');
+assert('formatJyutpingCantonese: k˥ → k1', formatJyutpingCantonese('k˥'), 'k1');
+assert('formatJyutpingCantonese: k˧ → k3', formatJyutpingCantonese('k˧'), 'k3');
+assert('formatJyutpingCantonese: k˨ → k6', formatJyutpingCantonese('k˨'), 'k6');
+assert('formatJyutpingCantonese: t˥ → t1', formatJyutpingCantonese('t˥'), 't1');
+assert('formatJyutpingCantonese: p˥ → p1', formatJyutpingCantonese('p˥'), 'p1');
 
 // ============================================
 // Test formatJyutpingCantonese - 聲調對照表例字
@@ -107,13 +107,13 @@ assert('formatJyutpingCantonese: 憤 ˩˧ → 5', formatJyutpingCantonese('˩˧'
 assert('formatJyutpingCantonese: 份 ˨ → 6', formatJyutpingCantonese('˨'), '6');
 
 // 上陰入 5: 忽 ˥ → 7
-assert('formatJyutpingCantonese: 忽 k˥ → k7', formatJyutpingCantonese('k˥'), 'k7');
+assert('formatJyutpingCantonese: 忽 k˥ → k1', formatJyutpingCantonese('k˥'), 'k1');
 
 // 下陰入 3: 發 ˧ → 8
-assert('formatJyutpingCantonese: 發 k˧ → k8', formatJyutpingCantonese('k˧'), 'k8');
+assert('formatJyutpingCantonese: 發 k˧ → k3', formatJyutpingCantonese('k˧'), 'k3');
 
 // 陽入 2: 佛 ˨ → 9
-assert('formatJyutpingCantonese: 佛 k˨ → k9', formatJyutpingCantonese('k˨'), 'k9');
+assert('formatJyutpingCantonese: 佛 k˨ → k6', formatJyutpingCantonese('k˨'), 'k6');
 
 // 陰去 33: 訓 ˧ → 3
 assert('formatJyutpingCantonese: 訓 ˧ → 3', formatJyutpingCantonese('˧'), '3');
@@ -128,13 +128,13 @@ assert('formatJyutpingCantonese: 憤 ˩˧ → 5', formatJyutpingCantonese('˩˧'
 assert('formatJyutpingCantonese: 份 ˨ → 6', formatJyutpingCantonese('˨'), '6');
 
 // 上陰入 5: 忽 ˥ → 7
-assert('formatJyutpingCantonese: 忽 k˥ → k7', formatJyutpingCantonese('k˥'), 'k7');
+assert('formatJyutpingCantonese: 忽 k˥ → k1', formatJyutpingCantonese('k˥'), 'k1');
 
 // 下陰入 3: 發 ˧ → 8
-assert('formatJyutpingCantonese: 發 k˧ → k8', formatJyutpingCantonese('k˧'), 'k8');
+assert('formatJyutpingCantonese: 發 k˧ → k3', formatJyutpingCantonese('k˧'), 'k3');
 
 // 陽入 2: 佛 ˨ → 6
-assert('formatJyutpingCantonese: 佛 k˨ → k9', formatJyutpingCantonese('k˨'), 'k9');
+assert('formatJyutpingCantonese: 佛 k˨ → k6', formatJyutpingCantonese('k˨'), 'k6');
 
 // ============================================
 // Test formatYueJyutping (IPA → 粵拼)

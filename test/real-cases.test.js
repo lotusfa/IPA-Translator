@@ -49,20 +49,20 @@ assert('巴 Jyutping: /pa:˥/ → /baa1/',
   formatYueJyutping('/pa:˥/'), '/baa1/');
 
 // 趴 [pʰ] + [a:] + [˥] = /pʰa:˥/ → paal
-assert('趴 Jyutping: /pʰa:˥/ → /paal/',
-  formatYueJyutping('/pʰa:˥/'), '/paal/');
+assert('趴 Jyutping: /pʰa:˥/ → /paa1/',
+  formatYueJyutping('/pʰa:˥/'), '/paa1/');
 
 // 媽 [m] + [a:] + [˥] = /ma:˥/ → maa1
 assert('媽 Jyutping: /ma:˥/ → /maa1/',
   formatYueJyutping('/ma:˥/'), '/maa1/');
 
 // 花 [f] + [a:] + [˥] = /fa:˥/ → faa1
-assert('花 Jyutping: /fa:˥/ → /faal/',
-  formatYueJyutping('/fa:˥/'), '/faal/');
+assert('花 Jyutping: /fa:˥/ → /faa1/',
+  formatYueJyutping('/fa:˥/'), '/faa1/');
 
 // 打 [t] + [a:] + [˥] = /ta:˥/ → daal
-assert('打 Jyutping: /ta:˥/ → /daal/',
-  formatYueJyutping('/ta:˥/'), '/daal/');
+assert('打 Jyutping: /ta:˥/ → /daa1/',
+  formatYueJyutping('/ta:˥/'), '/daa1/');
 
 // 家 [k] + [a:] + [˥] = /ka:˥/ → gaa1
 assert('家 Jyutping: /ka:˥/ → /gaa1/',
@@ -73,12 +73,12 @@ assert('卡 Jyutping: /kʰa:t˧/ → /kaat3/',
   formatYueJyutping('/kʰa:t˧/'), '/kaat3/');
 
 // 渣 [ts] + [a:] + [˥] = /tsa:˥/ → zaa1
-assert('渣 Jyutping: /tsa:˥/ → /zaal/',
-  formatYueJyutping('/tsa:˥/'), '/zaal/');
+assert('渣 Jyutping: /tsa:˥/ → /zaa1/',
+  formatYueJyutping('/tsa:˥/'), '/zaa1/');
 
 // 差 [tsʰ] + [a:] + [˥] = /tsʰa:˥/ → caal
-assert('差 Jyutping: /tsʰa:˥/ → /caal/',
-  formatYueJyutping('/tsʰa:˥/'), '/caal/');
+assert('差 Jyutping: /tsʰa:˥/ → /caa1/',
+  formatYueJyutping('/tsʰa:˥/'), '/caa1/');
 
 // 瓜 [kʷ] + [a:] + [˥] = /kʷa:˥/ → gwaal
 assert('瓜 Jyutping: /kʷa:˥/ → /gwaa1/',

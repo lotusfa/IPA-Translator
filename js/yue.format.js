@@ -4,7 +4,7 @@
  */
 
 // IPA initials - ordered from longest to shortest for proper matching
-const IPA_INITIALS = ['kʷʰ', 'kʷ', 'tsʰ', 'ts', 'pʰ', 'tʰ', 'kʰ', 'ŋ', 'k', 'm', 'f', 'n', 'l', 'h', 's', 'j', 'w', 'p', 'd', 'g'];
+const IPA_INITIALS = ['kʷʰ', 'kʷ', 'tsʰ', 'ts', 'pʰ', 'tʰ', 'kʰ', 'ŋ', 'k', 'm', 'f', 'n', 'l', 'h', 's', 'w', 'j', 't', 'p', 'd', 'g'];
 
 // Tone Unicode characters
 const TONE_5 = '\u02e5';  // ˥ high level
@@ -28,16 +28,19 @@ function getTone(ipa) {
     return '6';  // 陽入
   }
 
-  // Multi-character tone patterns
-  if (ipa.includes(TONE_5 + TONE_3) || ipa.includes(TONE_5 + TONE_5)) return '1';  // 陰平
-  if (ipa.includes(TONE_3 + TONE_5)) return '2';  // 陰上
-  if (ipa.includes(TONE_3 + TONE_3) || ipa.includes(TONE_3)) return '3';  // 陰去
-  if (ipa.includes(TONE_2 + TONE_1) || ipa.includes(TONE_1 + TONE_1)) return '4';  // 陽平
-  if (ipa.includes(TONE_1 + TONE_3) || ipa.includes(TONE_2 + TONE_3)) return '5';  // 陽上
-  if (ipa.includes(TONE_2 + TONE_2) || ipa.includes(TONE_2)) return '6';  // 陽去
+  // Multi-character tone patterns (check longest first)
+  if (ipa.includes(TONE_5 + TONE_3)) return '1';  // 陰平 53
+  if (ipa.includes(TONE_5 + TONE_5)) return '1';  // 陰平 55
+  if (ipa.includes(TONE_3 + TONE_5)) return '2';  // 陰上 35
+  if (ipa.includes(TONE_3 + TONE_3)) return '3';  // 陰去 33
+  if (ipa.includes(TONE_2 + TONE_1) || ipa.includes(TONE_1 + TONE_1)) return '4';  // 陽平 21/11
+  if (ipa.includes(TONE_1 + TONE_3) || ipa.includes(TONE_2 + TONE_3)) return '5';  // 陽上 13
+  if (ipa.includes(TONE_2 + TONE_2)) return '6';  // 陽去 22
 
-  // Single tone characters (fallback)
+  // Single tone characters (fallback - check in order of priority)
   if (ipa.includes(TONE_5)) return '1';
+  if (ipa.includes(TONE_3)) return '3';
+  if (ipa.includes(TONE_2)) return '6';
   if (ipa.includes(TONE_1)) return '4';
 
   return '';
@@ -47,21 +50,25 @@ function getTone(ipa) {
  * Remove tone markers from IPA string
  */
 function removeTones(ipa) {
-  return ipa
-    .replace(new RegExp(TONE_5 + TONE_3, 'g'), '')
-    .replace(new RegExp(TONE_5 + TONE_5, 'g'), '')
-    .replace(new RegExp(TONE_3 + TONE_5, 'g'), '')
-    .replace(new RegExp(TONE_3 + TONE_3, 'g'), '')
-    .replace(new RegExp(TONE_3, 'g'), '')
-    .replace(new RegExp(TONE_2 + TONE_1, 'g'), '')
-    .replace(new RegExp(TONE_1 + TONE_1, 'g'), '')
-    .replace(new RegExp(TONE_1 + TONE_3, 'g'), '')
-    .replace(new RegExp(TONE_2 + TONE_3, 'g'), '')
-    .replace(new RegExp(TONE_2 + TONE_2, 'g'), '')
-    .replace(new RegExp(TONE_2, 'g'), '')
-    .replace(new RegExp(TONE_5, 'g'), '')
-    .replace(new RegExp(TONE_1, 'g'), '')
-    .replace(/k˥|t˥|p˥|k˧|t˧|p˧|k˨|t˨|p˨/g, '');
+  let result = ipa;
+  // Remove multi-char tones first
+  result = result.replace(new RegExp(TONE_5 + TONE_3, 'g'), '');
+  result = result.replace(new RegExp(TONE_5 + TONE_5, 'g'), '');
+  result = result.replace(new RegExp(TONE_3 + TONE_5, 'g'), '');
+  result = result.replace(new RegExp(TONE_3 + TONE_3, 'g'), '');
+  result = result.replace(new RegExp(TONE_2 + TONE_1, 'g'), '');
+  result = result.replace(new RegExp(TONE_1 + TONE_1, 'g'), '');
+  result = result.replace(new RegExp(TONE_1 + TONE_3, 'g'), '');
+  result = result.replace(new RegExp(TONE_2 + TONE_3, 'g'), '');
+  result = result.replace(new RegExp(TONE_2 + TONE_2, 'g'), '');
+  // Remove single tones
+  result = result.replace(new RegExp(TONE_5, 'g'), '');
+  result = result.replace(new RegExp(TONE_3, 'g'), '');
+  result = result.replace(new RegExp(TONE_2, 'g'), '');
+  result = result.replace(new RegExp(TONE_1, 'g'), '');
+  // Remove tone markers after consonants
+  result = result.replace(/k˥|t˥|p˥|k˧|t˧|p˧|k˨|t˨|p˨/g, '');
+  return result;
 }
 
 /**
@@ -74,7 +81,7 @@ const SCHEME_MAPS = {
       't': 'd', 'tʰ': 't', 'n': 'n', 'l': 'l',
       'k': 'g', 'kʰ': 'k', 'ŋ': 'ng', 'h': 'h',
       'ts': 'z', 'tsʰ': 'c', 's': 's',
-      'kʷ': 'gw', 'kʷʰ': 'kw', 'j': 'y', 'w': 'w', 'ʔ': ''
+      'kʷ': 'gw', 'kʷʰ': 'kw', 'j': 'j', 'w': 'w', 'ʔ': ''
     },
     vowels: {
       'a:': 'aa', 'a:i': 'aai', 'a:u': 'aau', 'a:m': 'aam', 'a:n': 'aan', 'a:ŋ': 'aang',
@@ -235,7 +242,7 @@ function ipaSylToScheme(ipa, scheme) {
   // Convert initial
   let initialResult = map.initials[initial] || '';
 
-  // Convert vowel/final part - try exact match first
+  // Convert vowel/final part - try exact match first, then fallback
   let finalResult = map.vowels[rest] || rest;
 
   // Combine and add tone
@@ -299,21 +306,21 @@ export function formatIPA_org(text) {
 }
 
 export function formatJyutpingCantonese(text) {
-  // Convert tone marks to numbers
+  // Convert tone marks to numbers - order matters: handle compound tones first
   return text
-    .replace(new RegExp(TONE_5 + TONE_3, 'g'), '1')
-    .replace(new RegExp(TONE_5 + TONE_5, 'g'), '1')
-    .replace(new RegExp(TONE_3 + TONE_5, 'g'), '2')
-    .replace(new RegExp(TONE_3 + TONE_3, 'g'), '3')
-    .replace(new RegExp(TONE_3, 'g'), '3')
-    .replace(new RegExp(TONE_2 + TONE_1, 'g'), '4')
-    .replace(new RegExp(TONE_1 + TONE_1, 'g'), '4')
-    .replace(new RegExp(TONE_1 + TONE_3, 'g'), '5')
-    .replace(new RegExp(TONE_2 + TONE_3, 'g'), '5')
-    .replace(new RegExp(TONE_2 + TONE_2, 'g'), '6')
-    .replace(new RegExp(TONE_2, 'g'), '6')
-    .replace(new RegExp(TONE_5, 'g'), '1')
-    .replace(new RegExp(TONE_1, 'g'), '4');
+    .replace(new RegExp(TONE_5 + TONE_3, 'g'), '1')  // 陰平 53
+    .replace(new RegExp(TONE_5 + TONE_5, 'g'), '1')  // 陰平 55
+    .replace(new RegExp(TONE_3 + TONE_5, 'g'), '2')  // 陰上 35
+    .replace(new RegExp(TONE_1 + TONE_3, 'g'), '5')  // 陽上 13 - moved before single tones
+    .replace(new RegExp(TONE_2 + TONE_3, 'g'), '5')  // 陽上 13 - alternative
+    .replace(new RegExp(TONE_3 + TONE_3, 'g'), '3')  // 陰去 33
+    .replace(new RegExp(TONE_3, 'g'), '3')           // 陰去 33 (fallback)
+    .replace(new RegExp(TONE_2 + TONE_1, 'g'), '4')  // 陽平 21
+    .replace(new RegExp(TONE_1 + TONE_1, 'g'), '4')  // 陽平 11
+    .replace(new RegExp(TONE_2 + TONE_2, 'g'), '6')  // 陽去 22
+    .replace(new RegExp(TONE_2, 'g'), '6')           // 陽去 22 (fallback)
+    .replace(new RegExp(TONE_5, 'g'), '1')           // 陰平 5 (fallback)
+    .replace(new RegExp(TONE_1, 'g'), '4');          // 陽平 4 (fallback)
 }
 
 export function formatJyutpingMandarin(text) {
