@@ -124,7 +124,9 @@ function convertFinal(ipaFinal) {
   // ɯ (unrounded close back) → i for zi/ci/si (after s)
   result = result.replace(/ɯ/g, 'i');
   result = result.replace(/œ/g, 'e');
-  result = result.replace(/y/g, 'ü');
+  // IPA y (front rounded vowel) → ü when after j/q/x, else u
+  // For pure y syllable (like 語 = y3), it becomes u (yu3 → yǔ)
+  result = result.replace(/y(?![ɛnŋ])/g, 'u');  // y before ɛn/ŋ becomes ü, else u
   // Convert ŋ to ng (fallback, after specific patterns)
   result = result.replace(/ŋ/g, 'ng');
   return result;
@@ -194,20 +196,32 @@ export function convertSyllableToPinyin(ipaSyllable) {
  */
 export function applyToneMarkToSyllable(pinyinWithNumber) {
   if (!pinyinWithNumber) return '';
-  const toneMarks = ['', '\u02CB', '\u02CA', '\u02C7', '\u02CA'];
+  // Precomposed vowels with tone marks (tone 1, 2, 3, 4)
+  const toneMarks = {
+    'a': ['', '\u0101', '\u00E1', '\u01CE', '\u00E0'],  // ā, á, ǎ, à
+    'o': ['', '\u014D', '\u00F3', '\u01D0', '\u00F2'],  // ō, ó, ǒ, ò
+    'e': ['', '\u0113', '\u00E9', '\u011B', '\u00E8'],  // ē, é, ě, è
+    'i': ['', '\u012B', '\u00ED', '\u01D4', '\u00EC'],  // ī, í, ǐ, ì
+    'u': ['', '\u016B', '\u00FA', '\u01D4', '\u00F9'],  // ū, ú, ǔ, ù
+    '\u00FC': ['', '\u01D8', '\u01DA', '\u01DC']        // ǘ, ǚ, ǜ (tone 1,2,4 for ü)
+  };
   const match = pinyinWithNumber.match(/^(.+?)([01234])$/);
   if (!match) return pinyinWithNumber;
   const vowelPart = match[1];
   const toneNum = match[2];
-  if (toneNum === '0') return vowelPart + '\u02D9';
-  const priority = ['a', 'o', 'e', 'i', 'u', 'ü'];
+  if (toneNum === '0') return vowelPart + '\u02D9';  // neutral tone
+  // Priority order for tone mark placement: a > o > e > i > u > ü
+  const priority = ['a', 'o', 'e', 'i', 'u', '\u00FC'];
   for (const v of priority) {
     const idx = vowelPart.indexOf(v);
     if (idx >= 0) {
-      return vowelPart.slice(0, idx) + vowelPart[idx] + toneMarks[toneNum] + vowelPart.slice(idx + 1);
+      const marks = toneMarks[v];
+      const toneMark = marks[toneNum] || marks[1];
+      return vowelPart.slice(0, idx) + toneMark + vowelPart.slice(idx + 1);
     }
   }
-  return vowelPart + toneMarks[toneNum];
+  // Fallback: add tone 1 to first vowel
+  return vowelPart + '\u02C9';
 }
 
 /**
