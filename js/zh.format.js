@@ -12,12 +12,13 @@ export const INITIAL_MAP = {
   'tsʰ': 'c', 'ts': 'z', 's': 's',
   'pʰ': 'p', 'tʰ': 't', 'kʰ': 'k',
   'p': 'b', 't': 'd', 'k': 'g',
-  'f': 'f', 'h': 'h', 'm': 'm', 'n': 'n', 'l': 'l',
+  'f': 'f', 'x': 'h', 'h': 'h', 'm': 'm', 'n': 'n', 'l': 'l',
   'j': 'y', 'w': 'w'
 };
 
 // Initial patterns ordered by length (longest first) for matching
-export const INITIAL_PATTERNS = ['tɕʰ', 'tʂʰ', 'ʈʂʰ', 'tɕ', 'tʂ', 'ʈʂ', 'tsʰ', 'ɕ', 'ʂ', 'ʐ', 'ɻ', 'ts', 'pʰ', 'tʰ', 'kʰ', 'p', 't', 'k', 's', 'f', 'h', 'm', 'n', 'l', 'w', 'j'];
+// Note: Removed 'j' and 'w' - these are IPA glides handled in addVowelPrefix for pure vowel syllables
+export const INITIAL_PATTERNS = ['tɕʰ', 'tʂʰ', 'ʈʂʰ', 'tɕ', 'tʂ', 'ʈʂ', 'tsʰ', 'ɕ', 'ʂ', 'ʐ', 'ɻ', 'ts', 'pʰ', 'tʰ', 'kʰ', 'p', 't', 'k', 's', 'f', 'x', 'h', 'm', 'n', 'l'];
 
 // Tone Unicode characters
 const TONE_5 = '\u02e5';  // ˥ high level (55)
@@ -84,7 +85,8 @@ function convertFinal(ipaFinal) {
   if (!ipaFinal) return '';
   let result = ipaFinal;
   // Handle IPA palatal glide j (becomes i in pinyin final)
-  // j followed by vowel becomes i + vowel (e.g., jɑʊ → iao)
+  // j followed by vowel becomes i + vowel (e.g., jɑʊ → iao, jɛn → ian)
+  result = result.replace(/jɛn/g, 'ian');
   result = result.replace(/j/g, 'i');
   // Handle nasal finals first (longest patterns first)
   result = result.replace(/ɥŋ/g, 'iong');
@@ -97,14 +99,19 @@ function convertFinal(ipaFinal) {
   result = result.replace(/ueɪ/g, 'ui');
   result = result.replace(/uei/g, 'ui');
   result = result.replace(/aɻ/g, 'ar');
-  // Retroflex final ɚ becomes i after sh/zh/ch/r initials (handled by caller)
-  // For standalone, ɚ → er, but we return 'i' for retroflex final after consonants
-  result = result.replace(/ɚ/g, 'i');  // Retroflex vowel after zh/ch/sh/r becomes i
+  // Retroflex finals: ɚ (er) and ɻ (retroflex approximant)
+  // ɚ becomes i in zhi/ch/sh/ri syllables
+  // ɻ at end of syllable becomes i (e.g., shɻ → shi)
+  result = result.replace(/ɚ/g, 'i');   // Retroflex vowel → i (for zhi/ch/sh/ri)
+  result = result.replace(/ɻ/g, 'i');   // Retroflex approximant → i
+  // Final ɿ (after z/c/s) becomes i
+  result = result.replace(/ɿ/g, 'i');   // Syllabic r after z/c/s → i
   result = result.replace(/uɔ/g, 'uo');
   result = result.replace(/ɥ/g, 'u');
   // Convert diphthongs (longer patterns first)
   result = result.replace(/ɑʊ/g, 'ao');
   result = result.replace(/aʊ/g, 'ao');
+  result = result.replace(/iɛu/g, 'iao');  // Handle iɛu → iao
   result = result.replace(/aɪ/g, 'ai');
   // Convert single vowels
   result = result.replace(/ɔ/g, 'o');
@@ -147,8 +154,16 @@ function addVowelPrefix(ipaNoTone, pinyinFinal) {
     if (pinyinFinal === 'ong') return 'wong';  // Special case
     return 'w' + pinyinFinal;
   }
-  // Syllables starting with ü-
+  // Syllables starting with ü- (y in IPA = ü in pinyin)
   if (ipaNoTone.startsWith('y')) {
+    // Handle y + vowel combinations
+    if (ipaNoTone === 'y' || ipaNoTone === 'yn' || ipaNoTone.startsWith('yn')) {
+      // y + n = yin (IPA y without diacritic = i sound before n)
+      if (pinyinFinal === 'in' || pinyinFinal.startsWith('in')) {
+        return 'yin' + pinyinFinal.substring(2);
+      }
+      return 'yin';
+    }
     if (pinyinFinal.startsWith('ü')) return 'yu' + pinyinFinal.substring(2);
     return 'y' + pinyinFinal;
   }
