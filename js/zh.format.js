@@ -2,16 +2,24 @@
  * Mandarin IPA to Pinyin Converter
  * Converts Mandarin IPA syllables to Hanyu Pinyin with tone marks
  * Based on the working structure of yue.format.js
+ * 
+ * Key principles (per Gemini recommendations):
+ * - Pinyin is an ORTHOGRAPHIC system, not raw phonetic transcription
+ * - Unaspirated stops [p], [t], [k] map to b, d, g (NOT p, t, k)
+ * - Apply abbreviation rules: uei→ui, iou→iu, uen→un
  */
 
-// IPA Initial to Pinyin mapping (longest patterns first)
+// IPA Initial to Pinyin mapping - CRITICAL FIX: unaspirated stops → b/d/g
 export const INITIAL_MAP = {
   'tɕʰ': 'q', 'tʂʰ': 'ch', 'ʈʂʰ': 'ch',
   'tɕ': 'j', 'tʂ': 'zh', 'ʈʂ': 'zh',
   'ɕ': 'x', 'ʂ': 'sh', 'ʐ': 'r', 'ɻ': 'r',
   'tsʰ': 'c', 'ts': 'z', 's': 's',
   'pʰ': 'p', 'tʰ': 't', 'kʰ': 'k',
-  'p': 'p', 't': 't', 'k': 'k',
+  // CRITICAL FIX: unaspirated stops map to b, d, g
+  'p': 'b',  // [p] → b (NOT p)
+  't': 'd',  // [t] → d (NOT t)
+  'k': 'g',  // [k] → g (NOT k)
   'ɡ': 'g',
   'f': 'f', 'h': 'h', 'm': 'm', 'n': 'n', 'l': 'l',
   'j': 'j', 'q': 'q', 'x': 'x', 'w': 'w'
@@ -66,15 +74,19 @@ function convertFinal(ipaFinal, pinyinInitial = '') {
   // Special handling for retroflex initials (zh/ch/sh/r)
   const retroflexInitials = ['zh', 'ch', 'sh', 'r'];
   if (retroflexInitials.includes(pinyinInitial)) {
+    // For retroflex: ɤŋ → eng, ɔ → i
+    result = result.replace(/ɤŋ/g, 'eng');
     result = result.replace(/ɤ/g, 'i');
     result = result.replace(/ɔ/g, 'i');
   } else {
+    // For non-retroflex: ɤ → e, ɔ → o
+    result = result.replace(/ɤŋ/g, 'eng');
     result = result.replace(/ɤ/g, 'e');
     result = result.replace(/ɔ/g, 'o');
   }
   
   // Handle ɥyŋ → iong
-  result = result.replace(/ɥyŋ/g, 'iong');  // Special: ɥyŋ → iong
+  result = result.replace(/ɥyŋ/g, 'iong');
   result = result.replace(/ɥ/g, 'u');
   
   // Handle retroflex approximant and vowel
@@ -95,10 +107,17 @@ function convertFinal(ipaFinal, pinyinInitial = '') {
   result = result.replace(/iɛu/g, 'iao');
   result = result.replace(/ɪɛu/g, 'iu');
   result = result.replace(/ɪu/g, 'iu');
+  // CRITICAL FIX: jɛn → ian (as per Gemini recommendation)
+  // Handle both iɛn and jɛn patterns
+  result = result.replace(/jɛn/g, 'ian');
   result = result.replace(/iɛn/g, 'ian');
   result = result.replace(/ɪɛn/g, 'ian');
   result = result.replace(/ɪɑn/g, 'ian');
   result = result.replace(/ɪɑnɡ/g, 'iang');
+  
+  // Handle jɑŋ → iang (for 香 xiāng)
+  result = result.replace(/jɑŋ/g, 'iang');
+  
   result = result.replace(/ɑʊ/g, 'ao');
   result = result.replace(/aɪ/g, 'ai');
   
@@ -115,6 +134,20 @@ function convertFinal(ipaFinal, pinyinInitial = '') {
   result = result.replace(/œ/g, 'e');
   result = result.replace(/y/g, 'u');
   result = result.replace(/ɡ/g, 'g');
+  
+  // CRITICAL: Apply final abbreviation rules per Gemini recommendations
+  // These rules apply when there IS a syllable initial
+  if (pinyinInitial && pinyinInitial.length > 0) {
+    // uei → ui (e.g., [sweɪ] with initial → suì, not suéi)
+    result = result.replace(/uei/g, 'ui');
+    result = result.replace(/uəi/g, 'ui');
+    // iou → iu (e.g., with initial → liù, not liòu)
+    result = result.replace(/iou/g, 'iu');
+    result = result.replace(/iəu/g, 'iu');
+    // uen → un (e.g., with initial → lūn, not luēn)
+    result = result.replace(/uen/g, 'un');
+    result = result.replace(/uən/g, 'un');
+  }
   
   return result;
 }
