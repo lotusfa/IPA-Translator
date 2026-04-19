@@ -11,14 +11,15 @@ export const INITIAL_MAP = {
   'ɕ': 'x', 'ʂ': 'sh', 'ʐ': 'r', 'ɻ': 'r',
   'tsʰ': 'c', 'ts': 'z', 's': 's',
   'pʰ': 'p', 'tʰ': 't', 'kʰ': 'k',
-  'p': 'b', 't': 'd', 'k': 'g',
-  'f': 'f', 'x': 'h', 'h': 'h', 'm': 'm', 'n': 'n', 'l': 'l',
+  'p': 'p', 't': 't', 'k': 'k',  // p, t, k (unaspirated) → p, t, k in pinyin
+  'ɡ': 'g',  // IPA ɡ (voiced velar stop) → g in pinyin
+  'f': 'f', 'x': 'x', 'h': 'h', 'm': 'm', 'n': 'n', 'l': 'l',
   'j': 'y', 'w': 'w'
 };
 
 // Initial patterns ordered by length (longest first) for matching
-// Note: Removed 'j' and 'w' - these are IPA glides handled in addVowelPrefix for pure vowel syllables
-export const INITIAL_PATTERNS = ['tɕʰ', 'tʂʰ', 'ʈʂʰ', 'tɕ', 'tʂ', 'ʈʂ', 'tsʰ', 'ɕ', 'ʂ', 'ʐ', 'ɻ', 'ts', 'pʰ', 'tʰ', 'kʰ', 'p', 't', 'k', 's', 'f', 'x', 'h', 'm', 'n', 'l'];
+// Note: 'j' and 'w' are IPA glides handled in addVowelPrefix for pure vowel syllables
+export const INITIAL_PATTERNS = ['tɕʰ', 'tʂʰ', 'ʈʂʰ', 'tɕ', 'tʂ', 'ʈʂ', 'tsʰ', 'ɕ', 'ʂ', 'ʐ', 'ɻ', 'ts', 'pʰ', 'tʰ', 'kʰ', 'p', 't', 'k', 'ɡ', 's', 'f', 'x', 'h', 'm', 'n', 'l'];
 
 // Tone Unicode characters
 const TONE_5 = '\u02e5';  // ˥ high level (55)
@@ -86,7 +87,7 @@ function convertFinal(ipaFinal) {
   let result = ipaFinal;
   // Handle IPA palatal glide j (becomes i in pinyin final)
   // j followed by vowel becomes i + vowel (e.g., jɑʊ → iao, jɛn → ian)
-  result = result.replace(/jɛn/g, 'ian');
+  result = result.replace(/jiɛn/g, 'iian');  // Save j + ɪɛn pattern before j→i
   result = result.replace(/j/g, 'i');
   // Handle nasal finals first (longest patterns first)
   result = result.replace(/ɥŋ/g, 'iong');
@@ -97,7 +98,9 @@ function convertFinal(ipaFinal) {
   result = result.replace(/uŋ/g, 'ong');
   // Handle other special finals
   result = result.replace(/ueɪ/g, 'ui');
+  result = result.replace(/weɪ/g, 'ui');  // IPA w + ɛi → ui (e.g., 為 = weɪ3 → wéi)
   result = result.replace(/uei/g, 'ui');
+  result = result.replace(/wei/g, 'ui');   // IPA w + ei → ui
   result = result.replace(/aɻ/g, 'ar');
   // Retroflex finals: ɚ (er) and ɻ (retroflex approximant)
   // ɚ becomes i in zhi/ch/sh/ri syllables
@@ -108,12 +111,20 @@ function convertFinal(ipaFinal) {
   result = result.replace(/ɿ/g, 'i');   // Syllabic r after z/c/s → i
   result = result.replace(/uɔ/g, 'uo');
   result = result.replace(/ɥ/g, 'u');
+  result = result.replace(/w/g, 'u');  // IPA w (labio-velar glide) → u
   // Convert diphthongs (longer patterns first)
   result = result.replace(/ɑʊ/g, 'ao');
   result = result.replace(/aʊ/g, 'ao');
   result = result.replace(/iɛu/g, 'iao');  // Handle iɛu → iao
+  result = result.replace(/ɪɛu/g, 'iu');   // Handle ɪɛu → iu
+  result = result.replace(/ɪɛn/g, 'ian');  // Handle ɪɛn → ian
+  result = result.replace(/ɪɑnɡ/g, 'iang'); // Handle ɪɑnɡ → iang
+  result = result.replace(/ɪu/g, 'iu');    // Handle ɪu → iu
+  result = result.replace(/ɪɑn/g, 'ian');  // Handle ɪɑn → ian
   result = result.replace(/aɪ/g, 'ai');
-  // Convert single vowels
+  // Handle ŋ before vowel conversion (must come before single vowel conversions)
+  result = result.replace(/ŋ/g, 'ng');
+  // Convert single vowels (order matters: specific before general)
   result = result.replace(/ɔ/g, 'o');
   result = result.replace(/ɑ/g, 'a');
   result = result.replace(/ɪ/g, 'i');
@@ -124,11 +135,11 @@ function convertFinal(ipaFinal) {
   // ɯ (unrounded close back) → i for zi/ci/si (after s)
   result = result.replace(/ɯ/g, 'i');
   result = result.replace(/œ/g, 'e');
-  // IPA y (front rounded vowel) → ü when after j/q/x, else u
-  // For pure y syllable (like 語 = y3), it becomes u (yu3 → yǔ)
-  result = result.replace(/y(?![ɛnŋ])/g, 'u');  // y before ɛn/ŋ becomes ü, else u
-  // Convert ŋ to ng (fallback, after specific patterns)
-  result = result.replace(/ŋ/g, 'ng');
+  // Handle IPA y (front rounded vowel) → u when after palatal initials (j, q, x)
+  // IPA y after j, q, x becomes u in pinyin (e.g., jy → ju, qy → qu, xy → xu)
+  result = result.replace(/y/g, 'u');  // y → u (for palatal initials)
+  // Handle IPA ɡ (U+0261 - Latin Small Letter G with hook) → g
+  result = result.replace(/ɡ/g, 'g');
   return result;
 }
 
