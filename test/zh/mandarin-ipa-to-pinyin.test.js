@@ -1,5 +1,6 @@
 /**
  * Test suite for Mandarin IPA to Pinyin conversion
+ * Based on Standard Chinese phonology (Wikipedia reference)
  * Run with: node test/zh/mandarin-ipa-to-pinyin.test.js
  */
 
@@ -28,70 +29,116 @@ function assert(name, actual, expected) {
   }
 }
 
-// IPA tone marks (Unicode)
-const TONE_5 = '\u02E5';  // 5 - high
-const TONE_3 = '\u02E7';  // 3 - mid
-const TONE_2 = '\u02E8';  // 2 - low
-const TONE_1 = '\u02E9';  // 1 - lowest
+// Chao tone letters (IPA tone marks)
+// U+02E5 ˥ modifier letter extra-high tone (5)
+// U+02E6 ˦ modifier letter half-high tone (4)
+// U+02E7 ˧ modifier letter mid tone (3)
+// U+02E8 ˨ modifier letter low tone (2)
+// U+02E9 ˩ modifier letter extra-low tone (1)
+const TONE_5 = '\u02E5';
+const TONE_4 = '\u02E6';
+const TONE_3 = '\u02E7';
+const TONE_2 = '\u02E8';
+const TONE_1 = '\u02E9';
 
-// Mandarin tones
-const T1 = TONE_5 + TONE_5;   // 55 - Tone 1
-const T2 = TONE_3 + TONE_5;   // 35 - Tone 2
-const T3 = TONE_2 + TONE_1 + TONE_2; // 212 - Tone 3 variant
-const T4 = TONE_5 + TONE_1;   // 51 - Tone 4
+const T1 = TONE_5 + TONE_5;          // ˥˥ (55) - Tone 1 (high level)
+const T2 = TONE_3 + TONE_5;          // ˧˥ (35) - Tone 2 (rising)
+const T3 = TONE_2 + TONE_1 + TONE_4; // ˨˩˦ (214) - Tone 3 (low dipping)
+const T4 = TONE_5 + TONE_1;          // ˥˩ (51) - Tone 4 (falling)
 
 console.log('\n=== Testing convertToneToNumber ===');
-assert('T1 (55) -> 1', convertToneToNumber(T1), '1');
-assert('T2 (35) -> 2', convertToneToNumber(T2), '2');
-assert('T4 (51) -> 4', convertToneToNumber(T4), '4');
+assert('T1 (˥˥/55) -> 1', convertToneToNumber(T1), '1');
+assert('T2 (˧˥/35) -> 2', convertToneToNumber(T2), '2');
+assert('T3 (˨˩˦/214) -> 3', convertToneToNumber(T3), '3');
+assert('T4 (˥˩/51) -> 4', convertToneToNumber(T4), '4');
+
+console.log('\n=== Testing removeToneMarks ===');
+assert('Remove T1 from ma˥˥', removeToneMarks('ma' + T1), 'ma');
+assert('Remove T2 from pa˧˥', removeToneMarks('pa' + T2), 'pa');
+assert('Remove T3 from ta˨˩˦', removeToneMarks('ta' + T3), 'ta');
+assert('Remove T4 from ka˥˩', removeToneMarks('ka' + T4), 'ka');
 
 console.log('\n=== Testing convertInitialToPinyin ===');
-// Bilabial stops
-assert('p -> b', convertInitialToPinyin('p'), 'b');
-assert('pʰ -> p', convertInitialToPinyin('p\u02B0'), 'p');
 
-// Alveolar stops
-assert('t -> d', convertInitialToPinyin('t'), 'd');
-assert('tʰ -> t', convertInitialToPinyin('t\u02B0'), 't');
+// Bilabial plosives - IPA unaspirated = pinyin b, IPA aspirated = pinyin p
+assert('p (unaspirated) -> b', convertInitialToPinyin('p'), 'b');
+assert('pʰ (aspirated) -> p', convertInitialToPinyin('p\u02B0'), 'p');
 
-// Velar stops
-assert('k -> g', convertInitialToPinyin('k'), 'g');
-assert('kʰ -> k', convertInitialToPinyin('k\u02B0'), 'k');
+// Alveolar plosives - IPA unaspirated = pinyin d, IPA aspirated = pinyin t
+assert('t (unaspirated) -> d', convertInitialToPinyin('t'), 'd');
+assert('tʰ (aspirated) -> t', convertInitialToPinyin('t\u02B0'), 't');
 
-// Retroflex series
-assert('t\u0282 -> zh', convertInitialToPinyin('t\u0282'), 'zh');
-assert('t\u0282ʰ -> ch', convertInitialToPinyin('t\u0282\u02B0'), 'ch');
-assert('\u0282 -> sh', convertInitialToPinyin('\u0282'), 'sh');
+// Velar plosives - IPA unaspirated = pinyin g, IPA aspirated = pinyin k
+assert('k (unaspirated) -> g', convertInitialToPinyin('k'), 'g');
+assert('kʰ (aspirated) -> k', convertInitialToPinyin('k\u02B0'), 'k');
 
-// Alveolar affricates
-assert('ts -> z', convertInitialToPinyin('ts'), 'z');
-assert('tsʰ -> c', convertInitialToPinyin('ts\u02B0'), 'c');
+// Retroflex series (ʈʂ = zh)
+assert('ʈʂ (zh) -> zh', convertInitialToPinyin('\u1E9C\u0282'), 'zh');
+assert('ʈʂʰ (ch) -> ch', convertInitialToPinyin('\u1E9C\u0282\u02B0'), 'ch');
+assert('ʂ (sh) -> sh', convertInitialToPinyin('\u0282'), 'sh');
+assert('ʐ (r) -> r', convertInitialToPinyin('\u0280'), 'r');
 
-// Palatal series
-assert('t\u025A -> j', convertInitialToPinyin('t\u025A'), 'j');
-assert('t\u025Aʰ -> q', convertInitialToPinyin('t\u025A\u02B0'), 'q');
-assert('\u025A -> x', convertInitialToPinyin('\u025A'), 'x');
+// Alveolar affricates (ts = z)
+assert('ts (z) -> z', convertInitialToPinyin('ts'), 'z');
+assert('tsʰ (c) -> c', convertInitialToPinyin('ts\u02B0'), 'c');
+assert('s -> s', convertInitialToPinyin('s'), 's');
 
-// Fricatives
-assert('f -> f', convertInitialToPinyin('f'), 'f');
-assert('h -> h', convertInitialToPinyin('h'), 'h');
+// Alveolo-palatal series (tɕ = j)
+assert('tɕ (j) -> j', convertInitialToPinyin('t\u0255'), 'j');
+assert('tɕʰ (q) -> q', convertInitialToPinyin('t\u0255\u02B0'), 'q');
+assert('ɕ (x) -> x', convertInitialToPinyin('\u0255'), 'x');
 
 // Nasals and liquids
 assert('m -> m', convertInitialToPinyin('m'), 'm');
 assert('n -> n', convertInitialToPinyin('n'), 'n');
 assert('l -> l', convertInitialToPinyin('l'), 'l');
 
-// Approximants
-assert('j -> y', convertInitialToPinyin('j'), 'y');
+// Fricatives
+assert('f -> f', convertInitialToPinyin('f'), 'f');
+assert('h -> h', convertInitialToPinyin('h'), 'h');
+
+// Glides
+assert('j (y) -> y', convertInitialToPinyin('j'), 'y');
 assert('w -> w', convertInitialToPinyin('w'), 'w');
 
 console.log('\n=== Testing convertSyllableToPinyin ===');
-// 妈 ma1 (Tone 1)
-assert('m + T1 + a -> ma1', convertSyllableToPinyin('m' + T1 + 'a'), 'ma1');
-// 爬 pa2 (Tone 2)
-assert('pʰ + T2 + a -> pa2', convertSyllableToPinyin('p\u02B0' + T2 + 'a'), 'pa2');
-// 骂 ma4 (Tone 4)
-assert('m + T4 + a -> ma4', convertSyllableToPinyin('m' + T4 + 'a'), 'ma4');
+
+// Test basic syllables with each tone
+// IPA unaspirated p = pinyin b
+assert('p (unaspirated) + T1 + a -> ba1', convertSyllableToPinyin('p' + T1 + 'a'), 'ba1');
+
+// IPA aspirated pʰ = pinyin p
+assert('pʰ (aspirated) + T2 + a -> pa2', convertSyllableToPinyin('p\u02B0' + T2 + 'a'), 'pa2');
+
+// IPA unaspirated p = pinyin b (tone 3)
+assert('p (unaspirated) + T3 + a -> ba3', convertSyllableToPinyin('p' + T3 + 'a'), 'ba3');
+
+// IPA unaspirated p = pinyin b (tone 4)
+assert('p (unaspirated) + T4 + a -> ba4', convertSyllableToPinyin('p' + T4 + 'a'), 'ba4');
+
+// Test with retroflex series (ʈʂ = zh)
+assert('ʈʂ + T1 + i -> zhi1', convertSyllableToPinyin('\u1E9C\u0282' + T1 + 'i'), 'zhi1');
+
+// Test with alveolar series (ts = z)
+assert('ts + T3 + i -> zi3', convertSyllableToPinyin('ts' + T3 + 'i'), 'zi3');
+
+// Test with alveolo-palatal series (tɕ = j)
+assert('tɕ + T4 + y -> jy4', convertSyllableToPinyin('t\u0255' + T4 + 'y'), 'jy4');
+
+// Test with nasal finals
+assert('m + T1 + a + ŋ -> maŋ1', convertSyllableToPinyin('m' + T1 + 'a\u014B'), 'maŋ1');
+
+console.log('\n=== Testing convertIPATextToPinyin ===');
+
+// Test full text conversion (with slash-delimited syllables)
+assert('Multiple syllables (slash-delimited)',
+  convertIPATextToPinyin('/p\u02B0' + T2 + 'a/ /p' + T4 + 'a/'),
+  'pa2 ba4');
+
+// Test plain text without slashes (should pass through unchanged except for tone detection)
+assert('Plain text without slashes',
+  convertIPATextToPinyin('p\u02B0' + T2 + 'a'),
+  'p\u02B0' + T2 + 'a');
 
 console.log('\n========================================');
 console.log('Results: ' + results.passed + ' passed, ' + results.failed + ' failed');
