@@ -1,34 +1,21 @@
 /**
  * Mandarin IPA to Pinyin Converter
  * Converts Mandarin IPA syllables to Hanyu Pinyin with tone marks
- * Based on the working structure of yue.format.js
- * 
- * Key principles (per Gemini recommendations):
- * - Pinyin is an ORTHOGRAPHIC system, not raw phonetic transcription
- * - Unaspirated stops [p], [t], [k] map to b, d, g (NOT p, t, k)
- * - Apply abbreviation rules: uei→ui, iou→iu, uen→un
  */
 
-// IPA Initial to Pinyin mapping - CRITICAL FIX: unaspirated stops → b/d/g
 export const INITIAL_MAP = {
   'tɕʰ': 'q', 'tʂʰ': 'ch', 'ʈʂʰ': 'ch',
   'tɕ': 'j', 'tʂ': 'zh', 'ʈʂ': 'zh',
   'ɕ': 'x', 'ʂ': 'sh', 'ʐ': 'r', 'ɻ': 'r',
   'tsʰ': 'c', 'ts': 'z', 's': 's',
   'pʰ': 'p', 'tʰ': 't', 'kʰ': 'k',
-  // CRITICAL FIX: unaspirated stops map to b, d, g
-  'p': 'b',  // [p] → b (NOT p)
-  't': 'd',  // [t] → d (NOT t)
-  'k': 'g',  // [k] → g (NOT k)
-  'ɡ': 'g',
+  'p': 'b', 't': 'd', 'k': 'g', 'ɡ': 'g',
   'f': 'f', 'h': 'h', 'm': 'm', 'n': 'n', 'l': 'l',
-  'j': 'j', 'q': 'q', 'x': 'x', 'w': 'w'
+  'j': 'y', 'q': 'q', 'x': 'x', 'w': 'w'
 };
 
-// Initial patterns ordered by length (longest first) for matching
 export const INITIAL_PATTERNS = ['tɕʰ', 'tʂʰ', 'ʈʂʰ', 'tɕ', 'tʂ', 'ʈʂ', 'tsʰ', 'ɕ', 'ʂ', 'ʐ', 'ɻ', 'ts', 'q', 'x', 'pʰ', 'tʰ', 'kʰ', 'p', 't', 'k', 'ɡ', 'j', 's', 'f', 'h', 'm', 'n', 'l', 'w'];
 
-// Tone Unicode characters
 const TONE_5 = '\u02e5';
 const TONE_4 = '\u02e6';
 const TONE_3 = '\u02e7';
@@ -67,38 +54,35 @@ function convertInitial(ipaInit) {
   return INITIAL_MAP[ipaInit] || '';
 }
 
-function convertFinal(ipaFinal, pinyinInitial = '') {
+function isZeroInitial(ipaInit) {
+  return ['j', 'q', 'x', 'w'].includes(ipaInit);
+}
+
+function convertFinal(ipaFinal, pinyinInitial = '', hasInitial = false, originalInitial = '') {
   if (!ipaFinal) return '';
   let result = ipaFinal;
   
-  // Special handling for retroflex initials (zh/ch/sh/r)
   const retroflexInitials = ['zh', 'ch', 'sh', 'r'];
+  const isZeroInitialCase = isZeroInitial(originalInitial);
+  
   if (retroflexInitials.includes(pinyinInitial)) {
-    // For retroflex: ɤŋ → eng, ɔ → i
     result = result.replace(/ɤŋ/g, 'eng');
     result = result.replace(/ɤ/g, 'i');
     result = result.replace(/ɔ/g, 'i');
   } else {
-    // For non-retroflex: ɤ → e, ɔ → o
     result = result.replace(/ɤŋ/g, 'eng');
     result = result.replace(/ɤ/g, 'e');
     result = result.replace(/ɔ/g, 'o');
   }
   
-  // Handle ɥyŋ → iong
   result = result.replace(/ɥyŋ/g, 'iong');
   result = result.replace(/ɥ/g, 'u');
-  
-  // Handle retroflex approximant and vowel
   result = result.replace(/ɻ/g, 'i');
   result = result.replace(/ɚ/g, 'i');
   result = result.replace(/ɿ/g, 'i');
-  
-  // Handle uɔ → uo
   result = result.replace(/uɔ/g, 'uo');
   result = result.replace(/w/g, 'u');
   
-  // Convert nasal finals and diphthongs
   result = result.replace(/ɪŋ/g, 'ing');
   result = result.replace(/iŋ/g, 'ing');
   result = result.replace(/ʊŋ/g, 'ong');
@@ -107,44 +91,43 @@ function convertFinal(ipaFinal, pinyinInitial = '') {
   result = result.replace(/iɛu/g, 'iao');
   result = result.replace(/ɪɛu/g, 'iu');
   result = result.replace(/ɪu/g, 'iu');
-  // CRITICAL FIX: jɛn → ian (as per Gemini recommendation)
-  // Handle both iɛn and jɛn patterns
-  result = result.replace(/jɛn/g, 'ian');
+  
+  // Handle vowel patterns with originalInitial awareness
+  // For zero-initial 'j', handle jɛn → yan and jɑŋ → yang
+  if (isZeroInitialCase && originalInitial === 'j') {
+    // These are special zero-initial cases that should become yan/yang
+    result = result.replace(/ɛn/g, 'an').replace(/ɑŋ/g, 'ang');
+    // Then add 'y' prefix for zero-initial
+    result = 'y' + result;
+  } else {
+    // Regular patterns
+    result = result.replace(/ɛn/g, 'an');
+    result = result.replace(/ɑŋ/g, 'ang');
+  }
+  
   result = result.replace(/iɛn/g, 'ian');
   result = result.replace(/ɪɛn/g, 'ian');
   result = result.replace(/ɪɑn/g, 'ian');
   result = result.replace(/ɪɑnɡ/g, 'iang');
-  
-  // Handle jɑŋ → iang (for 香 xiāng)
-  result = result.replace(/jɑŋ/g, 'iang');
-  
   result = result.replace(/ɑʊ/g, 'ao');
   result = result.replace(/aɪ/g, 'ai');
-  
-  // Handle ŋ → ng
   result = result.replace(/ŋ/g, 'ng');
-  
-  // Convert remaining vowels
   result = result.replace(/ɑ/g, 'a');
   result = result.replace(/ɪ/g, 'i');
   result = result.replace(/ʊ/g, 'u');
   result = result.replace(/ə/g, 'e');
-  result = result.replace(/ɛ/g, 'e');
   result = result.replace(/ɯ/g, 'i');
   result = result.replace(/œ/g, 'e');
-  result = result.replace(/y/g, 'u');
   result = result.replace(/ɡ/g, 'g');
   
-  // CRITICAL: Apply final abbreviation rules per Gemini recommendations
-  // These rules apply when there IS a syllable initial
-  if (pinyinInitial && pinyinInitial.length > 0) {
-    // uei → ui (e.g., [sweɪ] with initial → suì, not suéi)
+  // Note: We don't use y/g replacement here as it would affect our 'y' prefix
+  
+  // Final abbreviation rules (skip for zero-initial)
+  if (hasInitial && pinyinInitial && pinyinInitial.length > 0 && !isZeroInitialCase) {
     result = result.replace(/uei/g, 'ui');
     result = result.replace(/uəi/g, 'ui');
-    // iou → iu (e.g., with initial → liù, not liòu)
     result = result.replace(/iou/g, 'iu');
     result = result.replace(/iəu/g, 'iu');
-    // uen → un (e.g., with initial → lūn, not luēn)
     result = result.replace(/uen/g, 'un');
     result = result.replace(/uən/g, 'un');
   }
@@ -152,8 +135,14 @@ function convertFinal(ipaFinal, pinyinInitial = '') {
   return result;
 }
 
-function addVowelPrefix(ipaNoTone, pinyinFinal) {
+function addVowelPrefix(ipaNoTone, pinyinFinal, originalInitial = '') {
   if (!pinyinFinal) return '';
+  
+  // For zero-initial cases, the prefix is already handled in convertFinal
+  if (isZeroInitial(originalInitial)) {
+    return '';
+  }
+  
   if (ipaNoTone === 'i' || ipaNoTone === 'ɪ') return 'yi';
   if (ipaNoTone === 'u') return 'wu';
   if (ipaNoTone === 'y' || ipaNoTone === 'ü') return 'yu';
@@ -161,6 +150,7 @@ function addVowelPrefix(ipaNoTone, pinyinFinal) {
     if (pinyinFinal === 'in') return 'yin';
     if (pinyinFinal === 'ing') return 'ying';
     if (pinyinFinal.startsWith('iang')) return 'yang' + pinyinFinal.substring(6);
+    if (pinyinFinal.startsWith('ian')) return 'yan' + pinyinFinal.substring(3);
     if (pinyinFinal.startsWith('i')) return 'y' + pinyinFinal.substring(1);
     return 'y' + pinyinFinal;
   }
@@ -170,11 +160,8 @@ function addVowelPrefix(ipaNoTone, pinyinFinal) {
     return 'w' + pinyinFinal;
   }
   if (ipaNoTone.startsWith('y')) {
-    if (ipaNoTone === 'y' || ipaNoTone === 'yn' || ipaNoTone.startsWith('yn')) {
-      if (pinyinFinal === 'in' || pinyinFinal.startsWith('in')) {
-        return 'yin' + pinyinFinal.substring(2);
-      }
-      return 'yin';
+    if (pinyinFinal === 'in' || pinyinFinal.startsWith('in')) {
+      return 'yin' + pinyinFinal.substring(2);
     }
     if (pinyinFinal.startsWith('ü')) return 'yu' + pinyinFinal.substring(2);
     return 'y' + pinyinFinal;
@@ -187,12 +174,20 @@ export function convertSyllableToPinyin(ipaSyllable) {
   const tone = getToneNumber(ipaSyllable);
   const ipaNoTone = removeToneMarks(ipaSyllable);
   const initialLen = getInitialLength(ipaNoTone);
+  
   if (initialLen > 0) {
-    const initial = convertInitial(ipaNoTone.slice(0, initialLen));
-    const finalPart = convertFinal(ipaNoTone.slice(initialLen), initial);
+    const initialIPA = ipaNoTone.slice(0, initialLen);
+    const initial = convertInitial(initialIPA);
+    const isZeroInitialCase = isZeroInitial(initialIPA);
+    const finalPart = convertFinal(ipaNoTone.slice(initialLen), initial, true, initialIPA);
+    
+    // For zero-initial syllables (j, q, x, w), the initial is already included in finalPart
+    if (isZeroInitialCase) {
+      return finalPart + tone;
+    }
     return initial + finalPart + tone;
   } else {
-    const finalPart = convertFinal(ipaNoTone);
+    const finalPart = convertFinal(ipaNoTone, '', false, '');
     const prefixed = addVowelPrefix(ipaNoTone, finalPart);
     return prefixed + tone;
   }
