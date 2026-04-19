@@ -11,7 +11,7 @@ export const INITIAL_MAP = {
   'pʰ': 'p', 'tʰ': 't', 'kʰ': 'k',
   'p': 'b', 't': 'd', 'k': 'g', 'ɡ': 'g',
   'f': 'f', 'h': 'h', 'm': 'm', 'n': 'n', 'l': 'l',
-  'j': 'y', 'q': 'q', 'x': 'x', 'w': 'w'
+  'j': 'j', 'q': 'q', 'x': 'x', 'w': 'w'
 };
 
 export const INITIAL_PATTERNS = ['tɕʰ', 'tʂʰ', 'ʈʂʰ', 'tɕ', 'tʂ', 'ʈʂ', 'tsʰ', 'ɕ', 'ʂ', 'ʐ', 'ɻ', 'ts', 'q', 'x', 'pʰ', 'tʰ', 'kʰ', 'p', 't', 'k', 'ɡ', 'j', 's', 'f', 'h', 'm', 'n', 'l', 'w'];
@@ -54,16 +54,21 @@ function convertInitial(ipaInit) {
   return INITIAL_MAP[ipaInit] || '';
 }
 
-function isZeroInitial(ipaInit) {
-  return ['j', 'q', 'x', 'w'].includes(ipaInit);
+// Zero-initial: j when followed by ɛ or ɑ (for jɛn→yan, jɑŋ→yang)
+// w is never a zero-initial; it's a real initial
+function isZeroInitial(initialIPA, vowelPart) {
+  if (initialIPA === 'j' && (vowelPart.startsWith('ɛ') || vowelPart.startsWith('ɑ'))) {
+    return true; // jɛn → yan, jɑŋ → yang
+  }
+  return false;
 }
 
-function convertFinal(ipaFinal, pinyinInitial = '', hasInitial = false, originalInitial = '') {
+function convertFinal(ipaFinal, pinyinInitial = '', hasInitial = false, originalInitial = '', vowelPart = '') {
   if (!ipaFinal) return '';
   let result = ipaFinal;
   
   const retroflexInitials = ['zh', 'ch', 'sh', 'r'];
-  const isZeroInitialCase = isZeroInitial(originalInitial);
+  const isZeroInitialCase = isZeroInitial(originalInitial, vowelPart);
   
   if (retroflexInitials.includes(pinyinInitial)) {
     result = result.replace(/ɤŋ/g, 'eng');
@@ -92,19 +97,9 @@ function convertFinal(ipaFinal, pinyinInitial = '', hasInitial = false, original
   result = result.replace(/ɪɛu/g, 'iu');
   result = result.replace(/ɪu/g, 'iu');
   
-  // Handle vowel patterns with originalInitial awareness
-  // For zero-initial 'j', handle jɛn → yan and jɑŋ → yang
-  if (isZeroInitialCase && originalInitial === 'j') {
-    // These are special zero-initial cases that should become yan/yang
-    result = result.replace(/ɛn/g, 'an').replace(/ɑŋ/g, 'ang');
-    // Then add 'y' prefix for zero-initial
-    result = 'y' + result;
-  } else {
-    // Regular patterns
-    result = result.replace(/ɛn/g, 'an');
-    result = result.replace(/ɑŋ/g, 'ang');
-  }
-  
+  // Handle specific vowel patterns
+  result = result.replace(/ɛn/g, 'an');
+  result = result.replace(/ɑŋ/g, 'ang');
   result = result.replace(/iɛn/g, 'ian');
   result = result.replace(/ɪɛn/g, 'ian');
   result = result.replace(/ɪɑn/g, 'ian');
@@ -120,7 +115,10 @@ function convertFinal(ipaFinal, pinyinInitial = '', hasInitial = false, original
   result = result.replace(/œ/g, 'e');
   result = result.replace(/ɡ/g, 'g');
   
-  // Note: We don't use y/g replacement here as it would affect our 'y' prefix
+  // For zero-initial j, prepend 'y'
+  if (isZeroInitialCase && originalInitial === 'j') {
+    result = 'y' + result;
+  }
   
   // Final abbreviation rules (skip for zero-initial)
   if (hasInitial && pinyinInitial && pinyinInitial.length > 0 && !isZeroInitialCase) {
@@ -137,11 +135,6 @@ function convertFinal(ipaFinal, pinyinInitial = '', hasInitial = false, original
 
 function addVowelPrefix(ipaNoTone, pinyinFinal, originalInitial = '') {
   if (!pinyinFinal) return '';
-  
-  // For zero-initial cases, the prefix is already handled in convertFinal
-  if (isZeroInitial(originalInitial)) {
-    return '';
-  }
   
   if (ipaNoTone === 'i' || ipaNoTone === 'ɪ') return 'yi';
   if (ipaNoTone === 'u') return 'wu';
@@ -177,17 +170,18 @@ export function convertSyllableToPinyin(ipaSyllable) {
   
   if (initialLen > 0) {
     const initialIPA = ipaNoTone.slice(0, initialLen);
+    const vowelPart = ipaNoTone.slice(initialLen);
     const initial = convertInitial(initialIPA);
-    const isZeroInitialCase = isZeroInitial(initialIPA);
-    const finalPart = convertFinal(ipaNoTone.slice(initialLen), initial, true, initialIPA);
+    const isZeroInitialCase = isZeroInitial(initialIPA, vowelPart);
+    const finalPart = convertFinal(vowelPart, initial, true, initialIPA, vowelPart);
     
-    // For zero-initial syllables (j, q, x, w), the initial is already included in finalPart
+    // For zero-initial syllables, the initial is already included in finalPart
     if (isZeroInitialCase) {
       return finalPart + tone;
     }
     return initial + finalPart + tone;
   } else {
-    const finalPart = convertFinal(ipaNoTone, '', false, '');
+    const finalPart = convertFinal(ipaNoTone, '', false, '', '');
     const prefixed = addVowelPrefix(ipaNoTone, finalPart);
     return prefixed + tone;
   }
