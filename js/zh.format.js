@@ -112,6 +112,9 @@ function convertFinal(ipaFinal, pinyinInitial = '', hasInitial = false, original
   result = result.replace(/ʊ/g, 'u');
   result = result.replace(/ə/g, 'e');
   result = result.replace(/ɯ/g, 'i');
+  // Refinement Rule: In Hanyu Pinyin, never use 'j' as a medial.
+  // If the IPA contains a palatal medial [j], convert it to 'i' (e.g., 'biàn' instead of 'bjàn', 'xiāng' instead of 'xjāng')
+  result = result.replace(/j/g, 'i');
   result = result.replace(/œ/g, 'e');
   result = result.replace(/ɡ/g, 'g');
   
