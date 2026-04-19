@@ -65,6 +65,91 @@ export function formatJyutpingMandarinNum(text) {
 export const formatJyutping = formatJyutpingMandarin;
 
 /**
+ * Convert IPA initial to Pinyin initial
+ * @param {string} ipaInitial - IPA initial consonant
+ * @returns {string} Pinyin initial
+ */
+export function convertInitialToPinyin(ipaInitial) {
+  const map = {
+    'p': 'b', 'p\u02B0': 'p',
+    't': 'd', 't\u02B0': 't',
+    'k': 'g', 'k\u02B0': 'k',
+    't\u0282': 'zh', 't\u0282\u02B0': 'ch',
+    'ts': 'z', 'ts\u02B0': 'c',
+    't\u025A': 'j', 't\u025A\u02B0': 'q', '\u025A': 'x',
+    '\u0282': 'sh', '\u0280': 'r',
+    'f': 'f', 'h': 'h',
+    'm': 'm', 'n': 'n',
+    'l': 'l', 'j': 'y', 'w': 'w'
+  };
+  return map[ipaInitial] || ipaInitial;
+}
+
+/**
+ * Convert IPA tone to number (1-4)
+ * @param {string} ipa - IPA syllable with tone marks
+ * @returns {string} Tone number (1-4) or '0' if no tone
+ */
+export function convertToneToNumber(ipa) {
+  if (ipa.includes('˥˥')) return '1';
+  if (ipa.includes('˧˥')) return '2';
+  if (ipa.includes('˨˩˦')) return '3';
+  if (ipa.includes('˥˩')) return '4';
+  return '0';
+}
+
+/**
+ * Remove tone marks from IPA
+ * @param {string} ipa - IPA syllable with tone marks
+ * @returns {string} IPA without tone marks
+ */
+export function removeToneMarks(ipa) {
+  return ipa
+    .replace(/˥˥/g, '')
+    .replace(/˧˥/g, '')
+    .replace(/˨˩˦/g, '')
+    .replace(/˥˩/g, '');
+}
+
+/**
+ * Get initial consonant length in IPA
+ * @param {string} ipa - IPA syllable without tone marks
+ * @returns {number} Length of initial consonant
+ */
+function getInitialLength(ipa) {
+  const initialMap = ['p\u02B0', 't\u02B0', 'k\u02B0', 't\u0282\u02B0', 't\u025A\u02B0', 't\u0282', 'ts\u02B0', 'ts', 't\u025A', 'p', 't', 'k', '\u0282', '\u0280', 'f', 'h', 'm', 'n', 'l', 'j', 'w'];
+  for (const init of initialMap) {
+    if (ipa.startsWith(init)) return init.length;
+  }
+  return 0;
+}
+
+/**
+ * Convert IPA syllable to Pinyin with tone number
+ * @param {string} ipaSyllable - Full IPA syllable (e.g., "m˥˥a")
+ * @returns {string} Pinyin with tone number (e.g., "ma1")
+ */
+export function convertSyllableToPinyin(ipaSyllable) {
+  const tone = convertToneToNumber(ipaSyllable);
+  const ipaNoTone = removeToneMarks(ipaSyllable);
+  const initialLen = getInitialLength(ipaNoTone);
+  const initial = convertInitialToPinyin(ipaNoTone.slice(0, initialLen));
+  const finalPart = ipaNoTone.slice(initialLen);
+  return initial + finalPart + tone;
+}
+
+/**
+ * Convert full IPA text to Pinyin format
+ * @param {string} text - IPA text with tone marks
+ * @returns {string} Pinyin text with tone numbers
+ */
+export function convertIPATextToPinyin(text) {
+  return text.replace(/([^ \t\n]+)/g, function(match) {
+    return convertSyllableToPinyin(match);
+  });
+}
+
+/**
  * Format Mandarin output based on selected radio button
  * @param {string} text - Text to format
  * @param {object} [options] - Options (reserved for future use)
@@ -82,7 +167,8 @@ export function formatMandarinOutput(text, options = {}) {
     } else if (IPA_org && IPA_org.checked) {
       return formatIPA_org(text);
     } else if (Pinyin_num && Pinyin_num.checked) {
-      return formatJyutpingMandarinNum(text);
+      // Pinyin with tone numbers: convert full IPA syllables to pinyin1 format
+      return convertIPATextToPinyin(text);
     } else if (Pinyin && Pinyin.checked) {
       return formatJyutpingMandarin(text);
     }
