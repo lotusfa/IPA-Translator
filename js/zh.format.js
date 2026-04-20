@@ -229,6 +229,7 @@ export const PINYIN_TO_ZHUYIN_INITIAL = {
 };
 
 export const PINYIN_TO_ZHUYIN_FINAL = {
+  // ... 原有全部保留 ...
   'a': 'ㄚ', 'o': 'ㄛ', 'e': 'ㄜ', 'ê': 'ㄝ',
   'i': 'ㄧ', 'u': 'ㄨ', 'ü': 'ㄩ',
   'ai': 'ㄞ', 'ei': 'ㄟ', 'ao': 'ㄠ', 'ou': 'ㄡ',
@@ -239,7 +240,8 @@ export const PINYIN_TO_ZHUYIN_FINAL = {
   'ua': 'ㄨㄚ', 'uo': 'ㄨㄛ', 'uai': 'ㄨㄞ', 'ui': 'ㄨㄟ',
   'uan': 'ㄨㄢ', 'un': 'ㄨㄣ', 'uang': 'ㄨㄤ', 'ueng': 'ㄨㄥ',
   'üe': 'ㄩㄝ', 'üan': 'ㄩㄢ', 'ün': 'ㄩㄣ',
-  // zero-initial 專用
+  // 新增：解決 yue / ye / wa 沒轉注音的問題
+  'yue': 'ㄩㄝ', 'ye': 'ㄧㄝ', 'wa': 'ㄨㄚ', 'wai': 'ㄨㄞ',
   'yuan': 'ㄩㄢ', 'yun': 'ㄩㄣ', 'ying': 'ㄧㄥ', 'yang': 'ㄧㄤ',
   'yan': 'ㄧㄢ', 'yin': 'ㄧㄣ', 'yu': 'ㄩ', 'yong': 'ㄩㄥ',
   'wu': 'ㄨ', 'yi': 'ㄧ'
@@ -248,8 +250,7 @@ export const PINYIN_TO_ZHUYIN_FINAL = {
 const ZHUYIN_TONE = { '1': '', '2': 'ˊ', '3': 'ˇ', '4': 'ˋ', '5': '˙', '0': '˙' };
 
 function handleComplexFinal(pinyinFinal) {
-  if (!pinyinFinal) return '';
-  const directMap = { ...PINYIN_TO_ZHUYIN_FINAL }; // 直接使用主表
+  const directMap = { ...PINYIN_TO_ZHUYIN_FINAL };
   if (directMap[pinyinFinal]) return directMap[pinyinFinal];
 
   let result = pinyinFinal.replace(/ü/g, 'ㄩ')
