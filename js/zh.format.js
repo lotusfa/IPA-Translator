@@ -46,7 +46,7 @@ function getToneNumber(ipa) {
 }
 
 function removeToneMarks(ipa) {
-  return ipa.replace(/[˥˦˧˨˩ˉˊˇˋ]/g, '');
+  return ipa.replace(/[˥˦˧˨˩ˉˊˇˋ\u0329]/g, '');
 }
 
 function getInitialLength(ipa) {
@@ -65,14 +65,11 @@ function isZeroInitial(initialIPA, vowelPart) {
 }
 
 function fixOrthography(text, initial = '') {
-  let result = text;
-  if (result.includes('y') || result.includes('ɥ')) {
-    result = result.replace(/y/g, 'ü').replace(/ɥ/g, 'ü');
-    if (['j', 'q', 'x'].includes(initial)) {
-      result = result.replace(/ü/g, 'u');
-    } else if (initial !== 'n' && initial !== 'l') {
-      result = result.replace(/ü/g, 'u');
-    }
+  let result = text.replace(/y/g, 'ü').replace(/ɥ/g, 'ü');
+  // 只有 j, q, x, y 之後才把 ü 轉為 u
+  if (['j', 'q', 'x', 'y'].includes(initial) || initial === '') {
+    // 注意：如果是零聲母(y)，也轉為 u (如 yuan)
+    result = result.replace(/ü/g, 'u');
   }
   return result;
 }
