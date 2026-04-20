@@ -227,9 +227,7 @@ export const PINYIN_TO_ZHUYIN_INITIAL = {
   'zh': 'ㄓ', 'ch': 'ㄔ', 'sh': 'ㄕ', 'r': 'ㄖ',
   'z': 'ㄗ', 'c': 'ㄘ', 's': 'ㄙ'
 };
-
 export const PINYIN_TO_ZHUYIN_FINAL = {
-  // ... 原有全部保留 ...
   'a': 'ㄚ', 'o': 'ㄛ', 'e': 'ㄜ', 'ê': 'ㄝ',
   'i': 'ㄧ', 'u': 'ㄨ', 'ü': 'ㄩ',
   'ai': 'ㄞ', 'ei': 'ㄟ', 'ao': 'ㄠ', 'ou': 'ㄡ',
@@ -240,10 +238,14 @@ export const PINYIN_TO_ZHUYIN_FINAL = {
   'ua': 'ㄨㄚ', 'uo': 'ㄨㄛ', 'uai': 'ㄨㄞ', 'ui': 'ㄨㄟ',
   'uan': 'ㄨㄢ', 'un': 'ㄨㄣ', 'uang': 'ㄨㄤ', 'ueng': 'ㄨㄥ',
   'üe': 'ㄩㄝ', 'üan': 'ㄩㄢ', 'ün': 'ㄩㄣ',
-  // 新增：解決 yue / ye / wa 沒轉注音的問題
-  'yue': 'ㄩㄝ', 'ye': 'ㄧㄝ', 'wa': 'ㄨㄚ', 'wai': 'ㄨㄞ',
-  'yuan': 'ㄩㄢ', 'yun': 'ㄩㄣ', 'ying': 'ㄧㄥ', 'yang': 'ㄧㄤ',
-  'yan': 'ㄧㄢ', 'yin': 'ㄧㄣ', 'yu': 'ㄩ', 'yong': 'ㄩㄥ',
+  'yao': 'ㄧㄠ', 'iao': 'ㄧㄠ',
+  'yue': 'ㄩㄝ',
+  'ye': 'ㄧㄝ',
+  'wa': 'ㄨㄚ',
+  'yuan': 'ㄩㄢ', 'yun': 'ㄩㄣ',
+  'ying': 'ㄧㄥ', 'yang': 'ㄧㄤ',
+  'yan': 'ㄧㄢ', 'yin': 'ㄧㄣ',
+  'yu': 'ㄩ', 'yong': 'ㄩㄥ',
   'wu': 'ㄨ', 'yi': 'ㄧ'
 };
 
