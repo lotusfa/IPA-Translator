@@ -59,7 +59,7 @@ function getToneNumber(ipa) {
  * Remove tone marks from IPA string
  */
 function removeToneMarks(ipa) {
-  return ipa.replace(/[˥˦˧˨˩]/g, '');
+  return ipa.replace(/[˥˦˧˨˩ˉˊˇˋ]/g, '');
 }
 
 /**
