@@ -27,19 +27,32 @@ const TONE = {
 
 /**
  * Extract tone number (1-4, 0 for neutral) from IPA
+ * Tone patterns:
+ *   Tone 1: ˥˥ or ends with ˥
+ *   Tone 2: ˧˥ (three + five)
+ *   Tone 3: ˨˩˦ (two + one + four)
+ *   Tone 4: ˥˩ or ends with ˦/˨/˩
+ *   Neutral: ends with ˩
  */
 function getToneNumber(ipa) {
   const { ONE, TWO, THREE, FOUR, FIVE } = TONE;
   
+  // Tone 3: ˨˩˦ (two + one + four)
   if (ipa.includes(TWO + ONE + FOUR)) return '3';
-  if (ipa.includes(FIVE + FIVE) || ipa.endsWith(FIVE)) return '1';
+  // Tone 2: ˧˥ (three + five) - check BEFORE ending with FIVE
   if (ipa.includes(THREE + FIVE)) return '2';
+  // Tone 1: ˥˥ (five + five) or ends with ˥
+  if (ipa.includes(FIVE + FIVE) || ipa.endsWith(FIVE)) return '1';
+  // Tone 4: ˥˩ (five + one) or ends with ˦/˨/˩
   if (ipa.includes(FIVE + ONE) || [FOUR, TWO, ONE].some(t => ipa.endsWith(t))) return '4';
+  // Neutral tone: ends with ˩
+  if (ipa.endsWith(ONE)) return '0';
+  // Fallback patterns
   if (ipa.includes(FIVE)) return '1';
   if (ipa.includes(THREE)) return '3';
   if (ipa.includes(TWO) || ipa.includes(FOUR)) return '4';
   if (ipa.includes(ONE)) return '0';
-  return '3';
+  return '3'; // default
 }
 
 /**
@@ -160,7 +173,6 @@ function addVowelPrefix(ipaNoTone, pinyinFinal) {
   if (ipaNoTone === 'i' || ipaNoTone === 'ɪ') return 'yi';
   if (ipaNoTone === 'u') return 'wu';
   if (ipaNoTone === 'y') return 'yu';
-  // ɥɛn → yuan (no consonant initial)
   if (ipaNoTone === 'ɥɛn') return 'yuan';
   
   if (ipaNoTone.startsWith('i') || ipaNoTone.startsWith('ɪ')) {
