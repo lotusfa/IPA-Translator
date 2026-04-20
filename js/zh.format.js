@@ -11,7 +11,7 @@ export const INITIAL_MAP = {
   'pʰ': 'p', 'tʰ': 't', 'kʰ': 'k',
   'p': 'b', 't': 'd', 'k': 'g', 'ɡ': 'g',
   'f': 'f', 'h': 'h', 'm': 'm', 'n': 'n', 'l': 'l',
-  'j': 'j', 'q': 'q', 'x': 'x', 'w': 'w'
+  'j': 'j', 'q': 'q', 'x': 'h', 'w': 'w'
 };
 
 export const INITIAL_PATTERNS = ['tɕʰ', 'tʂʰ', 'ʈʂʰ', 'tɕ', 'tʂ', 'ʈʂ', 'tsʰ', 'ɕ', 'ʂ', 'ʐ', 'ɻ', 'ts', 'q', 'x', 'pʰ', 'tʰ', 'kʰ', 'p', 't', 'k', 'ɡ', 'j', 's', 'f', 'h', 'm', 'n', 'l', 'w'];
