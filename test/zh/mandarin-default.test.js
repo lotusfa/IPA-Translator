@@ -154,7 +154,7 @@ assert('o → o', convertSyllableToPinyin('o' + T1), 'o1');
 // ============================================
 console.log('\n--- 9️⃣ Full Sentence Test ---');
 assert('ʈʂoŋˊ kuoˊ → zhong2 guo2', 
-  convertIPATextToPinyin('ʈʂoŋ' + T2 + ' ' + 'kuo' + T2), 'zhong2 guo2');
+  convertIPATextToPinyin('/ʈʂoŋ' + T2 + ' ' + 'kuo' + T2 +"/"), '/zhong2 guo2/');
 assert('ɕyɛˊ → xue2', convertSyllableToPinyin('ɕyɛ' + T2), 'xue2');
 assert('xueiˋ → hui4', convertSyllableToPinyin('xuei' + T4), 'hui4');
 assert('ʈʂʰuˇ → chu3', convertSyllableToPinyin('ʈʂʰu' + T3), 'chu3');

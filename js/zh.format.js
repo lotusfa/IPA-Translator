@@ -85,6 +85,14 @@ function applyDiacritic(word, tone) {
 }
 
 function convertFinal(ipaFinal, pinyinInitial = '', isZeroInitialCase = false) {
+  // 1. 優先處理「二 (er)」的特殊情況
+  if (ipaFinal === 'aɻ' || ipaFinal === 'ɚ' || ipaFinal === 'əɻ') return 'er';
+
+  // 2. 處理 zhi, chi, shi, ri... 的特殊元音 (保留你原本的邏輯)
+  if (!ipaFinal || ipaFinal === '̩' || ipaFinal === 'ɨ') {
+    if (['zh', 'ch', 'sh', 'r', 'z', 'c', 's'].includes(pinyinInitial)) return 'i';
+  }
+
   if (!ipaFinal) return '';
   let result = ipaFinal.replace(/œ/g, 'ɛ');
   result = result.replace(/ɤŋ/g, 'eng').replace(/ɤ/g, 'e').replace(/ɔ/g, 'o');
@@ -116,6 +124,7 @@ function convertFinal(ipaFinal, pinyinInitial = '', isZeroInitialCase = false) {
 
 function addVowelPrefix(ipaNoTone, pinyinFinal) {
   if (!pinyinFinal) return '';
+  if (ipaNoTone === 'aɻ' || ipaNoTone === 'ɚ') return 'er'; // 強制回傳 er
   if (ipaNoTone === 'i' || ipaNoTone === 'ɪ') return 'yi';
   if (ipaNoTone === 'u') return 'wu';
   if (ipaNoTone === 'y') return 'yu';
