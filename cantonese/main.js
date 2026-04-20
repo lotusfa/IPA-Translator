@@ -9,7 +9,8 @@ import {
   preprocessText,
   onTextInputChange,
   onMultipleChange,
-  initDarkMode
+  initDarkMode,
+  initResponsiveTextareaRows,
 } from '../js/ipa-core.js';
 
 let IPA_DB = {};
@@ -65,6 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Initialize dark mode
   initDarkMode('dark-mode-toggle');
+  initResponsiveTextareaRows();
   
   // Set up input handler
   onTextInputChange('cWords_tBox', translate);

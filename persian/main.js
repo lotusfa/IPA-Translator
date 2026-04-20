@@ -6,6 +6,7 @@ import {
   loadIPADatabase,
   processTextLongestMatch,
   initDarkMode,
+  initResponsiveTextareaRows,
   onTextInputChange,
   getElementValue,
   setElementValue,
@@ -55,6 +56,7 @@ function translate() {
 document.addEventListener('DOMContentLoaded', () => {
   // Initialize dark mode
   initDarkMode('dark-mode-toggle');
+  initResponsiveTextareaRows();
 
   // Set up input handler
   onTextInputChange('cWords_tBox', translate);

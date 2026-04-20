@@ -6,6 +6,7 @@ import {
   loadIPADatabase,
   processTextCharBased,
   initDarkMode,
+  initResponsiveTextareaRows,
   onTextInputChange,
   setElementValue,
   isElementChecked
@@ -60,6 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Initialize dark mode
   initDarkMode('dark-mode-toggle');
+  initResponsiveTextareaRows();
 
   // Set up input handler
   onTextInputChange('cWords_tBox', translate);

@@ -457,3 +457,66 @@ export function initLanguageButtons(options) {
     generateLanguageButtons(options);
   }
 }
+
+// ============================================
+// Responsive Textarea Rows
+// ============================================
+
+/**
+ * Set textarea rows based on screen width (mobile responsive)
+ * Call this on page load to adjust rows for mobile devices
+ * 
+ * Usage: Call once on DOM ready: setResponsiveTextareaRows()
+ * Or set specific values: setResponsiveTextareaRows({ cWords_tBox: 10, IPA_tBox: 10 })
+ */
+export function setResponsiveTextareaRows(options = {}) {
+  // Check if mobile (768px or less)
+  const isMobile = window.innerWidth <= 768;
+  
+  // Default rows
+  const mobileRows = options.mobileRows || 5;
+  const desktopRows = options.desktopRows || 10;
+  
+  // If no specific targets, apply to all textareas with ID containing '_tBox'
+  const targets = options.targets || null;
+  
+  const textareas = targets 
+    ? targets.map(id => document.getElementById(id)).filter(el => el)
+    : document.querySelectorAll('textarea[id$="_tBox"]');
+  
+  textareas.forEach(textarea => {
+    textarea.rows = isMobile ? mobileRows : desktopRows;
+  });
+}
+
+/**
+ * Initialize responsive textarea rows on DOM ready
+ * Automatically calls setResponsiveTextareaRows and re-checks on resize
+ */
+export function initResponsiveTextareaRows(options = {}) {
+  const isMobile = window.innerWidth <= 768;
+  const mobileRows = options.mobileRows || 5;
+  const desktopRows = options.desktopRows || 10;
+  const targets = options.targets || null;
+  
+  const getAllTargets = () => targets 
+    ? targets.map(id => document.getElementById(id)).filter(el => el)
+    : document.querySelectorAll('textarea[id$="_tBox"]');
+  
+  // Set initial rows
+  getAllTargets().forEach(textarea => {
+    textarea.rows = isMobile ? mobileRows : desktopRows;
+  });
+  
+  // Re-check on window resize (debounced)
+  let resizeTimeout;
+  window.addEventListener('resize', function() {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      const nowIsMobile = window.innerWidth <= 768;
+      getAllTargets().forEach(textarea => {
+        textarea.rows = nowIsMobile ? mobileRows : desktopRows;
+      });
+    }, 250);
+  });
+}
