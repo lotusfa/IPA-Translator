@@ -18,12 +18,29 @@ export const INITIAL_PATTERNS = ['tɕʰ', 'tʂʰ', 'ʈʂʰ', 'tɕ', 'tʂ', 'ʈʂ
 
 // Tone marker unicode characters
 const TONE = {
-  FIVE: '\u02e5',   // ˥
-  FOUR: '\u02e6',   // ˦
-  THREE: '\u02e7',  // ˧
-  TWO: '\u02e8',    // ˨
-  ONE: '\u02e9'     // ˩
+  FIVE: '˥',   // ˥
+  FOUR: '˦',   // ˦
+  THREE: '˧',  // ˧
+  TWO: '˨',    // ˨
+  ONE: '˩'     // ˩
 };
+
+/**
+ * Vowel maps for diacritic placement
+ * Maps each vowel to its diacritic forms for tones 1-4
+ */
+const VOWEL_MAP = {
+  'a': ['ā', 'á', 'ǎ', 'à'],
+  'o': ['ō', 'ó', 'ǐ', 'ò'],
+  'e': ['ē', 'é', 'ě', 'è'],
+  'i': ['ī', 'í', 'ǔ', 'ì'],
+  'u': ['ū', 'ú', 'ǔ', 'ù'],
+  'ü': ['ǖ', 'ǘ', 'ǚ', 'ǜ'],
+  'v': ['ǖ', 'ǘ', 'ǚ', 'ǜ'] // 'v' as shorthand for 'ü'
+};
+
+// Vowel priority for tone mark placement
+const TONE_PRIORITY = ['a', 'o', 'e', 'ui', 'iu', 'üe', 'ü', 'u', 'i'];
 
 /**
  * Extract tone number (1-4, 0 for neutral) from IPA
@@ -89,6 +106,66 @@ function isZeroInitial(initialIPA, vowelPart) {
 }
 
 /**
+ * Handles the "y" and "ü" orthographic rules
+ * IPA /y/ -> Pinyin "ü"
+ * j/q/x + ü -> u (dots dropped)
+ * Standalone ü -> yu
+ */
+function fixOrthography(text, initial = '') {
+  let result = text;
+  let hasY = result.includes('y');
+  
+  // First, check if we have IPA 'y' vowel (which is /y/ = ü)
+  if (hasY) {
+    // Convert IPA y to ü temporarily
+    result = result.replace(/y/g, 'ü');
+    
+    // Rule: j, q, x + ü -> u (dots dropped)
+    if (['j', 'q', 'x'].includes(initial)) {
+      result = result.replace(/ü/g, 'u');
+    }
+    // Rule: n, l + ü -> nǚ, lǚ (dots kept for n, l)
+    // For other consonants (like n after ü), convert ü to u
+    // This handles cases like 'yn' -> 'ün' -> 'un' (for zero-initial, 'yun')
+    else if (initial !== 'n' && initial !== 'l') {
+      result = result.replace(/ü/g, 'u');
+    }
+  }
+  
+  return result;
+}
+
+/**
+ * Places the tone diacritic on the correct vowel based on Pinyin rules
+ * Priority: a > o > e > i > u > ü
+ * Special cases: ui -> mark i, iu -> mark u
+ */
+function applyDiacritic(word, tone) {
+  if (tone < 1 || tone > 4) return word;
+  
+  const toneMarks = VOWEL_MAP;
+  
+  // Special case: ui -> mark the i (actually it's u + ei, but written as ui)
+  if (word.includes('ui')) {
+    return word.replace(/i/, toneMarks['i'][tone]);
+  }
+  
+  // Special case: iu -> mark the u (actually it's i + ou, but written as iu)
+  if (word.includes('iu')) {
+    return word.replace(/u/, toneMarks['u'][tone]);
+  }
+  
+  // Standard priority: a > o > e > i > u > ü
+  for (const vowel of ['a', 'o', 'e', 'i', 'u', 'ü']) {
+    if (word.includes(vowel)) {
+      return word.replace(vowel, toneMarks[vowel][tone - 1]);
+    }
+  }
+  
+  return word;
+}
+
+/**
  * Convert final (vowel part) to pinyin
  * Returns the pinyin final with prefix added for zero-initial cases
  */
@@ -119,12 +196,8 @@ function convertFinal(ipaFinal, pinyinInitial = '', isZeroInitialCase = false) {
     result = result.replace(/ɥ/g, 'u');
   }
   
-  // Handle ü (IPA y): context-dependent
-  if (pinyinInitial === 'n' || pinyinInitial === 'l') {
-    result = result.replace(/y/g, '\u00FC');
-  } else {
-    result = result.replace(/y/g, 'u');
-  }
+  // Apply orthography rules for IPA 'y' (ü)
+  result = fixOrthography(result, pinyinInitial);
   
   // Convert vowel patterns
   result = result
@@ -173,7 +246,9 @@ function addVowelPrefix(ipaNoTone, pinyinFinal) {
   if (ipaNoTone === 'i' || ipaNoTone === 'ɪ') return 'yi';
   if (ipaNoTone === 'u') return 'wu';
   if (ipaNoTone === 'y') return 'yu';
+  if (ipaNoTone === 'yn') return 'yun';
   if (ipaNoTone === 'ɥɛn') return 'yuan';
+  if (ipaNoTone === 'yŋ') return 'yong';
   
   if (ipaNoTone.startsWith('i') || ipaNoTone.startsWith('ɪ')) {
     if (pinyinFinal === 'in') return 'yin';
@@ -186,6 +261,16 @@ function addVowelPrefix(ipaNoTone, pinyinFinal) {
   if (ipaNoTone.startsWith('u') || ipaNoTone.startsWith('ʊ')) {
     if (pinyinFinal === 'ong') return 'wong';
     return pinyinFinal.startsWith('u') ? 'w' + pinyinFinal.slice(1) : 'w' + pinyinFinal;
+  }
+  
+  // Handle IPA 'y' (ü) for zero-initial
+  if (ipaNoTone.includes('y')) {
+    // For patterns like yn, yŋ, convert to yun, yong
+    if (ipaNoTone.endsWith('n')) return 'yun' + ipaNoTone.slice(2, -1);
+    if (ipaNoTone.endsWith('ŋ')) return 'yong' + ipaNoTone.slice(2, -2);
+    // For ü + vowel, drop ü dots and add y prefix
+    const base = pinyinFinal.replace(/ü/g, 'u');
+    return 'yu' + base.replace(/^u/, '');
   }
   
   return pinyinFinal;
@@ -224,28 +309,37 @@ export function applyToneMarkToSyllable(pinyinWithNumber) {
   if (!pinyinWithNumber) return '';
   
   const toneMarks = {
-    'a': ['', '\u0101', '\u00E1', '\u01CE', '\u00E0'],
-    'o': ['', '\u014D', '\u00F3', '\u01D0', '\u00F2'],
-    'e': ['', '\u0113', '\u00E9', '\u011B', '\u00E8'],
-    'i': ['', '\u012B', '\u00ED', '\u01D4', '\u00EC'],
-    'u': ['', '\u016B', '\u00FA', '\u01D4', '\u00F9'],
-    '\u00FC': ['', '\u01D6', '\u01D8', '\u01DA', '\u01DC']
+    'a': ['', 'ā', 'á', 'ǎ', 'à'],
+    'o': ['', 'ō', 'ó', 'ǐ', 'ò'],
+    'e': ['', 'ē', 'é', 'ě', 'è'],
+    'i': ['', 'ī', 'í', 'ǔ', 'ì'],
+    'u': ['', 'ū', 'ú', 'ǔ', 'ù'],
+    'ü': ['', 'ǖ', 'ǘ', 'ǚ', 'ǜ']
   };
   
   const match = pinyinWithNumber.match(/^(.+?)([01234])$/);
   if (!match) return pinyinWithNumber;
   
   const [, vowelPart, toneNum] = match;
-  if (toneNum === '0') return vowelPart + '\u02D9';
+  if (toneNum === '0') return vowelPart + '˙';
   
-  for (const vowel of ['a', 'o', 'e', 'i', 'u', '\u00FC']) {
+  // Special cases: ui -> mark i, iu -> mark u
+  if (vowelPart.includes('ui')) {
+    return vowelPart.replace(/i/, toneMarks['i'][toneNum]);
+  }
+  if (vowelPart.includes('iu')) {
+    return vowelPart.replace(/u/, toneMarks['u'][toneNum]);
+  }
+  
+  // Standard priority: a > o > e > i > u > ü
+  for (const vowel of ['a', 'o', 'e', 'i', 'u', 'ü']) {
     const idx = vowelPart.indexOf(vowel);
     if (idx >= 0) {
       return vowelPart.slice(0, idx) + toneMarks[vowel][toneNum] + vowelPart.slice(idx + 1);
     }
   }
   
-  return vowelPart + '\u02C9';
+  return vowelPart + 'ˉ';
 }
 
 /**
@@ -279,8 +373,8 @@ export function formatIPA_org(text) {
 }
 
 export function formatJyutpingMandarin(text) {
-  return text.replace(/˥˥/g, '\u02C6').replace(/˧˥/g, '\u02CA')
-             .replace(/˨˩˦/g, '\u02C7').replace(/˥˩/g, '\u02CB');
+  return text.replace(/˥˥/g, 'ˆ').replace(/˧˥/g, 'ˊ')
+             .replace(/˨˩˦/g, 'ˇ').replace(/˥˩/g, 'ˋ');
 }
 
 export const formatJyutping = formatJyutpingMandarin;
