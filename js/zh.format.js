@@ -85,27 +85,43 @@ function applyDiacritic(word, tone) {
 }
 
 function convertFinal(ipaFinal, pinyinInitial = '', isZeroInitialCase = false) {
-  // 1. 優先處理「二 (er)」的特殊情況
-  if (ipaFinal === 'aɻ' || ipaFinal === 'ɚ' || ipaFinal === 'əɻ') return 'er';
-
-  // 2. 處理 zhi, chi, shi, ri... 的特殊元音 (保留你原本的邏輯)
-  if (!ipaFinal || ipaFinal === '̩' || ipaFinal === 'ɨ') {
+  // 1. 定義空韻（Apical Vowel）集合
+  // 這些符號在 zh, ch, sh, r, z, c, s 後面一律轉為 "i"
+  const apicalVowels = ['̩', 'ɨ', 'ɻ', 'ɚ', 'ɿ'];
+  
+  if (!ipaFinal || apicalVowels.includes(ipaFinal)) {
     if (['zh', 'ch', 'sh', 'r', 'z', 'c', 's'].includes(pinyinInitial)) return 'i';
   }
 
+  // 2. 處理獨立音節 "er" (二, 兒)
+  // 如果沒有聲母，且 IPA 是這些捲舌元音，則回傳 "er"
+  if (!pinyinInitial && (ipaFinal === 'ɚ' || ipaFinal === 'aɻ' || ipaFinal === 'əɻ')) {
+    return 'er';
+  }
+
   if (!ipaFinal) return '';
+
+  // 3. 一般元音處理
   let result = ipaFinal.replace(/œ/g, 'ɛ');
   result = result.replace(/ɤŋ/g, 'eng').replace(/ɤ/g, 'e').replace(/ɔ/g, 'o');
-  result = result.replace(/ɥyŋ/g, 'iong').replace(/ɻ/g, 'i').replace(/ɚ/g, 'i').replace(/ɿ/g, 'i');
   result = result.replace(/uɔ/g, 'uo').replace(/w/g, 'u');
+  
+  // 處理 iong
+  result = result.replace(/ɥyŋ/g, 'iong').replace(/iɔŋ/g, 'iong');
+
+  // 修正：只有在非空韻的情況下才處理 ɻ/ɚ 轉 i 的邏輯（例如處理 ri 時的輔音殘留）
+  // 但因為上方已經優先處理了空韻，這裡主要是清理剩餘的特殊符號
   if (result === 'ɥɛn') {
     result = isZeroInitialCase ? 'yuan' : 'uan';
   } else {
     result = result.replace(/ɥ/g, 'u');
   }
+
   result = fixOrthography(result, pinyinInitial);
+  
+  // 進行大範圍的 Pinyin 映射
   result = result.replace(/ɪŋ/g, 'ing').replace(/iŋ/g, 'ing')
-    .replace(/ʊŋ/g, 'ong').replace(/uŋ/g, 'ong').replace(/iɔŋ/g, 'iong')
+    .replace(/ʊŋ/g, 'ong').replace(/uŋ/g, 'ong')
     .replace(/iɛu/g, 'iao').replace(/ɪɛu/g, 'iu').replace(/ɪu/g, 'iu')
     .replace(/ɛn/g, 'an').replace(/iɛn/g, 'ian').replace(/ɪɛn/g, 'ian').replace(/ɪɑn/g, 'ian')
     .replace(/ɪɑnɡ/g, 'iang').replace(/ɛ/g, 'e')
@@ -113,12 +129,16 @@ function convertFinal(ipaFinal, pinyinInitial = '', isZeroInitialCase = false) {
     .replace(/ŋ/g, 'ng').replace(/ɑ/g, 'a').replace(/ɪ/g, 'i').replace(/ʊ/g, 'u')
     .replace(/ə/g, 'e').replace(/ɯ/g, 'i').replace(/j/g, 'i')
     .replace(/œ/g, 'e').replace(/ɡ/g, 'g');
+
   if (isZeroInitialCase) return 'y' + result;
+
+  // 處理 ui, iu, un 的簡寫
   if (pinyinInitial) {
     result = result.replace(/uei/g, 'ui').replace(/uəi/g, 'ui')
       .replace(/iou/g, 'iu').replace(/iəu/g, 'iu')
       .replace(/uen/g, 'un').replace(/uən/g, 'un');
   }
+  
   return result;
 }
 
