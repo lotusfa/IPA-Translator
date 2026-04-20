@@ -219,7 +219,7 @@ export function convertIPATextToPinyinWithMarks(text) {
 // Zhuyin (注音) Conversion
 // ============================================
 
-export const ZHUYIN_INITIAL = {
+export const PINYIN_TO_ZHUYIN_INITIAL = {
   'p': 'ㄅ', 'pʰ': 'ㄆ', 'm': 'ㄇ', 'f': 'ㄈ',
   't': 'ㄉ', 'tʰ': 'ㄊ', 'n': 'ㄋ', 'l': 'ㄌ',
   'k': 'ㄍ', 'kʰ': 'ㄎ', 'h': 'ㄏ',
@@ -229,9 +229,20 @@ export const ZHUYIN_INITIAL = {
   'j': '', 'w': ''
 };
 
+const PINYIN_TO_ZHUYIN_FINAL = {
+  'a': 'ㄚ', 'o': 'ㄛ', 'e': 'ㄜ', 'ê': 'ㄝ',
+  'i': 'ㄧ', 'u': 'ㄨ', 'ü': 'ㄩ', 'v': 'ㄩ',
+  'ai': 'ㄞ', 'ei': 'ㄟ', 'ao': 'ㄠ', 'ou': 'ㄡ',
+  'an': 'ㄢ', 'en': 'ㄣ', 'ang': 'ㄤ', 'eng': 'ㄥ',
+  'er': 'ㄦ', 'a': 'ㄚ', 'o': 'ㄛ', 'e': 'ㄜ',
+  'ie': 'ㄧㄝ', 'üan': 'ㄩㄢ', 'ui': 'ㄨㄟ',
+  'uan': 'ㄨㄢ', 'un': 'ㄨㄣ', 'uang': 'ㄨㄤ', 'ueng': 'ㄨㄥ',
+  'üe': 'ㄩㄝ', 'üan': 'ㄩㄢ', 'ün': 'ㄩㄣ'
+};
+
 const ZHUYIN_TONE = { '1': '', '2': 'ˊ', '3': 'ˇ', '4': 'ˋ', '5': '˙', '0': '˙' };
 
-function pinyinToZhuyinFinal(pinyinFinal) {
+function handleComplexFinal(pinyinFinal) {
   if (!pinyinFinal) return '';
   const directMap = {
     'a': 'ㄚ', 'o': 'ㄛ', 'e': 'ㄜ', 'ê': 'ㄝ',
@@ -255,32 +266,29 @@ function pinyinToZhuyinFinal(pinyinFinal) {
 }
 
 export function convertSyllableToZhuyin(ipaSyllable) {
-  if (!ipaSyllable || typeof ipaSyllable !== 'string') return '';
-  const tone = getToneNumber(ipaSyllable);
-  const ipaNoTone = removeToneMarks(ipaSyllable);
-  let initialLen = 0, initialIPA = '';
-  for (const pattern of Object.keys(ZHUYIN_INITIAL)) {
-    if (ipaNoTone.startsWith(pattern)) { initialIPA = pattern; initialLen = pattern.length; break; }
+  // 步驟 1: 先轉成帶數字的拼音 (例如: dui4)
+  const pinyin = convertSyllableToPinyin(ipaSyllable); 
+  if (!pinyin) return '';
+
+  const match = pinyin.match(/^([b-z]*)(.+?)([0-5])$/);
+  if (!match) return '';
+  let [ , pyInitial, pyFinal, tone] = match;
+
+  // 步驟 2: 轉換聲母
+  const zhInitial = PINYIN_TO_ZHUYIN_INITIAL[pyInitial] || '';
+
+  // 步驟 3: 轉換韻母 (這裡需要處理拼音縮寫，如 ui -> uei)
+  let zhFinal = PINYIN_TO_ZHUYIN_FINAL[pyFinal] || handleComplexFinal(pyFinal);
+
+  // 步驟 4: 處理空韻 (zhi, chi, shi, ri, zi, ci, si)
+  if (['zh', 'ch', 'sh', 'r', 'z', 'c', 's'].includes(pyInitial) && pyFinal === 'i') {
+    zhFinal = '';
   }
-  const finalIPA = ipaNoTone.slice(initialLen);
-  let zhuyinInitial = ZHUYIN_INITIAL[initialIPA] || '';
-  let pinyinFinal = convertFinal(finalIPA, initialIPA, initialIPA === 'j');
-  if (initialIPA === 'j' && !finalIPA.startsWith('i')) {
-    zhuyinInitial = '';
-    pinyinFinal = addVowelPrefix(finalIPA, pinyinFinal);
-  }
-  let zhuyinFinal = pinyinToZhuyinFinal(pinyinFinal);
-  if (['ㄓ', 'ㄔ', 'ㄕ', 'ㄖ', 'ㄗ', 'ㄘ', 'ㄙ'].includes(zhuyinInitial) && pinyinFinal.endsWith('i')) {
-    zhuyinFinal = '';
-  }
-  let result = zhuyinInitial + zhuyinFinal;
-  const toneChar = ZHUYIN_TONE[tone];
-  if (tone > 0 && tone <= 4 && toneChar && result.length > 0) {
-    result = result.slice(0, -1) + toneChar + result.slice(-1);
-  } else if (tone === 0) {
-    result = result + '˙';
-  }
-  return result;
+
+  // 步驟 5: 聲調放置
+  const toneMark = ZHUYIN_TONE[tone] || '';
+  if (tone === '0' || tone === '5') return '˙' + zhInitial + zhFinal;
+  return zhInitial + zhFinal + toneMark; // 正常聲調放後面
 }
 
 export function convertIPATextToZhuyin(text) {
