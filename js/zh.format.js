@@ -232,7 +232,7 @@ export function applyToneMarkToSyllable(pinyinWithNumber) {
     'e': ['', '\u0113', '\u00E9', '\u011B', '\u00E8'],
     'i': ['', '\u012B', '\u00ED', '\u01D4', '\u00EC'],
     'u': ['', '\u016B', '\u00FA', '\u01D4', '\u00F9'],
-    '\u00FC': ['', '\u01D8', '\u01DA', '\u01DC']
+    '\u00FC': ['', '\u01D6', '\u01D8', '\u01DA', '\u01DC']
   };
   const match = pinyinWithNumber.match(/^(.+?)([01234])$/);
   if (!match) return pinyinWithNumber;
