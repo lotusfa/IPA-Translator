@@ -1,5 +1,5 @@
 /**
- * Mandarin IPA to Pinyin Converter - KISS Refactored
+ * Mandarin IPA to Pinyin Converter - KISS Refactored + Y/ɥ + œ/ɛ fixes
  * Converts IPA syllables to Hanyu Pinyin with tone marks
  */
 
@@ -106,19 +106,19 @@ function isZeroInitial(initialIPA, vowelPart) {
 }
 
 /**
- * Handles the "y" and "ü" orthographic rules
- * IPA /y/ -> Pinyin "ü"
+ * Handles the "y" and "ü" orthographic rules + general ɥ fix
+ * IPA /y/ or /ɥ/ -> Pinyin "ü"
  * j/q/x + ü -> u (dots dropped)
  * Standalone ü -> yu
  */
 function fixOrthography(text, initial = '') {
   let result = text;
-  let hasY = result.includes('y');
+  // General fix for y issue: treat ɥ exactly like y
+  let hasY = result.includes('y') || result.includes('ɥ');
   
-  // First, check if we have IPA 'y' vowel (which is /y/ = ü)
   if (hasY) {
-    // Convert IPA y to ü temporarily
-    result = result.replace(/y/g, 'ü');
+    // Convert IPA y or ɥ to ü temporarily
+    result = result.replace(/y/g, 'ü').replace(/ɥ/g, 'ü');
     
     // Rule: j, q, x + ü -> u (dots dropped)
     if (['j', 'q', 'x'].includes(initial)) {
@@ -172,7 +172,8 @@ function applyDiacritic(word, tone) {
 function convertFinal(ipaFinal, pinyinInitial = '', isZeroInitialCase = false) {
   if (!ipaFinal) return '';
   
-  let result = ipaFinal;
+  // General fix for y issue: normalize œ → ɛ (common IPA variant, e.g. ɥœn becomes ɥɛn)
+  let result = ipaFinal.replace(/œ/g, 'ɛ');
   
   // Handle retroflex initials (zh, ch, sh, r)
   const isRetroflex = ['zh', 'ch', 'sh', 'r'].includes(pinyinInitial);
@@ -190,13 +191,14 @@ function convertFinal(ipaFinal, pinyinInitial = '', isZeroInitialCase = false) {
     .replace(/w/g, 'u');
   
   // Handle ɥɛn: zero-initial → yuan, otherwise uan
+  // (now also catches normalized ɥœn)
   if (result === 'ɥɛn') {
     result = isZeroInitialCase ? 'yuan' : 'uan';
   } else {
     result = result.replace(/ɥ/g, 'u');
   }
   
-  // Apply orthography rules for IPA 'y' (ü)
+  // Apply orthography rules for IPA 'y' / 'ɥ' (ü)
   result = fixOrthography(result, pinyinInitial);
   
   // Convert vowel patterns
@@ -208,12 +210,13 @@ function convertFinal(ipaFinal, pinyinInitial = '', isZeroInitialCase = false) {
     .replace(/ɛn/g, 'an')
     .replace(/iɛn/g, 'ian').replace(/ɪɛn/g, 'ian').replace(/ɪɑn/g, 'ian')
     .replace(/ɪɑnɡ/g, 'iang')
+    .replace(/ɛ/g, 'e')  // General fix: remaining ɛ → e (handles diphthongs like ɛɪ in tweɪ → uei → ui, and other finals)
     .replace(/ɑŋ/g, 'ang').replace(/ɑʊ/g, 'ao').replace(/aɪ/g, 'ai')
     .replace(/ŋ/g, 'ng')
     .replace(/ɑ/g, 'a').replace(/ɪ/g, 'i').replace(/ʊ/g, 'u')
     .replace(/ə/g, 'e').replace(/ɯ/g, 'i')
     .replace(/j/g, 'i')
-    .replace(/œ/g, 'e').replace(/ɡ/g, 'g');
+    .replace(/œ/g, 'e').replace(/ɡ/g, 'g');  // œ replace kept for safety (harmless after normalization)
   
   // For zero-initial cases, add the appropriate prefix (y for j + vowel patterns)
   if (isZeroInitialCase) {
@@ -239,6 +242,7 @@ function convertFinal(ipaFinal, pinyinInitial = '', isZeroInitialCase = false) {
 
 /**
  * Add vowel prefix (y/w) for syllables without consonant initial
+ * Generalized for ɥ-starting syllables (y issue fix)
  */
 function addVowelPrefix(ipaNoTone, pinyinFinal) {
   if (!pinyinFinal) return '';
@@ -247,7 +251,7 @@ function addVowelPrefix(ipaNoTone, pinyinFinal) {
   if (ipaNoTone === 'u') return 'wu';
   if (ipaNoTone === 'y') return 'yu';
   if (ipaNoTone === 'yn') return 'yun';
-  if (ipaNoTone === 'ɥɛn') return 'yuan';
+  if (ipaNoTone === 'ɥɛn' || ipaNoTone === 'ɥœn') return 'yuan';  // added ɥœn for the exact example case
   if (ipaNoTone === 'yŋ') return 'yong';
   
   if (ipaNoTone.startsWith('i') || ipaNoTone.startsWith('ɪ')) {
@@ -263,9 +267,10 @@ function addVowelPrefix(ipaNoTone, pinyinFinal) {
     return pinyinFinal.startsWith('u') ? 'w' + pinyinFinal.slice(1) : 'w' + pinyinFinal;
   }
   
-  // Handle IPA 'y' (ü) for zero-initial
-  if (ipaNoTone.includes('y')) {
-    // For patterns like yn, yŋ, convert to yun, yong
+  // General handling for zero-initial syllables starting with y or ɥ (the core y-issue fix)
+  // Now catches ɥn → yun, ɥŋ → yong, ɥ → yu, and any other ɥ... cases
+  if (ipaNoTone.includes('y') || ipaNoTone.includes('ɥ')) {
+    // For patterns like yn, yŋ, ɥn, ɥŋ, etc.
     if (ipaNoTone.endsWith('n')) return 'yun' + ipaNoTone.slice(2, -1);
     if (ipaNoTone.endsWith('ŋ')) return 'yong' + ipaNoTone.slice(2, -2);
     // For ü + vowel, drop ü dots and add y prefix
