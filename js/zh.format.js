@@ -216,48 +216,44 @@ export function convertIPATextToPinyinWithMarks(text) {
 }
 
 // ============================================
-// Zhuyin (注音) Conversion
+// Zhuyin (注音) Conversion - 重寫重點區域
 // ============================================
 
 export const PINYIN_TO_ZHUYIN_INITIAL = {
-  'p': 'ㄅ', 'pʰ': 'ㄆ', 'm': 'ㄇ', 'f': 'ㄈ',
-  't': 'ㄉ', 'tʰ': 'ㄊ', 'n': 'ㄋ', 'l': 'ㄌ',
-  'k': 'ㄍ', 'kʰ': 'ㄎ', 'h': 'ㄏ',
-  'tɕ': 'ㄐ', 'tɕʰ': 'ㄑ', 'ɕ': 'ㄒ',
-  'tʂ': 'ㄓ', 'tʂʰ': 'ㄔ', 'ʂ': 'ㄕ', 'ʐ': 'ㄖ',
-  'ts': 'ㄗ', 'tsʰ': 'ㄘ', 's': 'ㄙ',
-  'j': '', 'w': ''
+  'b': 'ㄅ', 'p': 'ㄆ', 'm': 'ㄇ', 'f': 'ㄈ',
+  'd': 'ㄉ', 't': 'ㄊ', 'n': 'ㄋ', 'l': 'ㄌ',
+  'g': 'ㄍ', 'k': 'ㄎ', 'h': 'ㄏ',
+  'j': 'ㄐ', 'q': 'ㄑ', 'x': 'ㄒ',
+  'zh': 'ㄓ', 'ch': 'ㄔ', 'sh': 'ㄕ', 'r': 'ㄖ',
+  'z': 'ㄗ', 'c': 'ㄘ', 's': 'ㄙ'
 };
 
-const PINYIN_TO_ZHUYIN_FINAL = {
+export const PINYIN_TO_ZHUYIN_FINAL = {
   'a': 'ㄚ', 'o': 'ㄛ', 'e': 'ㄜ', 'ê': 'ㄝ',
-  'i': 'ㄧ', 'u': 'ㄨ', 'ü': 'ㄩ', 'v': 'ㄩ',
+  'i': 'ㄧ', 'u': 'ㄨ', 'ü': 'ㄩ',
   'ai': 'ㄞ', 'ei': 'ㄟ', 'ao': 'ㄠ', 'ou': 'ㄡ',
-  'an': 'ㄢ', 'en': 'ㄣ', 'ang': 'ㄤ', 'eng': 'ㄥ',
-  'er': 'ㄦ', 'a': 'ㄚ', 'o': 'ㄛ', 'e': 'ㄜ',
-  'ie': 'ㄧㄝ', 'üan': 'ㄩㄢ', 'ui': 'ㄨㄟ',
+  'an': 'ㄢ', 'en': 'ㄣ', 'ang': 'ㄤ', 'eng': 'ㄥ', 'ong': 'ㄨㄥ',
+  'er': 'ㄦ',
+  'ia': 'ㄧㄚ', 'ie': 'ㄧㄝ', 'iao': 'ㄧㄠ', 'iu': 'ㄧㄡ',
+  'ian': 'ㄧㄢ', 'in': 'ㄧㄣ', 'iang': 'ㄧㄤ', 'ing': 'ㄧㄥ', 'iong': 'ㄩㄥ',
+  'ua': 'ㄨㄚ', 'uo': 'ㄨㄛ', 'uai': 'ㄨㄞ', 'ui': 'ㄨㄟ',
   'uan': 'ㄨㄢ', 'un': 'ㄨㄣ', 'uang': 'ㄨㄤ', 'ueng': 'ㄨㄥ',
-  'üe': 'ㄩㄝ', 'üan': 'ㄩㄢ', 'ün': 'ㄩㄣ'
+  'üe': 'ㄩㄝ', 'üan': 'ㄩㄢ', 'ün': 'ㄩㄣ',
+  // zero-initial 專用
+  'yuan': 'ㄩㄢ', 'yun': 'ㄩㄣ', 'ying': 'ㄧㄥ', 'yang': 'ㄧㄤ',
+  'yan': 'ㄧㄢ', 'yin': 'ㄧㄣ', 'yu': 'ㄩ', 'yong': 'ㄩㄥ',
+  'wu': 'ㄨ', 'yi': 'ㄧ'
 };
 
 const ZHUYIN_TONE = { '1': '', '2': 'ˊ', '3': 'ˇ', '4': 'ˋ', '5': '˙', '0': '˙' };
 
 function handleComplexFinal(pinyinFinal) {
   if (!pinyinFinal) return '';
-  const directMap = {
-    'a': 'ㄚ', 'o': 'ㄛ', 'e': 'ㄜ', 'ê': 'ㄝ',
-    'i': 'ㄧ', 'u': 'ㄨ', 'ü': 'ㄩ', 'v': 'ㄩ',
-    'ai': 'ㄞ', 'ei': 'ㄟ', 'ao': 'ㄠ', 'ou': 'ㄡ',
-    'an': 'ㄢ', 'en': 'ㄣ', 'ang': 'ㄤ', 'eng': 'ㄥ', 'er': 'ㄦ',
-    'ia': 'ㄧㄚ', 'ie': 'ㄧㄝ', 'iao': 'ㄧㄠ', 'iu': 'ㄧㄡ',
-    'ian': 'ㄧㄢ', 'in': 'ㄧㄣ', 'iang': 'ㄧㄤ', 'ing': 'ㄧㄥ', 'iong': 'ㄩㄥ',
-    'ua': 'ㄨㄚ', 'uo': 'ㄨㄛ', 'uai': 'ㄨㄞ', 'ui': 'ㄨㄟ',
-    'uan': 'ㄨㄢ', 'un': 'ㄨㄣ', 'uang': 'ㄨㄤ', 'ueng': 'ㄨㄥ',
-    'üe': 'ㄩㄝ', 'üan': 'ㄩㄢ', 'ün': 'ㄩㄣ'
-  };
+  const directMap = { ...PINYIN_TO_ZHUYIN_FINAL }; // 直接使用主表
   if (directMap[pinyinFinal]) return directMap[pinyinFinal];
-  let result = pinyinFinal.replace(/ü/g, 'ㄩ');
-  result = result.replace(/ɑ?ng/g, 'ㄤ').replace(/e?ng/g, 'ㄥ')
+
+  let result = pinyinFinal.replace(/ü/g, 'ㄩ')
+    .replace(/ɑ?ng/g, 'ㄤ').replace(/e?ng/g, 'ㄥ')
     .replace(/iɛu|ɪu/gi, 'ㄧㄡ').replace(/iŋ/gi, 'ㄧㄥ')
     .replace(/uɔ/g, 'ㄨㄛ').replace(/ɑʊ/g, 'ㄠ').replace(/aɪ/g, 'ㄞ')
     .replace(/ɛn/g, 'ㄢ').replace(/ɛ/g, 'ㄜ').replace(/ɑ/g, 'ㄚ')
@@ -265,30 +261,53 @@ function handleComplexFinal(pinyinFinal) {
   return result;
 }
 
+// 穩健的 initial/final 切割（取代原本 regex）
+function splitPinyinToInitialFinal(pinyinSyllableWithNum) {
+  if (!pinyinSyllableWithNum) return { initial: '', final: '', tone: '3' };
+  const toneMatch = pinyinSyllableWithNum.match(/([0-5])$/);
+  const tone = toneMatch ? toneMatch[1] : '3';
+  let syllable = pinyinSyllableWithNum.replace(/[0-5]$/, '');
+
+  const possibleInitials = ['zh', 'ch', 'sh', 'r', 'z', 'c', 's', 'b', 'p', 'm', 'f', 'd', 't', 'n', 'l', 'g', 'k', 'h', 'j', 'q', 'x']
+    .sort((a, b) => b.length - a.length);
+
+  let initial = '';
+  for (const init of possibleInitials) {
+    if (syllable.startsWith(init)) {
+      initial = init;
+      break;
+    }
+  }
+  const final = syllable.slice(initial.length);
+  return { initial, final, tone };
+}
+
 export function convertSyllableToZhuyin(ipaSyllable) {
-  // 步驟 1: 先轉成帶數字的拼音 (例如: dui4)
-  const pinyin = convertSyllableToPinyin(ipaSyllable); 
-  if (!pinyin) return '';
+  const pinyinWithNum = convertSyllableToPinyin(ipaSyllable);
+  if (!pinyinWithNum) return '';
 
-  const match = pinyin.match(/^([b-z]*)(.+?)([0-5])$/);
-  if (!match) return '';
-  let [ , pyInitial, pyFinal, tone] = match;
+  const { initial: pyInitial, final: pyFinal, tone } = splitPinyinToInitialFinal(pinyinWithNum);
 
-  // 步驟 2: 轉換聲母
+  // j/q/x 後的 u 其實是 ü 的特殊處理
+  let effectiveFinal = pyFinal;
+  if (['j', 'q', 'x'].includes(pyInitial)) {
+    if (pyFinal === 'u') effectiveFinal = 'ü';
+    else if (pyFinal === 'ue') effectiveFinal = 'üe';
+    else if (pyFinal === 'uan') effectiveFinal = 'üan';
+    else if (pyFinal === 'un') effectiveFinal = 'ün';
+  }
+
   const zhInitial = PINYIN_TO_ZHUYIN_INITIAL[pyInitial] || '';
+  let zhFinal = PINYIN_TO_ZHUYIN_FINAL[effectiveFinal] || handleComplexFinal(effectiveFinal);
 
-  // 步驟 3: 轉換韻母 (這裡需要處理拼音縮寫，如 ui -> uei)
-  let zhFinal = PINYIN_TO_ZHUYIN_FINAL[pyFinal] || handleComplexFinal(pyFinal);
-
-  // 步驟 4: 處理空韻 (zhi, chi, shi, ri, zi, ci, si)
-  if (['zh', 'ch', 'sh', 'r', 'z', 'c', 's'].includes(pyInitial) && pyFinal === 'i') {
+  // 空韻（zhi, chi, shi, ri, zi, ci, si）
+  if (['zh', 'ch', 'sh', 'r', 'z', 'c', 's'].includes(pyInitial) && (pyFinal === 'i' || pyFinal === '')) {
     zhFinal = '';
   }
 
-  // 步驟 5: 聲調放置
   const toneMark = ZHUYIN_TONE[tone] || '';
   if (tone === '0' || tone === '5') return '˙' + zhInitial + zhFinal;
-  return zhInitial + zhFinal + toneMark; // 正常聲調放後面
+  return zhInitial + zhFinal + toneMark;
 }
 
 export function convertIPATextToZhuyin(text) {
