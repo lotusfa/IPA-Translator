@@ -60,6 +60,12 @@ function isZeroInitial(initialIPA, vowelPart) {
   if (initialIPA === 'j' && (vowelPart.startsWith('ɛ') || vowelPart.startsWith('ɑ'))) {
     return true; // jɛn → yan, jɑŋ → yang
   }
+  if (initialIPA === 'j' && vowelPart === 'ɪŋ') {
+    return true; // jɪŋ → ying
+  }
+  if (initialIPA === 'j' && vowelPart === 'ɥɛn') {
+    return true; // ɥɛn → yuan (zero-initial for 員)
+  }
   return false;
 }
 
@@ -72,8 +78,9 @@ function convertFinal(ipaFinal, pinyinInitial = '', hasInitial = false, original
   
   if (retroflexInitials.includes(pinyinInitial)) {
     result = result.replace(/ɤŋ/g, 'eng');
-    result = result.replace(/ɤ/g, 'i');
-    result = result.replace(/ɔ/g, 'i');
+    // ɤ → e for retroflex (ʂɤ → she), but keep ɤ → i for compounds like ɤŋ → eng
+    result = result.replace(/ɤ/g, 'e');
+    result = result.replace(/ɔ/g, 'o');
   } else {
     result = result.replace(/ɤŋ/g, 'eng');
     result = result.replace(/ɤ/g, 'e');
@@ -81,12 +88,35 @@ function convertFinal(ipaFinal, pinyinInitial = '', hasInitial = false, original
   }
   
   result = result.replace(/ɥyŋ/g, 'iong');
-  result = result.replace(/ɥ/g, 'u');
+  // Handle ɥɛn → yuan for zero-initial case (員)
+  if (result === 'ɥɛn') {
+    if (isZeroInitialCase) {
+      result = 'yuan';  // zero-initial: ɥɛn → yuan
+    } else {
+      result = 'uan';   // with initial: ɥɛn → uan
+    }
+  } else {
+    result = result.replace(/ɥ/g, 'u');
+  }
   result = result.replace(/ɻ/g, 'i');
   result = result.replace(/ɚ/g, 'i');
   result = result.replace(/ɿ/g, 'i');
   result = result.replace(/uɔ/g, 'uo');
   result = result.replace(/w/g, 'u');
+  
+  // Handle ü (IPA y): context-dependent after different initials
+  // n, l followed by ü should keep ü (nǚ, lǜ) - replace y with ü
+  // j, q, x followed by ü should become u (jūn, qū, xū) - replace y with u
+  if (pinyinInitial === 'n' || pinyinInitial === 'l') {
+    // Keep ü after n, l
+    result = result.replace(/y/g, '\u00FC');
+  } else if (pinyinInitial === 'j' || pinyinInitial === 'q' || pinyinInitial === 'x') {
+    // After j, q, x: y → u
+    result = result.replace(/y/g, 'u');
+  } else {
+    // Default: y → u for other initials
+    result = result.replace(/y/g, 'u');
+  }
   
   result = result.replace(/ɪŋ/g, 'ing');
   result = result.replace(/iŋ/g, 'ing');
@@ -161,6 +191,10 @@ function addVowelPrefix(ipaNoTone, pinyinFinal, originalInitial = '') {
     }
     if (pinyinFinal.startsWith('ü')) return 'yu' + pinyinFinal.substring(2);
     return 'y' + pinyinFinal;
+  }
+  // Handle ɥɛn (零聲母: 員 → yuan)
+  if (ipaNoTone === 'ɥɛn' && pinyinFinal === 'uan') {
+    return 'yuan';
   }
   return pinyinFinal;
 }
