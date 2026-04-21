@@ -8,7 +8,9 @@ import {
   initDarkMode,
   initResponsiveTextareaRows,
   onTextInputChange,
-  onMultipleChange
+  onMultipleChange,
+  setElementValue,
+  setElementValueAnimated
 } from '../js/ipa-core.js';
 
 import { formatMandarinOutput } from '../js/zh.format.js';
@@ -35,10 +37,10 @@ function translate() {
   const cWordsBox = document.getElementById('cWords_tBox');
   const ipaBox = document.getElementById('IPA_tBox');
   if (!cWordsBox || !ipaBox) return;
-  
+
   const input = cWordsBox.value;
-  ipaBox.value = 'loading....';
-  
+  setElementValue('IPA_tBox', 'loading....');
+
   setTimeout(() => {
     const result = processTextCharBased({
       input,
@@ -48,7 +50,7 @@ function translate() {
       maxWordLength: 6
     });
     // Use formatMandarinOutput for Mandarin-specific formatting (tone diacritics or numbers)
-    ipaBox.value = formatMandarinOutput(result);
+    setElementValue('IPA_tBox', formatMandarinOutput(result));
   }, 10);
 }
 

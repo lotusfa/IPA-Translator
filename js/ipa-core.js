@@ -284,6 +284,27 @@ export function setElementValue(elementId, value) {
 }
 
 /**
+ * Set element value with fade-in animation for smoother visual transition
+ * @param {string} elementId - Element ID
+ * @param {string} value - Value to set
+ * @param {number} animationDuration - Animation duration in ms (default: 300)
+ */
+export function setElementValueAnimated(elementId, value, animationDuration = 300) {
+  const el = document.getElementById(elementId);
+  if (!el) return;
+
+  el.value = value;
+
+  // Apply fade-in animation
+  el.classList.add('ipa-fade-in');
+
+  // Remove animation class after completion
+  setTimeout(() => {
+    el.classList.remove('ipa-fade-in');
+  }, animationDuration);
+}
+
+/**
  * Check if element exists and is checked (for checkboxes/radios)
  * @param {string} elementId - Element ID
  * @returns {boolean} Whether element exists and is checked

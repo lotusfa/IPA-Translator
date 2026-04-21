@@ -11,6 +11,7 @@ import {
   onMultipleChange,
   initDarkMode,
   initResponsiveTextareaRows,
+  setElementValueAnimated,
 } from '../js/ipa-core.js';
 
 let IPA_DB = {};
@@ -36,7 +37,7 @@ function loadDatabase() {
  */
 function translate() {
   const input = document.getElementById('cWords_tBox').value;
-  document.getElementById('IPA_tBox').value = 'loading....';
+  setElementValueAnimated('IPA_tBox', 'loading....');
 
   // Small delay to allow UI to update before processing
   setTimeout(() => {
@@ -50,7 +51,7 @@ function translate() {
 
     // Apply format transformation (use formatYueOutput for multi-scheme support)
     const formatted = formatYueOutput(processed);
-    document.getElementById('IPA_tBox').value = formatted;
+    setElementValueAnimated('IPA_tBox', formatted);
   }, 10);
 }
 

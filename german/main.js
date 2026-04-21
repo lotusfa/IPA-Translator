@@ -11,6 +11,7 @@ import {
   onMultipleChange,
   getElementValue,
   setElementValue,
+  setElementValueAnimated,
   isElementChecked
 } from '../js/ipa-core.js';
 
@@ -46,7 +47,7 @@ function translate() {
       lookupTable: IPA_DB,
       withWords: isElementChecked('wf_c_words')
     });
-    setElementValue('IPA_tBox', result);
+    setElementValueAnimated('IPA_tBox', result);
   }, 10);
 }
 

@@ -8,7 +8,9 @@ import {
   initDarkMode,
   initResponsiveTextareaRows,
   onTextInputChange,
-  onMultipleChange
+  onMultipleChange,
+  setElementValue,
+  setElementValueAnimated
 } from '../js/ipa-core.js';
 
 let IPA_DB = {};
@@ -30,10 +32,9 @@ function loadDatabase() {
  */
 function translate() {
   const input = document.getElementById('cWords_tBox')?.value || '';
-  const ipaBox = document.getElementById('IPA_tBox');
-  if (!ipaBox) return;
+  if (!document.getElementById('IPA_tBox')) return;
 
-  ipaBox.value = 'loading....';
+  setElementValue('IPA_tBox', 'loading....');
 
   setTimeout(() => {
     const result = processTextLongestMatch({
@@ -41,7 +42,7 @@ function translate() {
       lookupTable: IPA_DB,
       withWords: !!document.getElementById('wf_c_words')?.checked
     });
-    ipaBox.value = result;
+    setElementValueAnimated('IPA_tBox', result);
   }, 10);
 }
 

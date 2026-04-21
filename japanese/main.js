@@ -9,6 +9,7 @@ import {
   initResponsiveTextareaRows,
   onTextInputChange,
   setElementValue,
+  setElementValueAnimated,
   isElementChecked
 } from '../js/ipa-core.js';
 
@@ -46,7 +47,7 @@ function translate() {
       allowWordSearch: isElementChecked('allow_words_search'),
       maxWordLength: 6
     });
-    setElementValue('IPA_tBox', result);
+    setElementValueAnimated('IPA_tBox', result);
   }, 10);
 }
 

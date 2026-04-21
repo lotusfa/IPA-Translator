@@ -10,6 +10,7 @@ import {
   formatVietnameseOutput,
   getElementValue,
   setElementValue,
+  setElementValueAnimated,
   isElementChecked,
   onTextInputChange,
   onMultipleChange,
@@ -57,7 +58,7 @@ function translate() {
 
     // Apply format transformation (IPA_org, IPA_num)
     const formatted = formatVietnameseOutput(result);
-    setElementValue('IPA_tBox', formatted);
+    setElementValueAnimated('IPA_tBox', formatted);
   }, 10);
 }
 

@@ -12,6 +12,7 @@ import {
   onMultipleChange,
   getElementValue,
   setElementValue,
+  setElementValueAnimated,
   isElementChecked
 } from '../js/ipa-core.js';
 
@@ -41,7 +42,7 @@ function loadDatabase() {
 function translate() {
   const input = getElementValue('cWords_tBox');
   setElementValue('IPA_tBox', 'loading....');
-  
+
   // Small timeout to allow UI to update before processing
   setTimeout(() => {
     const result = processTextLongestMatch({
@@ -49,7 +50,7 @@ function translate() {
       lookupTable: IPA_DB,
       withWords: isElementChecked('wf_c_words')
     });
-    setElementValue('IPA_tBox', result);
+    setElementValueAnimated('IPA_tBox', result);
   }, 10);
 }
 
