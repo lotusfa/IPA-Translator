@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initResponsiveTextareaRows();
 
   // Initialize TTS button (Arabic)
-  initSpeakButton({ language: 'ar-SA' });
+  initSpeakButton({ language: 'ar' });
 
   // Set up input handler
   onTextInputChange('cWords_tBox', translate);

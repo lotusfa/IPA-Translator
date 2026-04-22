@@ -35,8 +35,6 @@ export {
 // ============================================
 
 export {
-  getTTSConfig,
-  speakText,
   initSpeakButton
 } from './tts.js';
 

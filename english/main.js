@@ -15,7 +15,6 @@ import {
   setElementValueAnimated,
   isElementChecked,
   initSpeakButton,
-  getTTSConfig,
 } from '../js/ipa-core.js';
 
 let IPA_DB = {};
