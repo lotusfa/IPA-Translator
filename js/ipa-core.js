@@ -48,7 +48,9 @@ export {
 
 export {
   formatVietnamese,
-  formatVietnameseOutput
+  formatVietnameseOutput,
+  formatVietnameseStandard,
+  formatIPANumbers
 } from './vi.format.js';
 
 // ============================================

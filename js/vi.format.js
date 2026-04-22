@@ -1,83 +1,60 @@
 /**
- * Vietnamese Format Utilities
- * Simple format functions for Vietnamese IPA output
+ * Vietnamese Standard Tone Formatter
+ * Uses standard pedagogical tone numbering (Số thứ tự thanh điệu)
  */
 
+// Rules ordered by length (longest match first) to ensure precision
+const STANDARD_TONE_RULES = [
+  // Triple letters (e.g., Dipping-rising Hỏi)
+  { regex: /˧˩˨/g, num: '4' }, 
+  
+  // Double letters (Ligatures)
+  { regex: /˧˥|˦˥|˩˧/g, num: '3' }, // Sắc
+  { regex: /˨˩|˦˨/g,     num: '2' }, // Huyền
+  { regex: /[˧˦˥]ˀ/g,    num: '5' }, // Ngã (High glottal)
+  { regex: /[˨˩]ˀ/g,     num: '6' }, // Nặng (Low glottal)
+  
+  // Single letter Fallbacks
+  { regex: /˧/g, num: '1' }, // Ngang
+  { regex: /˦/g, num: '3' }, // Sắc variant
+  { regex: /˨/g, num: '6' }, // Nặng variant
+  { regex: /˩/g, num: '4' }, // Hỏi variant
+  { regex: /˥/g, num: '5' }  // Ngã variant
+];
 /**
- * Format Vietnamese IPA to tone numbers (direct conversion)
- * Converts each IPA tone mark character directly to its corresponding digit:
- * - ˥ → 5
- * - ˧ → 3
- * - ˨ → 2
- * - ˩ → 1
- * Example: /baŋ˧˩˨/ → /baŋ312/
+ * Format to standard 1-6 tone numbers (Thanh điệu)
+ */
+export function formatVietnameseStandard(text) {
+  let result = text;
+
+  STANDARD_TONE_RULES.forEach(({ regex, num }) => {
+    result = result.replace(regex, num);
+  });
+
+  // Safety: ensure only one tone number remains per syllable
+  return result.replace(/(\d)\d+/g, '$1');
+}
+
+/**
+ * Format Vietnamese IPA (alias for formatVietnameseStandard)
+ * Maintains backward compatibility
  */
 export function formatVietnamese(text) {
-  return text
-    .replace(/˥/g, '5')
-    .replace(/˧/g, '3')
-    .replace(/˨/g, '2')
-    .replace(/˩/g, '1');
+  return formatVietnameseStandard(text);
 }
 
 /**
- * Format Vietnamese IPA using simplified 6-tone system
- * Maps each Vietnamese tone to a single digit number:
- * - ngang (level): ˧ → 1
- * - sắc (rising): ˧˥, ˊ → 2
- * - hỏi (falling): ˧˩˨, ˧˩ → 3
- * - ngã (creaky): ˧ˀ → 4
- * - nặng (heavy): ˨ˀ → 5
- * - huyền (low): ˦˨ → 6
- * Example: /baŋ˧˩˨/ → /baŋ3/
+ * Format Vietnamese output (wrapper for tone formatting)
  */
-export function formatVietnameseSimple(text) {
-  return text
-    // First: Replace 3-segment tone marks (must be before 2-segment patterns)
-    .replace(/˧˩˨/g, '3')    // hỏi tone (3-segment)
-    // Then: Replace 2-segment tone marks
-    .replace(/˧˥/g, '2')     // sắc (rising)
-    .replace(/˩˧/g, '2')     // sắc variant
-    .replace(/˦˧˥/g, '2')    // sắc variant
-    .replace(/˥˧/g, '3')     // hỏi variant (falling)
-    .replace(/˧˩/g, '3')     // hỏi (2-segment falling)
-    .replace(/˦˨/g, '6')     // huyền (low falling)
-    .replace(/˥˩/g, '3')     // hỏi variant
-    .replace(/˨˩/g, '5')     // nặng variant
-    // Then: Replace creaky tones
-    .replace(/˧ˀ/g, '4')     // ngã (creaky-level)
-    .replace(/˨ˀ/g, '5')     // nặng (creaky/heavy)
-    // Finally: Replace single tone marks (fallback)
-    .replace(/˧/g, '1')      // ngang (level)
-    .replace(/˥/g, '2')      // high
-    .replace(/˦/g, '6')      // high level / huyền
-    .replace(/˩/g, '3')      // low / hỏi
-    .replace(/˨/g, '5');     // low / nặng
+export function formatVietnameseOutput(result) {
+  return formatVietnameseStandard(result);
 }
 
 /**
- * Format Vietnamese output dispatcher
- * Supports three formats:
- * - IPA_num: Direct tone mark to number conversion (formatVietnamese)
- * - IPA_simple: Simplified 6-tone system (formatVietnameseSimple)
- * - IPA_org: Original IPA (no transformation)
+ * Direct IPA pitch height conversion (1-5)
+ * Standard Chao Tone Letters: 1=Low, 5=High
  */
-export function formatVietnameseOutput(text, options = {}) {
-  if (typeof document !== 'undefined') {
-    const IPA_num = document.getElementById('IPA_num');
-    const tone_simple = document.getElementById('tone_simple');
-    const IPA_org = document.getElementById('IPA_org');
-
-    if (tone_simple && tone_simple.checked) return formatVietnameseSimple(text);
-    if (IPA_num && IPA_num.checked) return formatVietnamese(text);
-    if (IPA_org && IPA_org.checked) return formatIPA_org(text);
-  }
-  return formatIPA_org(text);
-}
-
-/**
- * Format original IPA (no transformation)
- */
-export function formatIPA_org(text) {
-  return text;
+export function formatIPANumbers(text) {
+  const map = { '˥': '5', '˦': '4', '˧': '3', '˨': '2', '˩': '1' };
+  return text.replace(/[˥˦˧˨˩]/g, m => map[m]);
 }

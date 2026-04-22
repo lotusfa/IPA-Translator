@@ -6,8 +6,9 @@
 import {
   loadIPADatabase,
   processTextLongestMatch,
-  formatVietnamese,
   formatVietnameseOutput,
+  formatVietnameseStandard,
+  formatIPANumbers,
   getElementValue,
   setElementValue,
   setElementValueAnimated,
@@ -57,8 +58,21 @@ function translate() {
       withWords: withWords
     });
 
-    // Apply format transformation (IPA_org, IPA_num)
-    const formatted = formatVietnameseOutput(result);
+    // Apply format transformation based on selected option
+    const format = document.querySelector('input[name="format"]:checked').id;
+    let formatted = result;
+
+    if (format === 'IPA_org') {
+      // Keep original IPA symbols
+      formatted = result;
+    } else if (format === 'IPA_num') {
+      // Convert IPA tone letters to numbers (Chao numbers)
+      formatted = formatIPANumbers(result);
+    } else if (format === 'tone_simple') {
+      // Use standard Vietnamese tone numbering (Số thứ tự thanh điệu)
+      formatted = formatVietnameseOutput(result);
+    }
+
     setElementValueAnimated('IPA_tBox', formatted);
   }, 10);
 }
