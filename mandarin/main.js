@@ -10,7 +10,8 @@ import {
   onTextInputChange,
   onMultipleChange,
   setElementValue,
-  setElementValueAnimated
+  setElementValueAnimated,
+  initSpeakButton
 } from '../js/ipa-core.js';
 
 import { formatMandarinOutput } from '../js/zh.format.js';
@@ -62,7 +63,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initialize dark mode
   initDarkMode('dark-mode-toggle');
   initResponsiveTextareaRows();
-  
+
+  // Initialize TTS button (Mandarin Chinese)
+  initSpeakButton({ language: 'zh-CN' });
+
   // Set up input handler
   onTextInputChange('cWords_tBox', translate);
   

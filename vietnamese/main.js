@@ -16,6 +16,7 @@ import {
   onMultipleChange,
   initDarkMode,
   initResponsiveTextareaRows,
+  initSpeakButton
 } from '../js/ipa-core.js';
 
 let IPA_DB = {};
@@ -76,6 +77,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initialize dark mode
   initDarkMode('dark-mode-toggle');
   initResponsiveTextareaRows();
+
+  // Initialize TTS button (Vietnamese)
+  initSpeakButton({ language: 'vi-VN' });
 
   // Set up input handler
   onTextInputChange('cWords_tBox', translate);

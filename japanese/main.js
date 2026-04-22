@@ -10,7 +10,8 @@ import {
   onTextInputChange,
   setElementValue,
   setElementValueAnimated,
-  isElementChecked
+  isElementChecked,
+  initSpeakButton
 } from '../js/ipa-core.js';
 
 let IPA_DB = {};
@@ -63,6 +64,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initialize dark mode
   initDarkMode('dark-mode-toggle');
   initResponsiveTextareaRows();
+
+  // Initialize TTS button (Japanese)
+  initSpeakButton({ language: 'ja-JP' });
 
   // Set up input handler
   onTextInputChange('cWords_tBox', translate);

@@ -11,7 +11,8 @@ import {
   onTextInputChange,
   onMultipleChange,
   setElementValue,
-  setElementValueAnimated
+  setElementValueAnimated,
+  initSpeakButton
 } from '../js/ipa-core.js';
 
 let IPA_DB = {};
@@ -58,16 +59,19 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initialize dark mode
   initDarkMode('dark-mode-toggle');
   initResponsiveTextareaRows();
-  
+
+  // Initialize TTS button (French/France by default)
+  initSpeakButton({ language: 'fr-FR' });
+
   // Set up input handler
   onTextInputChange('cWords_tBox', translate);
-  
+
   // Set up variant radio handlers (IPA_fr_FR / IPA_fr_QC)
-  onMultipleChange('input[name="inlineRadioOptions"]', (e) => { 
-    variantOption = e.target.id; 
-    loadDatabase(); 
+  onMultipleChange('input[name="inlineRadioOptions"]', (e) => {
+    variantOption = e.target.id;
+    loadDatabase();
   });
-  
+
   // Set up word format checkbox
   const wf_c_words = document.getElementById('wf_c_words');
   if (wf_c_words) {
