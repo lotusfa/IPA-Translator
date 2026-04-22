@@ -12,6 +12,7 @@ import {
   initDarkMode,
   initResponsiveTextareaRows,
   setElementValueAnimated,
+  initSpeakButton,
 } from '../js/ipa-core.js';
 
 let IPA_DB = {};
@@ -68,7 +69,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initialize dark mode
   initDarkMode('dark-mode-toggle');
   initResponsiveTextareaRows();
-  
+
+  // Initialize text-to-speech button (Cantonese/zh-HK)
+  initSpeakButton({ language: 'zh-HK' });
+
   // Set up input handler
   onTextInputChange('cWords_tBox', translate);
   

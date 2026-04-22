@@ -271,6 +271,48 @@ body.dark-mode .btn-theme .icon {
   display: block;
 }
 
+/* Icon button (for TTS speaker) */
+.btn-icon {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  color: inherit;
+  transition: background-color 0.2s;
+  font-size: inherit;
+  line-height: 1;
+  vertical-align: middle;
+}
+
+.btn-icon:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.btn-icon:active {
+  transform: scale(0.95);
+}
+
+.btn-icon svg {
+  width: 1em;
+  height: 1em;
+  display: block;
+}
+
+body.dark-mode .btn-icon:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Icons inherit color from parent (currentColor in SVG) */
+.btn-icon .icon {
+  width: 1em;
+  height: 1em;
+  display: block;
+}
+
 hr {
   border: 0;
   border-top: 1px solid #e1e1e8;

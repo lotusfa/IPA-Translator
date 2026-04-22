@@ -13,7 +13,9 @@ import {
   getElementValue,
   setElementValue,
   setElementValueAnimated,
-  isElementChecked
+  isElementChecked,
+  initSpeakButton,
+  getTTSConfig,
 } from '../js/ipa-core.js';
 
 let IPA_DB = {};
@@ -62,19 +64,22 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initialize dark mode
   initDarkMode('dark-mode-toggle');
   initResponsiveTextareaRows();
-  
+
+  // Initialize text-to-speech button (English/US by default)
+  initSpeakButton({ language: 'en-US' });
+
   // Set up input handler
   onTextInputChange('cWords_tBox', translate);
-  
+
   // Set up radio button handlers for variant selection
   onMultipleChange('input[name="inlineRadioOptions"]', loadDatabase);
-  
+
   // Set up word format checkbox
   const wf_c_words = document.getElementById('wf_c_words');
   if (wf_c_words) {
     wf_c_words.addEventListener('change', translate);
   }
-  
+
   // Initial loading
   loadDatabase();
 });
