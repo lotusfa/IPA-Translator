@@ -452,6 +452,96 @@ const SPEAKER_ICON = {
   pause: 'M6 4h4v16H6z M14 4h4v16h-4z'
 };
 
+const VOICE_PRIORITY_LIST = {
+  'en-US': ['Samantha', 'Alex', 'Victoria', 'Microsoft David', 'Google US English'],
+  'en-GB': ['Daniel', 'Serena', 'Microsoft Hazel'],
+  'zh-HK': ['Sin-ji'],
+  'zh-TW': ['Meijia']
+};
+
+/**
+ * Improved TTS with high-quality voice selection
+ * Uses browser's enhanced/premium voices for more natural speech
+ * @param {string} text - Text to speak
+ * @param {string} lang - Language code (e.g., 'en-US')
+ * @param {function} onEnd - Callback when speech ends
+ * @param {function} onError - Callback on error
+ */
+function speakBetter(text, lang, onEnd, onError) {
+  const synth = window.speechSynthesis;
+
+  // CRITICAL: Voices load asynchronously
+  // We must wait for 'onvoiceschanged' before trying to select a voice
+  let voices = synth.getVoices();
+
+  // If no voices loaded yet, wait for the event
+  if (voices.length === 0) {
+    const waitForVoices = () => {
+      voices = synth.getVoices();
+      if (voices.length > 0) {
+        speakBetter(text, lang, onEnd, onError);
+      }
+    };
+    synth.onvoiceschanged = waitForVoices;
+    // Fallback timeout in case event doesn't fire
+    setTimeout(waitForVoices, 100);
+    return;
+  }
+
+  const utterance = new SpeechSynthesisUtterance(text);
+
+  // 1. Try to find a high-quality voice
+  // Look for Enhanced, Premium, or local service voices
+  const langPrefix = lang.split('-')[0]; // e.g., 'en' from 'en-US'
+
+  let selectedVoice = null;
+
+  // STEP 1: Try the Preferred List
+  const preferredNames = VOICE_PRIORITY_LIST[lang] || [];
+  for (const name of preferredNames) {
+    selectedVoice = voices.find(v => v.name.includes(name) && v.lang.includes(lang));
+    if (selectedVoice) break; 
+  }
+
+  // STEP 2: Fallback to your Search Logic if no preferred voice was found
+  if (!selectedVoice) {
+    selectedVoice = voices.find(voice => {
+      const isRightLang = voice.lang.includes(lang);
+      const isHighQuality = /Enhanced|Premium|Natural|Neural|Apple|Siri/i.test(voice.name);
+      const isNotCrazy = !/Bad News|Bahh|Bells|Boing|Good News|Bubbles|Cellos|Wobble|Zarvox|Albert|Whisper/i.test(voice.name);
+      const isNotBad = !/Eddy|Flo|Fred/i.test(voice.name);
+
+      return isRightLang && (isHighQuality || voice.localService) && isNotCrazy && isNotBad;
+    });
+  }
+
+  // STEP 3: Final Safety Fallback (Just get any voice of that language)
+  if (!selectedVoice) {
+    selectedVoice = voices.find(v => v.lang.includes(lang));
+  }
+
+  if (selectedVoice) {
+    utterance.voice = selectedVoice;
+    console.log('Using voice:', selectedVoice.name, '(' + selectedVoice.lang + ')');
+  }
+
+  // Better defaults for natural-sounding speech
+  utterance.rate = 0.9;   // Slightly slower = more natural
+  utterance.pitch = 1.0;  // Neutral pitch
+  utterance.volume = 1.0; // Full volume
+
+  utterance.onend = () => {
+    onEnd && onEnd();
+  };
+
+  utterance.onerror = (event) => {
+    console.error('TTS Error:', event);
+    onError && onError(event);
+  };
+
+  synth.speak(utterance);
+}
+
 /**
  * Initialize TTS button handler
  * @param {object} options - Options:
@@ -514,30 +604,26 @@ export function initSpeakButton(options) {
         currentIcon = 'outer';
         setIcon('outer');
       } else if (inputText) {
-        // Start playback
+        // Start playback with improved voice selection
         if (customSpeak) {
           customSpeak(inputText);
         } else {
           const config = getTTSConfig(language);
-          const utterance = new SpeechSynthesisUtterance(inputText);
-          utterance.lang = config.lang;
-          utterance.rate = config.rate;
-          utterance.pitch = config.pitch;
-          utterance.volume = config.volume;
 
-          utterance.onend = () => {
-            isPlaying = false;
-            currentIcon = 'outer';
-            setIcon('outer');
-          };
-
-          utterance.onerror = () => {
-            isPlaying = false;
-            currentIcon = 'outer';
-            setIcon('outer');
-          };
-
-          window.speechSynthesis.speak(utterance);
+          speakBetter(
+            inputText,
+            config.lang,
+            () => {
+              isPlaying = false;
+              currentIcon = 'outer';
+              setIcon('outer');
+            },
+            () => {
+              isPlaying = false;
+              currentIcon = 'outer';
+              setIcon('outer');
+            }
+          );
         }
 
         isPlaying = true;
