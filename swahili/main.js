@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initResponsiveTextareaRows();
 
   // Initialize TTS button (Swahili)
-  initSpeakButton({ language: 'sw-KE' });
+  initSpeakButton({ language: 'sw' });
 
   // Set up input handler
   onTextInputChange('cWords_tBox', translate);

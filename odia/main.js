@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initResponsiveTextareaRows();
 
   // Initialize TTS button (Odia)
-  initSpeakButton({ language: 'or-IN' });
+  initSpeakButton({ language: 'or' });
 
   // Set up input handler
   onTextInputChange('cWords_tBox', translate);

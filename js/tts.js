@@ -36,7 +36,8 @@ const VOICE_PRIORITY = {
   // --- Others ---
   'pt-BR': ['Luciana', 'Felipe', 'Microsoft Maria'],
   'ru-RU': ['Milena', 'Yuri', 'Microsoft Irina'],
-  'tr-TR': ['Filiz', 'Microsoft Tolga']
+  'tr-TR': ['Filiz', 'Microsoft Tolga'],
+  'fa' : ['Majed'],
 };
 
 // Configuration overrides for specific language quirks
@@ -68,11 +69,19 @@ async function selectBestVoice(lang) {
   if (curated) return curated;
 
   // 2. Fallback: Find high quality/natural, exclude "novelty" voices
-  return voices.find(v => 
+
+  let selectVoice = voices.find(v => 
     v.lang.includes(lang) && 
-    /Enhanced|Premium|Natural|Neural|Apple/i.test(v.name) && 
-    !/Bad News|Boing|Zarvox|Whisper/i.test(v.name)
+    !/Eddy/i.test(v.name) &&
+    !/Bad News|Boing|Zarvox|Whisper/i.test(v.name) 
   ) || voices.find(v => v.lang.includes(lang));
+
+  if (!selectVoice) {
+    selectVoice = voices.find(v => !/Eddy|Albert/i.test(v.name) &&
+    !/Bad News|Boing|Zarvox|Whisper/i.test(v.name) );
+  }
+
+  return selectVoice;
 }
 
 /**
