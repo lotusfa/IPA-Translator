@@ -8,11 +8,33 @@ const SPEAKER_ICONS = {
 };
 
 const VOICE_PRIORITY = {
-  'en-US': ['Samantha', 'Alex', 'Victoria'],
-  'zh-HK': ['Sin-ji'],
-  'fr-FR': ['Laure', 'Romain'],
-  'zh-CN': ['Tingting']
-  // Add only the ones you specifically want to curate
+  // --- English ---
+  'en-US': ['Samantha', 'Alex', 'Victoria', 'Microsoft David', 'Google US English'],
+  'en-GB': ['Daniel', 'Serena', 'Microsoft Hazel', 'Google UK English'],
+  'en-AU': ['Karen', 'Catherine', 'Google AU English'],
+
+  // --- Chinese ---
+  'zh-HK': ['Sin-ji', 'Tracy', 'Danny'], // Sin-ji is the iconic macOS voice
+  'zh-CN': ['Tingting', 'Huihui', 'Kangkang', 'Google Mandarin'],
+  'zh-TW': ['Meijia', 'Hanhan', 'Yating'],
+
+  // --- European ---
+  'fr-FR': ['Laure', 'Romain', 'Thomas', 'Microsoft Paul'],
+  'fr-CA': ['Amélie', 'Chantal', 'Nicolas'],
+  'de-DE': ['Anna', 'Yannick', 'Microsoft Hedda', 'Google Deutsch'],
+  'es-ES': ['Monica', 'Diego', 'Microsoft Helena'],
+  'es-MX': ['Paulina', 'Sabina', 'Microsoft Raul'],
+  'it-IT': ['Alice', 'Luca', 'Microsoft Elsa'],
+
+  // --- Asian ---
+  'ja-JP': ['Kyoko', 'Otoya', 'Microsoft Ayumi', 'Google 日本語'],
+  'ko-KR': ['Yuna', 'Microsoft Heami', 'Google 한국어'],
+  'vi-VN': ['Linh', 'Microsoft An'],
+
+  // --- Others ---
+  'pt-BR': ['Luciana', 'Felipe', 'Microsoft Maria'],
+  'ru-RU': ['Milena', 'Yuri', 'Microsoft Irina'],
+  'tr-TR': ['Filiz', 'Microsoft Tolga']
 };
 
 // Configuration overrides for specific language quirks
