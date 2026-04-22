@@ -56,8 +56,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initDarkMode('dark-mode-toggle');
   initResponsiveTextareaRows();
 
-  // Initialize TTS button (Spanish/Spain by default)
-  initSpeakButton({ language: 'es-ES' });
+  // Initialize TTS button with dynamic variant selection (Spain/Mexico)
+  initSpeakButton({ getLanguage: () => variantOption === 'IPA_Spain' ? 'es-ES' : 'es-MX' });
 
   // Set up input handler
   onTextInputChange('cWords_tBox', translate);

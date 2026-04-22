@@ -64,8 +64,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initDarkMode('dark-mode-toggle');
   initResponsiveTextareaRows();
 
-  // Initialize TTS button (Mandarin Chinese)
-  initSpeakButton({ language: 'zh-CN' });
+  // Initialize TTS button with dynamic variant selection (zh_type1=zh-TW, zh_type2=zh-CN)
+  initSpeakButton({ getLanguage: () => zhTypeOption === 'zh_type1' ? 'zh-TW' : 'zh-CN' });
 
   // Set up input handler
   onTextInputChange('cWords_tBox', translate);

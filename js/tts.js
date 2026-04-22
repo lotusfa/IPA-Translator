@@ -23,7 +23,7 @@ const VOICE_PRIORITY = {
   'fr-CA': ['Amélie', 'Chantal', 'Nicolas'],
   'de-DE': ['Anna', 'Yannick', 'Microsoft Hedda', 'Google Deutsch'],
   'es-ES': ['Monica', 'Diego', 'Microsoft Helena'],
-  'es-MX': ['Paulina', 'Sabina', 'Microsoft Raul'],
+  'es-MX': ['Sabina', 'Paulina', 'Microsoft Raul'],
   'it-IT': ['Alice', 'Luca', 'Microsoft Elsa'],
 
   // --- Asian ---
@@ -40,7 +40,10 @@ const VOICE_PRIORITY = {
 // Configuration overrides for specific language quirks
 const LANG_OVERRIDES = {
   'zh-HK': { rate: 0.85 }, // Cantonese often sounds better a bit slower
-  'zh-CN': { rate: 0.9 },
+  'zh-TW': { rate: 0.8 },
+  'zh-CN': { rate: 0.8 },
+  'es-ES': { rate: 0.8 },
+  'es-MX': { rate: 0.8 },
 };
 
 /**
@@ -82,7 +85,7 @@ export async function speak(text, lang = 'en-US', { onEnd, onError } = {}) {
   
   console.log(voice)
   // Apply Config
-  const config = { lang, rate: 0.9, pitch: 1.0, ...LANG_OVERRIDES[lang] };
+  const config = { lang, rate: 0.85, pitch: 1.0, ...LANG_OVERRIDES[lang] };
   Object.assign(utterance, config);
   if (voice) utterance.voice = voice;
 
@@ -97,12 +100,13 @@ export async function speak(text, lang = 'en-US', { onEnd, onError } = {}) {
 
 /**
  * UI Controller (Simplified)
+ * Supports static language string or dynamic getLanguage function
  */
-export function initSpeakButton({ buttonId = 'speak-btn', inputId = 'cWords_tBox', language = 'en-US' }) {
+export function initSpeakButton({ buttonId = 'speak-btn', inputId = 'cWords_tBox', language = 'en-US', getLanguage = null }) {
   const btn = document.getElementById(buttonId);
   const input = document.getElementById(inputId);
   const iconPath = btn?.querySelector('path');
-  
+
   if (!btn || !input || !iconPath) return;
 
   let isPlaying = false;
@@ -118,10 +122,13 @@ export function initSpeakButton({ buttonId = 'speak-btn', inputId = 'cWords_tBox
     const text = input.value.trim();
     if (!text) return;
 
+    // Get current language (support dynamic variant selection)
+    const currentLang = getLanguage ? getLanguage() : language;
+
     isPlaying = true;
     iconPath.setAttribute('d', SPEAKER_ICONS.PAUSE);
 
-    speak(text, language, {
+    speak(text, currentLang, {
       onEnd: () => {
         isPlaying = false;
         iconPath.setAttribute('d', SPEAKER_ICONS.PLAY);

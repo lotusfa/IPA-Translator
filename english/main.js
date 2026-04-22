@@ -64,8 +64,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initDarkMode('dark-mode-toggle');
   initResponsiveTextareaRows();
 
-  // Initialize text-to-speech button (English/US by default)
-  initSpeakButton({ language: 'en-US' });
+  // Initialize text-to-speech button with dynamic variant selection
+  initSpeakButton({ getLanguage: () => document.getElementById('IPA_US').checked ? 'en-US' : 'en-GB' });
 
   // Set up input handler
   onTextInputChange('cWords_tBox', translate);
