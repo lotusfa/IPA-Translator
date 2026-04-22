@@ -5,7 +5,7 @@
  * Or directly with: node test/formatters.test.js
  */
 
-// Import formatter functions from js/format.js
+// Import formatter functions from yue.format.js
 import {
   formatIPA_num,
   formatIPA_org,
@@ -15,7 +15,7 @@ import {
   formatYueAcademy,
   formatYueYale,
   formatYueLiu
-} from '../../js/format.js';
+} from '../../js/yue.format.js';
 
 // Test results storage
 const results = {

@@ -5,15 +5,12 @@
 // 變體（種、嘅）取第一個 IPA；A 為英文保留不轉；標點不包含在 IPA 輸入內
 
 import {
-  formatIPA_num,
-  formatIPA_org,
-  formatJyutpingCantonese,
   formatYueJyutping,
   formatYueGuangzhou,
   formatYueAcademy,
   formatYueYale,
   formatYueLiu
-} from '../../js/format.js';
+} from '../../js/yue.format.js';
 
 // Test results storage
 const results = {

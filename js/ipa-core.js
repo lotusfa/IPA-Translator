@@ -7,28 +7,49 @@
  */
 
 // ============================================
-// Re-export format functions from format.js
+// Re-export format functions from yue.format.js
+// ============================================
+
+export {
+  formatJyutpingCantonese,
+  formatJyutping,
+  formatJyutping_num,
+  formatYueJyutping,
+  formatYueGuangzhou,
+  formatYueAcademy,
+  formatYueYale,
+  formatYueLiu,
+  formatYueOutput
+} from './yue.format.js';
+
+// ============================================
+// Re-export Mandarin format functions from zh.format.js
 // ============================================
 
 export {
   formatIPA_num,
   formatIPA_org,
-  formatJyutpingCantonese,
   formatJyutpingMandarin,
-  formatJyutpingMandarinNum,
-  formatJyutping,
-  formatJyutping_num,
-  formatIPAOutput,
-  formatMandarinOutput,
+  formatMandarinOutput
+} from './zh.format.js';
+
+// ============================================
+// Re-export formatJyutpingMandarinNum from yue.format.js
+// (defined there for historical reasons)
+// ============================================
+
+export {
+  formatJyutpingMandarinNum
+} from './yue.format.js';
+
+// ============================================
+// Re-export Vietnamese format functions from vi.format.js
+// ============================================
+
+export {
   formatVietnamese,
-  formatVietnameseOutput,
-  formatYueOutput,
-  formatYueJyutping,
-  formatYueGuangzhou,
-  formatYueAcademy,
-  formatYueYale,
-  formatYueLiu
-} from './format.js';
+  formatVietnameseOutput
+} from './vi.format.js';
 
 // ============================================
 // Re-export TTS functions from tts.js
