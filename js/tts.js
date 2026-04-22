@@ -2,7 +2,8 @@
  * Text-to-Speech (TTS) Module (Lean Edition)
  */
 
-const SPEAKER_ICONS = {
+// Icons: PLAY = speaker, PAUSE = 2 rectangles
+const ICONS = {
   PLAY: 'M11 5L6 9H2v6h4l5 4V5z M15.54 8.46a5 5 0 0 1 0 7.07 M19.07 4.93a10 10 0 0 1 0 14.14',
   PAUSE: 'M6 4h4v16H6z M14 4h4v16h-4z'
 };
@@ -99,13 +100,12 @@ export async function speak(text, lang = 'en-US', { onEnd, onError } = {}) {
 }
 
 /**
- * UI Controller (Simplified)
- * Supports static language string or dynamic getLanguage function
+ * UI Controller (KISS - simple play/pause toggle)
  */
 export function initSpeakButton({ buttonId = 'speak-btn', inputId = 'cWords_tBox', language = 'en-US', getLanguage = null }) {
   const btn = document.getElementById(buttonId);
   const input = document.getElementById(inputId);
-  const iconPath = btn?.querySelector('path');
+  const iconPath = btn?.querySelector('svg path');
 
   if (!btn || !input || !iconPath) return;
 
@@ -115,23 +115,21 @@ export function initSpeakButton({ buttonId = 'speak-btn', inputId = 'cWords_tBox
     if (isPlaying) {
       window.speechSynthesis.cancel();
       isPlaying = false;
-      iconPath.setAttribute('d', SPEAKER_ICONS.PLAY);
+      iconPath.setAttribute('d', ICONS.PLAY);
       return;
     }
 
     const text = input.value.trim();
     if (!text) return;
 
-    // Get current language (support dynamic variant selection)
     const currentLang = getLanguage ? getLanguage() : language;
-
     isPlaying = true;
-    iconPath.setAttribute('d', SPEAKER_ICONS.PAUSE);
+    iconPath.setAttribute('d', ICONS.PAUSE);
 
     speak(text, currentLang, {
       onEnd: () => {
         isPlaying = false;
-        iconPath.setAttribute('d', SPEAKER_ICONS.PLAY);
+        iconPath.setAttribute('d', ICONS.PLAY);
       }
     });
   });
