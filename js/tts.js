@@ -31,6 +31,7 @@ const VOICE_PRIORITY = {
   'ja-JP': ['Kyoko', 'Otoya', 'Microsoft Ayumi', 'Google 日本語'],
   'ko-KR': ['Yuna', 'Microsoft Heami', 'Google 한국어'],
   'vi-VN': ['Linh', 'Microsoft An'],
+  'fi-FI': ['Satu', 'Shelley', 'Microsoft Finnish', 'Google Finnish'],
 
   // --- Others ---
   'pt-BR': ['Luciana', 'Felipe', 'Microsoft Maria'],
