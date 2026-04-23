@@ -123,7 +123,14 @@
             "responsive": true,
             "columnDefs": [
               { "orderable": true, "targets": [0] },
-              { "orderable": true, "targets": [1] },
+              {
+                "orderable": true,
+                "targets": [1],
+                "createdCell": function(td, cellData, rowData) {
+                  const btn = createSpeakButton(rowData[1], 'ar');
+                  if (btn) $(td).prepend(btn);
+                }
+              },
               { "orderable": true, "targets": [2] }
             ]
           }
@@ -131,7 +138,15 @@
       } );
     </script>
     <script type="module">
+      import { createSpeakButton, preloadVoiceSupport, hasVoiceSupport } from '../js/tts.js';
       import { initLanguageButtons } from '../js/ipa-core.js';
+
+      // Pre-check voice support for Arabic
+      await preloadVoiceSupport('ar');
+
+      // Make createSpeakButton available globally for DataTables createdCell callback
+      window.createSpeakButton = createSpeakButton;
+
       initLanguageButtons({
         containerId: "lang-buttons-container",
         configPath: "../config/languages.json"
