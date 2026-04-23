@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Lista de Palabras Españolas - Spanish IPA List</title>
-    <meta name="description" content="Spanish IPA word list with Mexico pronunciation, covering Español de México dialects." />
+    <meta name="description" content="Lista de palabras con IPA para el español (México), cubriendo dialectos de México." />
     <link rel="icon" href="../favicon.svg" />
     <link rel="stylesheet" href="../css/styles.css" />
   </head>
@@ -82,62 +82,13 @@
     <link rel="stylesheet" type="text/css" href="../lib/datatables/datatables.min.css"/>
 
     <script type="module">
-      import { createSpeakButton, preloadVoiceSupport } from '../js/tts.js';
-      import { initLanguageButtons } from '../js/ipa-core.js';
+      import { initIPAPage } from '../js/ui.js';
 
-      await preloadVoiceSupport('es-MX');
-
-      // Dark mode toggle
-      const darkModeToggle = document.getElementById('dark-mode-toggle');
-      const iconImg = darkModeToggle.querySelector('.icon');
-      const savedTheme = localStorage.getItem('theme');
-      if (savedTheme === 'dark') {
-        document.body.classList.add('dark-mode');
-        iconImg.src = '../img/dark-mode.svg';
-      } else {
-        iconImg.src = '../img/light-mode.svg';
-      }
-
-      darkModeToggle.addEventListener('click', function() {
-        darkModeToggle.classList.add('btn-theme-transition');
-        document.body.classList.toggle('dark-mode');
-        const isDark = document.body.classList.contains('dark-mode');
-        iconImg.src = isDark ? '../img/dark-mode.svg' : '../img/light-mode.svg';
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
-      });
-
-      // Initialize DataTable
-      $(document).ready(function() {
-        $('#DataTable').DataTable({
-          "ajax": {
-            url: '../json/es_MX.json',
-            dataSrc: function (json) {
-              const dataObj = json.es_MX[0];
-              return Object.entries(dataObj).map(([entry, ipa], index) => {
-                const row = [index + 1, entry, ipa];
-                row.word = entry;
-                return row;
-              });
-            }
-          },
-          "columnDefs": [
-            { "orderable": true, "targets": [0] },
-            {
-              "orderable": true,
-              "targets": [1],
-              "createdCell": function(td, cellData, rowData) {
-                const btn = createSpeakButton(rowData.word, 'es-MX');
-                if (btn) $(td).prepend(btn);
-              }
-            },
-            { "orderable": true, "targets": [2] }
-          ]
-        });
-      });
-
-      initLanguageButtons({
-        containerId: "lang-buttons-container",
-        configPath: "../config/languages.json"
+      await initIPAPage({
+        language: 'es-MX',
+        tableJsonPath: '../json/es_MX.json',
+        tableId: 'DataTable',
+        enableTTS: true
       });
     </script>
 </body>

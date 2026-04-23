@@ -85,71 +85,13 @@
     <link rel="stylesheet" type="text/css" href="../lib/datatables/datatables.min.css"/>
     
     <script type="module">
-      import { createSpeakButton, preloadVoiceSupport, hasVoiceSupport } from '../js/tts.js';
-      import { initLanguageButtons } from '../js/ipa-core.js';
+      import { initIPAPage } from '../js/ui.js';
 
-      // Pre-check voice support for Japanese
-      await preloadVoiceSupport('ja-JP');
-
-      // Dark mode toggle
-      const darkModeToggle = document.getElementById('dark-mode-toggle');
-      const iconImg = darkModeToggle.querySelector('.icon');
-      const savedTheme = localStorage.getItem('theme');
-      if (savedTheme === 'dark') {
-        document.body.classList.add('dark-mode');
-        iconImg.src = '../img/dark-mode.svg';
-      } else {
-        iconImg.src = '../img/light-mode.svg';
-      }
-
-      darkModeToggle.addEventListener('click', function() {
-        darkModeToggle.classList.add('btn-theme-transition');
-        document.body.classList.toggle('dark-mode');
-        const isDark = document.body.classList.contains('dark-mode');
-        iconImg.src = isDark ? '../img/dark-mode.svg' : '../img/light-mode.svg';
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
-      });
-
-      // Initialize DataTable
-      $(document).ready(function() {
-          $('#DataTable').DataTable( {
-              "ajax": {
-                url: '../json/ja.json',
-                dataSrc: function (json) {
-                  const dataObj = json.ja[0];
-                  return Object.entries(dataObj).map(([entry, ipa], index) => {
-                    const row = [index + 1, entry, ipa];
-                    row.word = entry;
-                    return row;
-                  });
-              }
-            },
-            "paging": true,
-            "pageLength": 10,
-            "lengthMenu": [[10, 25, 50, 100], [10, 25, 50, 100]],
-            "ordering": true,
-            "searching": true,
-            "info": true,
-            "responsive": true,
-            "columnDefs": [
-              { "orderable": true, "targets": [0] },
-              {
-                "orderable": true,
-                "targets": [1],
-                "createdCell": function(td, cellData, rowData) {
-                  const btn = createSpeakButton(rowData.word, 'ja-JP');
-                  if (btn) $(td).prepend(btn);
-                }
-              },
-              { "orderable": true, "targets": [2] }
-            ]
-          }
-        );
-      } );
-
-      initLanguageButtons({
-        containerId: "lang-buttons-container",
-        configPath: "../config/languages.json"
+      await initIPAPage({
+        language: 'ja-JP',
+        tableJsonPath: '../json/ja.json',
+        tableId: 'DataTable',
+        enableTTS: true
       });
     </script>
   </body>
