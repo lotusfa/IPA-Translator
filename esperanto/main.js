@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initResponsiveTextareaRows();
 
   // Initialize TTS button (Esperanto)
-  // initSpeakButton({ language: 'eo' });
+  initSpeakButton({ language: 'eo' });
 
   // Set up input handler
   onTextInputChange('cWords_tBox', translate);

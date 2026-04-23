@@ -78,7 +78,10 @@
     <script src="../lib/datatables/datatables.min.js"></script>
     <link rel="stylesheet" type="text/css" href="../lib/datatables/datatables.min.css"/>
     
-    <script type="text/javascript">
+    <script type="module">
+      import { createSpeakButton } from '../js/tts.js';
+      import { initLanguageButtons } from '../js/ipa-core.js';
+
       // Wait for DOM to be ready before accessing elements
       document.addEventListener('DOMContentLoaded', function() {
         // Dark mode toggle
@@ -109,15 +112,29 @@
               url: '../json/vi_C.json',
               dataSrc: function (json) {
                 const dataObj = json.vi_C[0];
-                return Object.entries(dataObj).map(([entry, ipa], index) => [index + 1, entry, ipa]);
+                return Object.entries(dataObj).map(([entry, ipa], index) => {
+                  const row = [index + 1, entry, ipa];
+                  row.word = entry;
+                  return row;
+                });
               }
-            }
+            },
+            "columnDefs": [
+              { "orderable": true, "targets": [0] },
+              {
+                "orderable": true,
+                "targets": [1],
+                "createdCell": function(td, cellData, rowData) {
+                  const btn = createSpeakButton(rowData.word, 'vi-VN');
+                  $(td).prepend(btn);
+                }
+              },
+              { "orderable": true, "targets": [2] }
+            ]
           });
         });
       });
-    </script>
-      <script type="module">
-      import { initLanguageButtons } from '../js/ipa-core.js';
+
       initLanguageButtons({
         containerId: "lang-buttons-container",
         configPath: "../config/languages.json"

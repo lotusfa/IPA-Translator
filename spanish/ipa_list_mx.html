@@ -81,7 +81,10 @@
     <script src="../lib/datatables/datatables.min.js"></script>
     <link rel="stylesheet" type="text/css" href="../lib/datatables/datatables.min.css"/>
 
-    <script type="text/javascript">
+    <script type="module">
+      import { createSpeakButton } from '../js/tts.js';
+      import { initLanguageButtons } from '../js/ipa-core.js';
+
       // Dark mode toggle
       const darkModeToggle = document.getElementById('dark-mode-toggle');
       const iconImg = darkModeToggle.querySelector('.icon');
@@ -108,18 +111,32 @@
             url: '../json/es_MX.json',
             dataSrc: function (json) {
               const dataObj = json.es_MX[0];
-              return Object.entries(dataObj).map(([entry, ipa], index) => [index + 1, entry, ipa]);
+              return Object.entries(dataObj).map(([entry, ipa], index) => {
+                const row = [index + 1, entry, ipa];
+                row.word = entry;
+                return row;
+              });
             }
-          }
+          },
+          "columnDefs": [
+            { "orderable": true, "targets": [0] },
+            {
+              "orderable": true,
+              "targets": [1],
+              "createdCell": function(td, cellData, rowData) {
+                const btn = createSpeakButton(rowData.word, 'es-MX');
+                $(td).prepend(btn);
+              }
+            },
+            { "orderable": true, "targets": [2] }
+          ]
         });
       });
+
+      initLanguageButtons({
+        containerId: "lang-buttons-container",
+        configPath: "../config/languages.json"
+      });
     </script>
-  <script type="module">
-     import { initLanguageButtons } from '../js/ipa-core.js';
-     initLanguageButtons({
-       containerId: "lang-buttons-container",
-       configPath: "../config/languages.json"
-     });
-   </script>
 </body>
 </html>
