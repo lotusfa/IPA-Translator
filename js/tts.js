@@ -168,3 +168,40 @@ export function initSpeakButton({ buttonId = 'speak-btn', inputId = 'cWords_tBox
     });
   });
 }
+
+/**
+ * Create a speak button for table rows (lightweight, no UI management)
+ */
+const speakBtnState = { isPlaying: false };
+
+export function createSpeakButton(text, lang = 'en-US') {
+  const btn = document.createElement('button');
+  btn.className = 'btn-icon speak-word-btn';
+  btn.setAttribute('aria-label', '朗讀單字');
+  btn.innerHTML = `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path class="voice-icon-path" d="${ICONS.PLAY}"/></svg>`;
+
+  const iconPath = btn.querySelector('.voice-icon-path');
+
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+
+    if (speakBtnState.isPlaying) {
+      window.speechSynthesis.cancel();
+      speakBtnState.isPlaying = false;
+      iconPath.setAttribute('d', ICONS.PLAY);
+      return;
+    }
+
+    speakBtnState.isPlaying = true;
+    iconPath.setAttribute('d', ICONS.PAUSE);
+
+    speak(text, lang, {
+      onEnd: () => {
+        speakBtnState.isPlaying = false;
+        iconPath.setAttribute('d', ICONS.PLAY);
+      }
+    });
+  });
+
+  return btn;
+}
