@@ -82,8 +82,11 @@
     <link rel="stylesheet" type="text/css" href="../lib/datatables/datatables.min.css"/>
 
     <script type="module">
-      import { createSpeakButton } from '../js/tts.js';
+      import { createSpeakButton, preloadVoiceSupport, hasVoiceSupport } from '../js/tts.js';
       import { initLanguageButtons } from '../js/ipa-core.js';
+
+      // Pre-check voice support for Malay
+      await preloadVoiceSupport('ms-MY');
 
       // Dark mode toggle
       const darkModeToggle = document.getElementById('dark-mode-toggle');
@@ -134,8 +137,8 @@
               "orderable": true,
               "targets": [1],
               "createdCell": function(td, cellData, rowData) {
-                const btn = createSpeakButton(rowData.word, 'ms');
-                $(td).prepend(btn);
+                const btn = createSpeakButton(rowData.word, 'ms-MY');
+                if (btn) $(td).prepend(btn);
               }
             },
             { "orderable": true, "targets": [2] }

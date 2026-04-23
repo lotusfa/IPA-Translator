@@ -81,8 +81,11 @@
     <link rel="stylesheet" type="text/css" href="../lib/datatables/datatables.min.css"/>
 
     <script type="module">
-      import { createSpeakButton } from '../js/tts.js';
+      import { createSpeakButton, preloadVoiceSupport, hasVoiceSupport } from '../js/tts.js';
       import { initLanguageButtons } from '../js/ipa-core.js';
+
+      // Preload voice support for Swahili
+      await preloadVoiceSupport('sw-KE');
 
       const darkModeToggle = document.getElementById('dark-mode-toggle');
       const iconImg = darkModeToggle.querySelector('.icon');
@@ -131,8 +134,8 @@
                 "orderable": true,
                 "targets": [1],
                 "createdCell": function(td, cellData, rowData) {
-                  const btn = createSpeakButton(rowData.word, 'sw');
-                  $(td).prepend(btn);
+                  const btn = createSpeakButton(rowData.word, 'sw-KE');
+                  if (btn) $(td).prepend(btn);
                 }
               },
               { "orderable": true, "targets": [2] }

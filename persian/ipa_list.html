@@ -78,8 +78,11 @@
     <link rel="stylesheet" type="text/css" href="../lib/datatables/datatables.min.css"/>
     
     <script type="module">
-      import { createSpeakButton } from '../js/tts.js';
+      import { createSpeakButton, preloadVoiceSupport, hasVoiceSupport } from '../js/tts.js';
       import { initLanguageButtons } from '../js/ipa-core.js';
+
+      // Pre-check voice support for Persian
+      await preloadVoiceSupport('fa-IR');
 
       // Dark mode toggle
       const darkModeToggle = document.getElementById('dark-mode-toggle');
@@ -126,8 +129,8 @@
               "orderable": true,
               "targets": [1],
               "createdCell": function(td, cellData, rowData) {
-                const btn = createSpeakButton(rowData.word, 'fa');
-                $(td).prepend(btn);
+                const btn = createSpeakButton(rowData.word, 'fa-IR');
+                if (btn) $(td).prepend(btn);
               }
             },
             { "orderable": true, "targets": [2] }

@@ -87,8 +87,11 @@
     <link rel="stylesheet" type="text/css" href="../lib/datatables/datatables.min.css"/>
 
     <script type="module">
-      import { createSpeakButton } from '../js/tts.js';
+      import { createSpeakButton, preloadVoiceSupport, hasVoiceSupport } from '../js/tts.js';
       import { initLanguageButtons } from '../js/ipa-core.js';
+
+      // Pre-check voice support for Finnish
+      await preloadVoiceSupport('fi-FI');
 
       const darkModeToggle = document.getElementById('dark-mode-toggle');
       const iconImg = darkModeToggle.querySelector('.icon');
@@ -138,7 +141,7 @@
                 "targets": [1],
                 "createdCell": function(td, cellData, rowData) {
                   const btn = createSpeakButton(rowData.word, 'fi-FI');
-                  $(td).prepend(btn);
+                  if (btn) $(td).prepend(btn);
                 }
               },
               { "orderable": true, "targets": [2] }

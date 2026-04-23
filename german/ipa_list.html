@@ -85,8 +85,11 @@
     <link rel="stylesheet" type="text/css" href="../lib/datatables/datatables.min.css"/>
 
     <script type="module">
-      import { createSpeakButton } from '../js/tts.js';
+      import { createSpeakButton, preloadVoiceSupport, hasVoiceSupport } from '../js/tts.js';
       import { initLanguageButtons } from '../js/ipa-core.js';
+
+      // Pre-check voice support for German
+      await preloadVoiceSupport('de-DE');
 
       // Dark mode toggle
       const darkModeToggle = document.getElementById('dark-mode-toggle');
@@ -139,7 +142,7 @@
                 "targets": [1],
                 "createdCell": function(td, cellData, rowData) {
                   const btn = createSpeakButton(rowData.word, 'de-DE');
-                  $(td).prepend(btn);
+                  if (btn) $(td).prepend(btn);
                 }
               },
               { "orderable": true, "targets": [2] }
