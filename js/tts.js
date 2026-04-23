@@ -15,7 +15,7 @@ const VOICE_PRIORITY = {
   'en-AU': ['Karen', 'Catherine', 'Google AU English'],
 
   // --- Chinese ---
-  'zh-HK': ['Sin-ji', 'Tracy', 'Danny'], // Sin-ji is the iconic macOS voice
+  'zh-HK': ['Sin-ji', 'Tracy', 'Danny'],
   'zh-CN': ['Tingting', 'Huihui', 'Kangkang', 'Google Mandarin'],
   'zh-TW': ['Meijia', 'Hanhan', 'Yating'],
 
@@ -42,7 +42,7 @@ const VOICE_PRIORITY = {
 
 // Configuration overrides for specific language quirks
 const LANG_OVERRIDES = {
-  'zh-HK': { rate: 0.85 }, // Cantonese often sounds better a bit slower
+  'zh-HK': { rate: 0.85 },
   'zh-TW': { rate: 0.8 },
   'zh-CN': { rate: 0.8 },
   'es-ES': { rate: 0.8 },
@@ -50,12 +50,12 @@ const LANG_OVERRIDES = {
 };
 
 /**
- * Normalizes language tags for comparison (zh_HK -> zh-hk)
+ * Normalizes language tags for comparison
  */
 const norm = (lang) => lang.toLowerCase().replace('_', '-');
 
 /**
- * High-quality voice selector - Strict about language
+ * Check if voice is available for a language
  */
 async function selectBestVoice(lang) {
   const synth = window.speechSynthesis;
@@ -68,7 +68,6 @@ async function selectBestVoice(lang) {
         resolve();
       };
       synth.onvoiceschanged = cb;
-      // Timeout fallback for browsers where onvoiceschanged doesn't fire
       setTimeout(cb, 1000);
     });
     voices = synth.getVoices();
@@ -77,16 +76,13 @@ async function selectBestVoice(lang) {
   const targetLang = norm(lang);
   const preferred = VOICE_PRIORITY[lang] || [];
 
-  // 1. Filter voices that strictly match the language tag
   const langVoices = voices.filter(v => norm(v.lang) === targetLang || norm(v.lang).startsWith(targetLang + '-'));
 
-  if (langVoices.length === 0) return null; // No voice for this specific language
+  if (langVoices.length === 0) return null;
 
-  // 2. Try curated list from priorities
   const curated = langVoices.find(v => preferred.some(p => v.name.includes(p)));
   if (curated) return curated;
 
-  // 3. Fallback: First available voice for this language, excluding "novelty" voices
   return langVoices.find(v => !/Bad News|Boing|Zarvox|Whisper/i.test(v.name)) || langVoices[0];
 }
 
@@ -98,8 +94,7 @@ export async function speak(text, lang = 'en-US', { onEnd, onError } = {}) {
   synth.cancel();
 
   const voice = await selectBestVoice(lang);
-  
-  // If no voice found for specific language, don't play (prevents Mandarin fallback)
+
   if (!voice) {
     console.warn(`No voice found for ${lang}`);
     if (onEnd) onEnd();
@@ -108,7 +103,7 @@ export async function speak(text, lang = 'en-US', { onEnd, onError } = {}) {
 
   const utterance = new SpeechSynthesisUtterance(text);
   const config = { lang, rate: 0.85, pitch: 1.0, ...LANG_OVERRIDES[lang] };
-  
+
   Object.assign(utterance, config);
   utterance.voice = voice;
 
@@ -132,14 +127,12 @@ export function initSpeakButton({ buttonId = 'speak-btn', inputId = 'cWords_tBox
   const iconPath = btn.querySelector('svg path');
   let isPlaying = false;
 
-  // Function to hide/show button based on voice availability
   const updateVisibility = async () => {
     const currentLang = getLanguage ? getLanguage() : language;
     const voice = await selectBestVoice(currentLang);
     btn.style.display = voice ? 'inline-flex' : 'none';
   };
 
-  // Check immediately and when voices change (async loading)
   updateVisibility();
   if (window.speechSynthesis.onvoiceschanged !== undefined) {
     window.speechSynthesis.addEventListener('voiceschanged', updateVisibility);
@@ -170,11 +163,32 @@ export function initSpeakButton({ buttonId = 'speak-btn', inputId = 'cWords_tBox
 }
 
 /**
- * Create a speak button for table rows (lightweight, no UI management)
+ * Global flag for voice support (for ipa_list pages)
+ * Set by preloadVoiceSupport, checked by createSpeakButton
+ */
+export let hasVoiceSupport = false;
+
+/**
+ * Pre-check voice support for a language (call at page load)
+ * Sets the hasVoiceSupport global flag for synchronous checks
+ */
+export async function preloadVoiceSupport(lang) {
+  const voice = await selectBestVoice(lang);
+  hasVoiceSupport = voice !== null;
+  return hasVoiceSupport;
+}
+
+/**
+ * Create a speak button for table rows
  */
 const speakBtnState = { isPlaying: false };
 
 export function createSpeakButton(text, lang = 'en-US') {
+  // Check global voice support flag
+  if (!hasVoiceSupport) {
+    return null;
+  }
+
   const btn = document.createElement('button');
   btn.className = 'btn-icon speak-word-btn';
   btn.setAttribute('aria-label', '朗讀單字');
