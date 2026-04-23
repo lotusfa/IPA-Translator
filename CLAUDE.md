@@ -65,3 +65,10 @@ Add new `format_*()` function and corresponding radio button in HTML
 
 **To update IPA data:**
 Edit JSON files in `json/` folder (structure: array of objects with language key like `"yue"`, `"en_US"`, etc.)
+
+## Development Guidelines
+
+- **KISS**: Keep solutions simple and direct. Avoid over-engineering.
+- **Use subagents for long/multi-step tasks**: Prevents context bloat and keeps work organized
+- **Use `/graphify` skill for knowledge graph tasks**: Any input that needs to be structured as a knowledge graph
+- **Use `Agent` browser skill when browsing/testing websites**: For tasks requiring web interaction or testing
