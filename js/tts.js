@@ -50,38 +50,44 @@ const LANG_OVERRIDES = {
 };
 
 /**
- * High-quality voice selector
+ * Normalizes language tags for comparison (zh_HK -> zh-hk)
+ */
+const norm = (lang) => lang.toLowerCase().replace('_', '-');
+
+/**
+ * High-quality voice selector - Strict about language
  */
 async function selectBestVoice(lang) {
   const synth = window.speechSynthesis;
-  
-  // Ensure voices are loaded
   let voices = synth.getVoices();
+
   if (voices.length === 0) {
-    await new Promise(resolve => { synth.onvoiceschanged = () => resolve(); });
+    await new Promise(resolve => {
+      const cb = () => {
+        synth.onvoiceschanged = null;
+        resolve();
+      };
+      synth.onvoiceschanged = cb;
+      // Timeout fallback for browsers where onvoiceschanged doesn't fire
+      setTimeout(cb, 1000);
+    });
     voices = synth.getVoices();
   }
 
+  const targetLang = norm(lang);
   const preferred = VOICE_PRIORITY[lang] || [];
-  
-  // 1. Try curated list
-  const curated = voices.find(v => preferred.some(p => v.name.includes(p)) && v.lang.includes(lang));
+
+  // 1. Filter voices that strictly match the language tag
+  const langVoices = voices.filter(v => norm(v.lang) === targetLang || norm(v.lang).startsWith(targetLang + '-'));
+
+  if (langVoices.length === 0) return null; // No voice for this specific language
+
+  // 2. Try curated list from priorities
+  const curated = langVoices.find(v => preferred.some(p => v.name.includes(p)));
   if (curated) return curated;
 
-  // 2. Fallback: Find high quality/natural, exclude "novelty" voices
-
-  let selectVoice = voices.find(v => 
-    v.lang.includes(lang) && 
-    !/Eddy/i.test(v.name) &&
-    !/Bad News|Boing|Zarvox|Whisper/i.test(v.name) 
-  ) || voices.find(v => v.lang.includes(lang));
-
-  if (!selectVoice) {
-    selectVoice = voices.find(v => !/Eddy|Albert/i.test(v.name) &&
-    !/Bad News|Boing|Zarvox|Whisper/i.test(v.name) );
-  }
-
-  return selectVoice;
+  // 3. Fallback: First available voice for this language, excluding "novelty" voices
+  return langVoices.find(v => !/Bad News|Boing|Zarvox|Whisper/i.test(v.name)) || langVoices[0];
 }
 
 /**
@@ -89,16 +95,22 @@ async function selectBestVoice(lang) {
  */
 export async function speak(text, lang = 'en-US', { onEnd, onError } = {}) {
   const synth = window.speechSynthesis;
-  synth.cancel(); 
+  synth.cancel();
 
-  const utterance = new SpeechSynthesisUtterance(text);
   const voice = await selectBestVoice(lang);
   
-  console.log(voice)
-  // Apply Config
+  // If no voice found for specific language, don't play (prevents Mandarin fallback)
+  if (!voice) {
+    console.warn(`No voice found for ${lang}`);
+    if (onEnd) onEnd();
+    return;
+  }
+
+  const utterance = new SpeechSynthesisUtterance(text);
   const config = { lang, rate: 0.85, pitch: 1.0, ...LANG_OVERRIDES[lang] };
+  
   Object.assign(utterance, config);
-  if (voice) utterance.voice = voice;
+  utterance.voice = voice;
 
   utterance.onend = onEnd;
   utterance.onerror = (e) => {
@@ -110,22 +122,34 @@ export async function speak(text, lang = 'en-US', { onEnd, onError } = {}) {
 }
 
 /**
- * UI Controller (KISS - simple play/pause toggle)
+ * UI Controller with Visibility Logic
  */
 export function initSpeakButton({ buttonId = 'speak-btn', inputId = 'cWords_tBox', language = 'en-US', getLanguage = null }) {
   const btn = document.getElementById(buttonId);
   const input = document.getElementById(inputId);
-  const iconPath = btn?.querySelector('svg path');
+  if (!btn || !input) return;
 
-  if (!btn || !input || !iconPath) return;
-
+  const iconPath = btn.querySelector('svg path');
   let isPlaying = false;
+
+  // Function to hide/show button based on voice availability
+  const updateVisibility = async () => {
+    const currentLang = getLanguage ? getLanguage() : language;
+    const voice = await selectBestVoice(currentLang);
+    btn.style.display = voice ? 'inline-flex' : 'none';
+  };
+
+  // Check immediately and when voices change (async loading)
+  updateVisibility();
+  if (window.speechSynthesis.onvoiceschanged !== undefined) {
+    window.speechSynthesis.addEventListener('voiceschanged', updateVisibility);
+  }
 
   btn.addEventListener('click', () => {
     if (isPlaying) {
       window.speechSynthesis.cancel();
       isPlaying = false;
-      iconPath.setAttribute('d', ICONS.PLAY);
+      if (iconPath) iconPath.setAttribute('d', ICONS.PLAY);
       return;
     }
 
@@ -134,12 +158,12 @@ export function initSpeakButton({ buttonId = 'speak-btn', inputId = 'cWords_tBox
 
     const currentLang = getLanguage ? getLanguage() : language;
     isPlaying = true;
-    iconPath.setAttribute('d', ICONS.PAUSE);
+    if (iconPath) iconPath.setAttribute('d', ICONS.PAUSE);
 
     speak(text, currentLang, {
       onEnd: () => {
         isPlaying = false;
-        iconPath.setAttribute('d', ICONS.PLAY);
+        if (iconPath) iconPath.setAttribute('d', ICONS.PLAY);
       }
     });
   });
