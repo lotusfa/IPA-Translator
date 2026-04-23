@@ -733,7 +733,7 @@ body.dark-mode .dataTables_filter input {
 
   /* Remove default table border-bottom for grid cells */
   table.display td {
-    border-bottom: none !important;
+    /*border-bottom: none !important;*/
   }
 
   /* Hide index column on mobile for cleaner layout */
@@ -776,8 +776,10 @@ body.dark-mode .dataTables_filter input {
   }
 
   .dataTables_paginate .pagination {
-    justify-content: center;
+    justify-content: center !important;
     flex-wrap: wrap;
+    width: 100%;
+    padding:0px;
   }
 
   .dataTables_paginate .pagination a {
