@@ -86,6 +86,8 @@
     <script src="../lib/datatables/datatables.min.js"></script>
     <link rel="stylesheet" type="text/css" href="../lib/datatables/datatables.min.css"/>
 
+    <script type="text/javascript" src="../js/tts.js"></script>
+
     <script type="text/javascript">
       // Dark mode toggle
       const darkModeToggle = document.getElementById('dark-mode-toggle');
@@ -110,6 +112,131 @@
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
       });
 
+      // Icons for voice button
+      const VOICE_ICONS = {
+        PLAY: 'M11 5L6 9H2v6h4l5 4V5z M15.54 8.46a5 5 0 0 1 0 7.07 M19.07 4.93a10 10 0 0 1 0 14.14',
+        PAUSE: 'M6 4h4v16H6z M14 4h4v16h-4z'
+      };
+
+      // Voice priority for Cantonese
+      const VOICE_PRIORITY = {
+        'zh-HK': ['Sin-ji', 'Tracy', 'Danny', 'Sinji', 'Stella', 'Yuki']
+      };
+
+      const LANG_OVERRIDES = {
+        'zh-HK': { rate: 0.85 }
+      };
+
+      const norm = (lang) => lang.toLowerCase().replace('_', '-');
+
+      let isPlayingWord = false;
+
+      /**
+       * Select best voice for language
+       */
+      async function selectBestVoice(lang) {
+        const synth = window.speechSynthesis;
+        let voices = synth.getVoices();
+
+        if (voices.length === 0) {
+          await new Promise(resolve => {
+            const cb = () => {
+              synth.onvoiceschanged = null;
+              resolve();
+            };
+            synth.onvoiceschanged = cb;
+            setTimeout(cb, 1000);
+          });
+          voices = synth.getVoices();
+        }
+
+        const targetLang = norm(lang);
+        const preferred = VOICE_PRIORITY[lang] || [];
+
+        const langVoices = voices.filter(v => norm(v.lang) === targetLang || norm(v.lang).startsWith(targetLang + '-'));
+
+        if (langVoices.length === 0) return null;
+
+        const curated = langVoices.find(v => preferred.some(p => v.name.includes(p)));
+        if (curated) return curated;
+
+        return langVoices.find(v => !/Bad News|Boing|Zarvox|Whisper/i.test(v.name)) || langVoices[0];
+      }
+
+      /**
+       * Speak text function - plays word and resets icon when done
+       */
+      function speakWord(text, lang = 'zh-HK', iconPath = null) {
+        return new Promise((resolve) => {
+          const synth = window.speechSynthesis;
+
+          if (isPlayingWord) {
+            synth.cancel();
+            isPlayingWord = false;
+            if (iconPath) iconPath.setAttribute('d', VOICE_ICONS.PLAY);
+            resolve();
+            return;
+          }
+
+          selectBestVoice(lang).then(voice => {
+            if (!voice) {
+              console.warn(`No voice found for ${lang}`);
+              resolve();
+              return;
+            }
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            const config = { rate: 0.85, pitch: 1.0, ...LANG_OVERRIDES[lang] };
+            Object.assign(utterance, config);
+            utterance.voice = voice;
+
+            isPlayingWord = true;
+
+            utterance.onend = () => {
+              isPlayingWord = false;
+              if (iconPath) iconPath.setAttribute('d', VOICE_ICONS.PLAY);
+              resolve();
+            };
+
+            utterance.onerror = () => {
+              isPlayingWord = false;
+              if (iconPath) iconPath.setAttribute('d', VOICE_ICONS.PLAY);
+              resolve();
+            };
+
+            synth.speak(utterance);
+          });
+        });
+      }
+
+      /**
+       * Create voice button for a word
+       */
+      function createVoiceButton(word) {
+        const btn = document.createElement('button');
+        btn.className = 'btn-icon speak-word-btn';
+        btn.setAttribute('aria-label', '朗讀單字');
+        btn.innerHTML = `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path class="voice-icon-path" d="${VOICE_ICONS.PLAY}"/></svg>`;
+
+        const iconPath = btn.querySelector('.voice-icon-path');
+
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+
+          if (isPlayingWord) {
+            window.speechSynthesis.cancel();
+            isPlayingWord = false;
+            iconPath.setAttribute('d', VOICE_ICONS.PLAY);
+            return;
+          }
+
+          iconPath.setAttribute('d', VOICE_ICONS.PAUSE);
+          speakWord(word, 'zh-HK', iconPath);
+        });
+
+        return btn;
+      }
+
       // Initialize DataTable
       $(document).ready(function() {
           $('#DataTable').DataTable( {
@@ -117,21 +244,34 @@
                 url: '../json/yue.json',
                 dataSrc: function (json) {
                   const dataObj = json.yue[0];
-                  return Object.entries(dataObj).map(([entry, ipa], index) => [index + 1, entry, ipa]);
-              }
-            },
-            "paging": true,
-            "pageLength": 10,
-            "lengthMenu": [[10, 25, 50, 100], [10, 25, 50, 100]],
-            "ordering": true,
-            "searching": true,
-            "info": true,
-            "responsive": true,
-            "columnDefs": [
-              { "orderable": true, "targets": [0] },
-              { "orderable": true, "targets": [1] },
-              { "orderable": true, "targets": [2] }
-            ]
+                  return Object.entries(dataObj).map(([entry, ipa], index) => {
+                    const row = [index + 1, entry, ipa];
+                    row.word = entry;
+                    row.ipa = ipa;
+                    return row;
+                  });
+                }
+              },
+              "paging": true,
+              "pageLength": 10,
+              "lengthMenu": [[10, 25, 50, 100], [10, 25, 50, 100]],
+              "ordering": true,
+              "searching": true,
+              "info": true,
+              "responsive": true,
+              "columnDefs": [
+                { "orderable": true, "targets": [0] },
+                {
+                  "orderable": true,
+                  "targets": [1],
+                  "createdCell": function(td, cellData, rowData) {
+                    const word = rowData.word;
+                    const btn = createVoiceButton(word);
+                    $(td).prepend(btn);
+                  }
+                },
+                { "orderable": true, "targets": [2] }
+              ]
           }
         );
       } );
