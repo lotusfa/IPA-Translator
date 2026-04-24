@@ -6,8 +6,7 @@
  *
  * Usage:
  *   For IPA list pages: import { initIPAListPage } from '../js/ui.js';
- *   For index pages:    import { initIPAIndexPage } from '../js/ui.js';
- *
+ *   For index pages:     *
  * ============================================================
  * FUNCTION USAGE BY PAGE TYPE:
  * ============================================================
@@ -26,8 +25,9 @@
  *
  */
 
-import { loadIPADatabase, normalizeIPAData } from './ipa-core.js';
-import { createSpeakButton, preloadVoiceSupport, hasVoiceSupport } from './tts.js';
+import { loadIPADatabase, normalizeIPAData, isElementChecked, setElementValue, setElementValueAnimated } from './ipa-core.js';
+export { processTextCharBased, processTextLongestMatch } from './ipa-core.js';
+import { createSpeakButton, preloadVoiceSupport, hasVoiceSupport, initSpeakButton } from './tts.js';
 
 // ============================================================
 // FOR IPA_LIST PAGES - DataTable Initialization
@@ -209,47 +209,226 @@ export async function initIPAListPage(options = {}) {
  * Initialize a standard IPA translation page with all common features
  * FOR: index.html pages only (translation UI)
  *
+ * KISS Design: Simple, direct implementation with sensible defaults.
+ * Supports configurable database loading, processing algorithms, and output formatters.
+ *
  * @param {Object} options - Page configuration:
- *   @param {string} options.language - Language code for TTS (e.g., 'zh-HK', 'en-US')
- *   @param {string} options.tableId - DataTable element ID (default: 'DataTable')
- *   @param {boolean} options.enableTTS - Enable TTS speak buttons (default: true)
+ *   REQUIRED:
+ *   @param {string} options.databasePath - Path to IPA JSON (supports '${variant}' pattern for dialects)
+ *   @param {Function} options.process - Processing function (processTextCharBased / processTextLongestMatch)
+ *
+ *   OPTIONAL - DOM Element IDs (defaults match standard naming convention):
+ *   @param {string} options.inputId - Input textarea ID (default: 'cWords_tBox')
+ *   @param {string} options.outputId - Output textarea ID (default: 'IPA_tBox')
+ *   @param {string} options.withWordsId - "With Words" checkbox ID (default: 'wf_c_words')
+ *   @param {string} options.allowWordSearchId - "Allow Words Search" checkbox ID (default: 'allow_words_search')
+ *   @param {string} options.variantRadioSelector - Variant radio selector (default: 'input[name="inlineRadioOptions"]')
+ *   @param {string} options.formatRadioSelector - Format radio selector (optional)
+ *   @param {string} options.darkModeToggleId - Dark mode toggle ID (default: 'dark-mode-toggle')
+ *   @param {string} options.langButtonsContainerId - Language buttons container ID (default: 'lang-buttons-container')
+ *   @param {string} options.speakButtonId - TTS button ID (default: 'speak-btn')
+ *
+ *   OPTIONAL - Processing behavior:
+ *   @param {Function} options.outputFormatter - Optional output formatter function
+ *   @param {number} options.maxWordLength - Max word length for char-based processing (default: 6)
+ *   @param {number} options.maxPhraseLength - Max phrase length for longest-match (default: 5)
+ *
+ *   OPTIONAL - UI customization:
  *   @param {boolean} options.enableLanguageButtons - Show language navigation (default: true)
  *   @param {boolean} options.enableResponsiveTextarea - Enable responsive textarea (default: true)
+ *   @param {boolean} options.enableSpeakButton - Enable TTS speak button (default: true)
+ *   @param {number} options.mobileRows - Mobile textarea rows (default: 5)
+ *   @param {number} options.desktopRows - Desktop textarea rows (default: 10)
+ *   @param {Object} options.formatMapping - Format radio to formatter mapping (optional)
+ *   @param {Function} options.getLanguage - Function returning TTS language code (for variant-specific TTS)
  *
- * @returns {Promise} Resolves when page is fully initialized
+ * @returns {Object} Public API: { translate, destroy }
  */
-export async function initIPAIndexPage(options = {}) {
+export function initIPAIndexPage(options) {
   const {
-    language = null,
-    tableId = 'DataTable',
-    enableTTS = true,
+    databasePath,
+    process,
+    inputId = 'cWords_tBox',
+    outputId = 'IPA_tBox',
+    withWordsId = 'wf_c_words',
+    allowWordSearchId = 'allow_words_search',
+    variantRadioSelector = 'input[name="inlineRadioOptions"]',
+    formatRadioSelector = null,
+    darkModeToggleId = 'dark-mode-toggle',
+    langButtonsContainerId = 'lang-buttons-container',
+    speakButtonId = 'speak-btn',
+    outputFormatter = null,
+    maxWordLength = 6,
+    maxPhraseLength = 5,
     enableLanguageButtons = true,
-    enableResponsiveTextarea = true
+    enableResponsiveTextarea = true,
+    enableSpeakButton = true,
+    mobileRows = 5,
+    desktopRows = 10,
+    formatMapping = null,
+    getLanguage = null
   } = options;
 
-  // Initialize dark mode
-  initDarkMode('dark-mode-toggle');
+  // Validate required options
+  if (!databasePath) throw new Error('initIPAIndexPage: "databasePath" is required');
+  if (!process) throw new Error('initIPAIndexPage: "process" is required');
 
-  // Initialize language navigation if enabled
+  // State
+  let IPA_DB = {};
+  let currentFormat = null;
+  let debounceTimer = null;
+
+  // Get variant from radio buttons
+  const getVariant = () => {
+    if (!variantRadioSelector) return null;
+    const radio = document.querySelector(`${variantRadioSelector}:checked`);
+    return radio ? radio.id : null;
+  };
+
+  // Get format from radio buttons
+  const getFormat = () => {
+    if (!formatRadioSelector) return null;
+    const radio = document.querySelector(`${formatRadioSelector}:checked`);
+    return radio ? radio.id : null;
+  };
+
+  // Build database path (supports variant pattern like '../json/en_${variant}.json')
+  const getDatabasePath = () => {
+    if (databasePath.includes('${variant}')) {
+      const variant = getVariant();
+      return databasePath.replace('${variant}', variant || 'default');
+    }
+    return databasePath;
+  };
+
+  // Get output formatter
+  const getFormatter = () => {
+    if (formatMapping && currentFormat && formatMapping[currentFormat]) {
+      return formatMapping[currentFormat];
+    }
+    return outputFormatter;
+  };
+
+  // Core translation function
+  const translate = () => {
+    const inputEl = document.getElementById(inputId);
+    const outputEl = document.getElementById(outputId);
+    if (!inputEl || !outputEl) return;
+
+    const input = inputEl.value;
+    setElementValue(outputId, 'loading....');
+
+    setTimeout(() => {
+      const withWords = withWordsId ? isElementChecked(withWordsId) : false;
+      const allowWordSearch = allowWordSearchId ? isElementChecked(allowWordSearchId) : false;
+
+      let result = process({
+        input,
+        lookupTable: IPA_DB,
+        withWords,
+        allowWordSearch,
+        maxWordLength,
+        maxPhraseLength
+      });
+
+      const formatter = getFormatter();
+      if (formatter) result = formatter(result);
+
+      setElementValueAnimated(outputId, result);
+    }, 10);
+  };
+
+  // Load database
+  const loadDatabase = () => {
+    setElementValue(outputId, 'loading....');
+    loadIPADatabase({
+      basePath: getDatabasePath(),
+      onSuccess: (lookup) => {
+        IPA_DB = lookup;
+        translate();
+      },
+      onError: (err) => {
+        console.error('Failed to load database:', err);
+        setElementValue(outputId, 'Error loading database');
+      }
+    });
+  };
+
+  // Debounced translate helper
+  const debouncedTranslate = () => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(translate, 50);
+  };
+
+  // Setup event listeners
+  const setupEventListeners = () => {
+    // Input handler with debounce + select all on focus
+    const inputEl = document.getElementById(inputId);
+    if (inputEl) {
+      inputEl.addEventListener('input', debouncedTranslate);
+      inputEl.addEventListener('focus', function () { this.select(); });
+    }
+
+    // Variant radio handlers
+    if (variantRadioSelector) {
+      document.querySelectorAll(variantRadioSelector).forEach(el => {
+        el.addEventListener('change', () => {
+          loadDatabase();
+        });
+      });
+    }
+
+    // Format radio handlers
+    if (formatRadioSelector) {
+      document.querySelectorAll(formatRadioSelector).forEach(el => {
+        el.addEventListener('change', () => {
+          currentFormat = getFormat();
+          translate();
+        });
+      });
+    }
+
+    // Checkbox handlers
+    if (withWordsId) {
+      const withWordsEl = document.getElementById(withWordsId);
+      if (withWordsEl) withWordsEl.addEventListener('change', translate);
+    }
+
+    if (allowWordSearchId) {
+      const allowWordSearchEl = document.getElementById(allowWordSearchId);
+      if (allowWordSearchEl) allowWordSearchEl.addEventListener('change', translate);
+    }
+  };
+
+  // Initialize UI components
+  initDarkMode(darkModeToggleId);
+
   if (enableLanguageButtons) {
-    initLanguageButtons({
-      containerId: 'lang-buttons-container',
-      configPath: '../config/languages.json'
-    });
+    initLanguageButtons({ containerId: langButtonsContainerId, configPath: '../config/languages.json' });
   }
 
-  // Preload TTS voices if enabled
-  if (enableTTS && language) {
-    await preloadVoiceSupport(language);
-  }
-
-  // Initialize responsive textarea if enabled
   if (enableResponsiveTextarea) {
-    initResponsiveTextareaRows({
-      mobileRows: 5,
-      desktopRows: 10
+    initResponsiveTextareaRows({ mobileRows, desktopRows });
+  }
+
+  // Initialize TTS speak button if enabled
+  if (enableSpeakButton) {
+    initSpeakButton({
+      buttonId: speakButtonId,
+      inputId: inputId,
+      getLanguage: getLanguage || (() => null)
     });
   }
+
+  // Setup event listeners and load database
+  setupEventListeners();
+  loadDatabase();
+
+  // Return public API
+  return {
+    translate,
+    destroy: () => { clearTimeout(debounceTimer); }
+  };
 }
 
 // ============================================

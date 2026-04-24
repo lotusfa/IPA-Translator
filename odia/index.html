@@ -84,12 +84,9 @@
     </footer>
 
     <script type="module" src="./main.js"></script>
-  <script type="module">
-     import { initLanguageButtons } from '../js/ipa-core.js';
-     initLanguageButtons({
-       containerId: "lang-buttons-container",
-       configPath: "../config/languages.json"
-     });
-   </script>
-</body>
+    <script type="module">
+      import { initIPAIndexPage } from '../js/ui.js';
+      initIPAIndexPage({ language: 'or' });
+    </script>
+  </body>
 </html>

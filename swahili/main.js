@@ -1,78 +1,8 @@
-/**
- * Swahili IPA Translator - Refactored to use shared ipa-core module
- */
+/** Swahili IPA Translator */
+import { initIPAIndexPage, processTextLongestMatch } from '../js/ipa-core.js';
 
-import {
-  loadIPADatabase,
-  processTextLongestMatch,
-  initDarkMode,
-  initResponsiveTextareaRows,
-  onTextInputChange,
-  onMultipleChange,
-  getElementValue,
-  setElementValue,
-  setElementValueAnimated,
-  isElementChecked,
-  initSpeakButton
-} from '../js/ipa-core.js';
-
-let IPA_DB = {};
-
-/**
- * Load database (static path for Swahili)
- */
-function loadDatabase() {
-  loadIPADatabase({
-    basePath: '../json/sw.json',
-    onSuccess: (lookup) => {
-      IPA_DB = lookup;
-      translate();
-    },
-    onError: (err) => {
-      console.error('Failed to load database:', err);
-      setElementValue('IPA_tBox', 'Error loading database');
-    }
-  });
-}
-
-/**
- * Translate input text
- */
-function translate() {
-  const input = getElementValue('cWords_tBox');
-  setElementValue('IPA_tBox', 'loading....');
-
-  setTimeout(() => {
-    const result = processTextLongestMatch({
-      input,
-      lookupTable: IPA_DB,
-      withWords: isElementChecked('wf_c_words')
-    });
-    setElementValueAnimated('IPA_tBox', result);
-  }, 10);
-}
-
-// ============================================
-// Initialization
-// ============================================
-
-document.addEventListener('DOMContentLoaded', () => {
-  // Initialize dark mode
-  initDarkMode('dark-mode-toggle');
-  initResponsiveTextareaRows();
-
-  // Initialize TTS button (Swahili)
-  initSpeakButton({ language: 'sw' });
-
-  // Set up input handler
-  onTextInputChange('cWords_tBox', translate);
-
-  // Set up word format checkbox
-  const wf_c_words = document.getElementById('wf_c_words');
-  if (wf_c_words) {
-    wf_c_words.addEventListener('change', translate);
-  }
-
-  // Initial loading
-  loadDatabase();
+initIPAIndexPage({
+  databasePath: '../json/sw.json',
+  process: ({ input, lookupTable }) => processTextLongestMatch({ input, lookupTable, withWords: isElementChecked('wf_c_words') }),
+  speakButtonOptions: { language: 'sw' }
 });

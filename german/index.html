@@ -86,11 +86,8 @@
 
     <script type="module" src="./main.js"></script>
     <script type="module">
-      import { initLanguageButtons } from '../js/ipa-core.js';
-      initLanguageButtons({
-        containerId: "lang-buttons-container",
-        configPath: "../config/languages.json"
-      });
+      import { initIPAIndexPage } from '../js/ui.js';
+      initIPAIndexPage({ language: 'de' });
     </script>
   </body>
 </html>

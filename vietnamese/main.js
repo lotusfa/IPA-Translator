@@ -1,122 +1,20 @@
 /**
- * Vietnamese IPA Translator - Implemented with longest-match algorithm
- * Optimized for Vietnamese language which uses space-separated words
+ * Vietnamese IPA Translator - Simplified using initIPAIndexPage
  */
 
-import {
-  loadIPADatabase,
-  processTextLongestMatch,
-  formatVietnameseOutput,
-  formatVietnameseStandard,
-  formatIPANumbers,
-  getElementValue,
-  setElementValue,
-  setElementValueAnimated,
-  isElementChecked,
-  onTextInputChange,
-  onMultipleChange,
-  initDarkMode,
-  initResponsiveTextareaRows,
-  initSpeakButton
-} from '../js/ipa-core.js';
+import { initIPAIndexPage, processTextCharBased } from '../js/ui.js';
+import { formatVietnameseOutput, formatIPANumbers } from '../js/vi.format.js';
 
-let IPA_DB = {};
-let currentVariant = "vi_C"; // Default to Central Vietnamese
-
-/**
- * Load database with variant selection (vi_C/vi_N/vi_S)
- */
-function loadDatabase() {
-  const variant = currentVariant;
-  loadIPADatabase({
-    basePath: `../json/${variant}.json`,
-    onSuccess: (rawLookup) => {
-      IPA_DB = rawLookup;
-      translate();
-    },
-    onError: (err) => {
-      console.error('Failed to load database:', err);
-      setElementValue('IPA_tBox', 'Error loading database');
-    }
-  });
-}
-
-/**
- * Translate input text using Vietnamese longest-match algorithm
- * Uses shared processTextLongestMatch from ipa-core
- */
-function translate() {
-  const input = getElementValue('cWords_tBox');
-  setElementValue('IPA_tBox', 'loading....');
-
-  // Use shared processTextLongestMatch from ipa-core
-  setTimeout(() => {
-    const withWords = isElementChecked('wf_c_words');
-    const result = processTextLongestMatch({
-      input: input,
-      lookupTable: IPA_DB,
-      withWords: withWords
-    });
-
-    // Apply format transformation based on selected option
-    const format = document.querySelector('input[name="format"]:checked').id;
-    let formatted = result;
-
-    if (format === 'IPA_org') {
-      // Keep original IPA symbols
-      formatted = result;
-    } else if (format === 'IPA_num') {
-      // Convert IPA tone letters to numbers (Chao numbers)
-      formatted = formatIPANumbers(result);
-    } else if (format === 'tone_simple') {
-      // Use standard Vietnamese tone numbering (Số thứ tự thanh điệu)
-      formatted = formatVietnameseOutput(result);
-    }
-
-    setElementValueAnimated('IPA_tBox', formatted);
-  }, 10);
-}
-
-// ============================================
-// Initialization
-// ============================================
-
-document.addEventListener('DOMContentLoaded', () => {
-  const darkModeToggle = document.getElementById('dark-mode-toggle');
-  const wf_c_words = document.getElementById('wf_c_words');
-  const allow_words_search = document.getElementById('allow_words_search');
-  const formatRadios = document.querySelectorAll('input[name="format"]');
-  const variantRadios = document.querySelectorAll('input[name="variant"]');
-
-  // Initialize dark mode
-  initDarkMode('dark-mode-toggle');
-  initResponsiveTextareaRows();
-
-  // Initialize TTS button (Vietnamese)
-  initSpeakButton({ language: 'vi-VN' });
-
-  // Set up input handler
-  onTextInputChange('cWords_tBox', translate);
-
-  // Set up format radio handlers
-  onMultipleChange('input[name="format"]', translate);
-
-  // Set up checkbox handlers
-  if (wf_c_words) {
-    wf_c_words.addEventListener('change', translate);
-  }
-  if (allow_words_search) {
-    allow_words_search.addEventListener('change', translate);
-  }
-
-  // Update on variant change and reload data
-  variantRadios.forEach(function (radio) {
-    radio.addEventListener('change', function () {
-      currentVariant = this.value;
-      loadDatabase();
-    });
-  });
-
-  // Initial loading
-  loadDatabase();
+// Initialize with char-based processing and Vietnamese formatters
+initIPAIndexPage({
+  databasePath: '../json/vi_${variant}.json',
+  variantRadioSelector: 'input[name="variant"]',
+  process: processTextCharBased,
+  formatRadioSelector: 'input[name="format"]',
+  formatMapping: {
+    IPA_org: (text) => text,
+    IPA_num: formatIPANumbers,
+    tone_simple: formatVietnameseOutput
+  },
+  maxWordLength: 6
 });

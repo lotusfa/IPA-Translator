@@ -116,12 +116,9 @@ Bảng phiên âm quốc tế (IPA), trước đây được gọi là Bảng ph
     </footer>
 
     <script type="module" src="./main.js"></script>
-      <script type="module">
-      import { initLanguageButtons } from '../js/ipa-core.js';
-      initLanguageButtons({
-        containerId: "lang-buttons-container",
-        configPath: "../config/languages.json"
-      });
+    <script type="module">
+      import { initIPAIndexPage } from '../js/ui.js';
+      initIPAIndexPage({ language: 'vi' });
     </script>
   </body>
 </html>

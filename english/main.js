@@ -1,84 +1,17 @@
 /**
- * English IPA Translator - Refactored to use shared ipa-core module
- * Uses processTextLongestMatch for multi-word phrase matching
+ * English IPA Translator - Simplified using initIPAIndexPage
  */
 
-import {
-  loadIPADatabase,
-  processTextLongestMatch,
-  initDarkMode,
-  initResponsiveTextareaRows,
-  onTextInputChange,
-  onMultipleChange,
-  getElementValue,
-  setElementValue,
-  setElementValueAnimated,
-  isElementChecked,
-  initSpeakButton,
-} from '../js/ipa-core.js';
+import { initIPAIndexPage } from '../js/ui.js';
+import { processTextLongestMatch } from '../js/ipa-core.js';
 
-let IPA_DB = {};
-
-/**
- * Load database with dynamic variant selection (en_US/en_UK)
- */
-function loadDatabase() {
-  const variant = document.getElementById('IPA_US').checked ? 'US' : 'UK';
-  loadIPADatabase({
-    basePath: `../json/en_${variant}.json`,
-    onSuccess: (lookup) => {
-      IPA_DB = lookup;
-      translate();
-    },
-    onError: (err) => {
-      console.error('Failed to load database:', err);
-      setElementValue('IPA_tBox', 'Error loading database');
-    }
-  });
-}
-
-/**
- * Translate input text using longest-match algorithm
- */
-function translate() {
-  const input = getElementValue('cWords_tBox');
-  setElementValue('IPA_tBox', 'loading....');
-
-  // Small timeout to allow UI to update before processing
-  setTimeout(() => {
-    const result = processTextLongestMatch({
-      input,
-      lookupTable: IPA_DB,
-      withWords: isElementChecked('wf_c_words')
-    });
-    setElementValueAnimated('IPA_tBox', result);
-  }, 10);
-}
-
-// ============================================
-// Initialization
-// ============================================
-
-document.addEventListener('DOMContentLoaded', () => {
-  // Initialize dark mode
-  initDarkMode('dark-mode-toggle');
-  initResponsiveTextareaRows();
-
-  // Initialize text-to-speech button with dynamic variant selection
-  initSpeakButton({ getLanguage: () => document.getElementById('IPA_US').checked ? 'en-US' : 'en-GB' });
-
-  // Set up input handler
-  onTextInputChange('cWords_tBox', translate);
-
-  // Set up radio button handlers for variant selection
-  onMultipleChange('input[name="inlineRadioOptions"]', loadDatabase);
-
-  // Set up word format checkbox
-  const wf_c_words = document.getElementById('wf_c_words');
-  if (wf_c_words) {
-    wf_c_words.addEventListener('change', translate);
+// Initialize with variant support (en_US/en_UK)
+initIPAIndexPage({
+  databasePath: '../json/en_${variant}.json',
+  variantRadioSelector: 'input[name="inlineRadioOptions"]',
+  process: processTextLongestMatch,
+  getLanguage: () => {
+    const variant = document.querySelector('input[name="inlineRadioOptions"]:checked')?.id;
+    return variant === 'IPA_US' ? 'en-US' : 'en-GB';
   }
-
-  // Initial loading
-  loadDatabase();
 });

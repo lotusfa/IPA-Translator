@@ -83,13 +83,10 @@
       </div>
     </footer>
 
-        <script type="module">
-      import { initLanguageButtons } from '../js/ipa-core.js';
-      initLanguageButtons({
-        containerId: "lang-buttons-container",
-        configPath: "../config/languages.json"
-      });
+    <script type="module" src="./main.js"></script>
+    <script type="module">
+      import { initIPAIndexPage } from '../js/ui.js';
+      initIPAIndexPage({ language: 'sw' });
     </script>
-<script type="module" src="./main.js"></script>
   </body>
 </html>

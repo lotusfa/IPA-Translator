@@ -1,79 +1,17 @@
 /**
- * Spanish IPA Translator - Refactored to use shared ipa-core module
+ * Spanish IPA Translator - Simplified using initIPAIndexPage
  */
 
-import {
-  loadIPADatabase,
-  processTextLongestMatch,
-  initDarkMode,
-  initResponsiveTextareaRows,
-  onTextInputChange,
-  onMultipleChange,
-  setElementValue,
-  setElementValueAnimated,
-  initSpeakButton
-} from '../js/ipa-core.js';
+import { initIPAIndexPage } from '../js/ui.js';
+import { processTextLongestMatch } from '../js/ipa-core.js';
 
-let IPA_DB = {};
-let variantOption = 'IPA_Spain'; // Default: Spain
-
-/**
- * Load database with variant selection (es_ES/es_MX)
- */
-function loadDatabase() {
-  const variant = variantOption === 'IPA_Spain' ? 'ES' : 'MX';
-  loadIPADatabase({
-    basePath: `../json/es_${variant}.json`,
-    onSuccess: (lookup) => { IPA_DB = lookup; translate(); }
-  });
-}
-
-/**
- * Translate input text
- */
-function translate() {
-  const input = document.getElementById('cWords_tBox')?.value || '';
-  if (!document.getElementById('IPA_tBox')) return;
-
-  setElementValue('IPA_tBox', 'loading....');
-
-  setTimeout(() => {
-    const result = processTextLongestMatch({
-      input,
-      lookupTable: IPA_DB,
-      withWords: !!document.getElementById('wf_c_words')?.checked
-    });
-    setElementValueAnimated('IPA_tBox', result);
-  }, 10);
-}
-
-// ============================================
-// Initialization
-// ============================================
-
-document.addEventListener('DOMContentLoaded', () => {
-  // Initialize dark mode
-  initDarkMode('dark-mode-toggle');
-  initResponsiveTextareaRows();
-
-  // Initialize TTS button with dynamic variant selection (Spain/Mexico)
-  initSpeakButton({ getLanguage: () => variantOption === 'IPA_Spain' ? 'es-ES' : 'es-MX' });
-
-  // Set up input handler
-  onTextInputChange('cWords_tBox', translate);
-
-  // Set up variant radio handlers (IPA_Spain / IPA_Mexico)
-  onMultipleChange('input[name="inlineRadioOptions"]', (e) => {
-    variantOption = e.target.id;
-    loadDatabase();
-  });
-
-  // Set up word format checkbox
-  const wf_c_words = document.getElementById('wf_c_words');
-  if (wf_c_words) {
-    wf_c_words.addEventListener('change', translate);
+// Initialize with variant support (es_ES/es_MX)
+initIPAIndexPage({
+  databasePath: '../json/es_${variant}.json',
+  variantRadioSelector: 'input[name="inlineRadioOptions"]',
+  process: processTextLongestMatch,
+  getLanguage: () => {
+    const variant = document.querySelector('input[name="inlineRadioOptions"]:checked')?.id;
+    return variant === 'IPA_Spain' ? 'es-ES' : 'es-MX';
   }
-
-  // Initial loading
-  loadDatabase();
 });

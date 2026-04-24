@@ -1,84 +1,12 @@
 /**
- * Japanese IPA Translator - Refactored to use shared ipa-core module
+ * Japanese IPA Translator - Simplified using initIPAIndexPage
  */
 
-import {
-  loadIPADatabase,
-  processTextCharBased,
-  initDarkMode,
-  initResponsiveTextareaRows,
-  onTextInputChange,
-  setElementValue,
-  setElementValueAnimated,
-  isElementChecked,
-  initSpeakButton
-} from '../js/ipa-core.js';
+import { initIPAIndexPage, processTextCharBased } from '../js/ui.js';
 
-let IPA_DB = {};
-
-/**
- * Load database (static path for Japanese)
- */
-function loadDatabase() {
-  loadIPADatabase({
-    basePath: '../json/ja.json',
-    onSuccess: (lookup) => {
-      IPA_DB = lookup;
-      translate();
-    },
-    onError: (err) => {
-      console.error('Failed to load database:', err);
-      setElementValue('IPA_tBox', 'Error loading database');
-    }
-  });
-}
-
-/**
- * Translate input text
- */
-function translate() {
-  const input = document.getElementById('cWords_tBox').value;
-  setElementValue('IPA_tBox', 'loading....');
-
-  setTimeout(() => {
-    const result = processTextCharBased({
-      input,
-      lookupTable: IPA_DB,
-      withWords: isElementChecked('wf_c_words'),
-      allowWordSearch: isElementChecked('allow_words_search'),
-      maxWordLength: 6
-    });
-    setElementValueAnimated('IPA_tBox', result);
-  }, 10);
-}
-
-// ============================================
-// Initialization
-// ============================================
-
-document.addEventListener('DOMContentLoaded', () => {
-  const cWords_tBox = document.getElementById('cWords_tBox');
-  const wf_c_words = document.getElementById('wf_c_words');
-  const allow_words_search = document.getElementById('allow_words_search');
-
-  // Initialize dark mode
-  initDarkMode('dark-mode-toggle');
-  initResponsiveTextareaRows();
-
-  // Initialize TTS button (Japanese)
-  initSpeakButton({ language: 'ja-JP' });
-
-  // Set up input handler
-  onTextInputChange('cWords_tBox', translate);
-
-  // Set up checkbox handlers
-  if (wf_c_words) {
-    wf_c_words.addEventListener('change', translate);
-  }
-  if (allow_words_search) {
-    allow_words_search.addEventListener('change', translate);
-  }
-
-  // Initial loading
-  loadDatabase();
+// Initialize with char-based processing (no formatter needed)
+initIPAIndexPage({
+  databasePath: '../json/ja.json',
+  process: processTextCharBased,
+  maxWordLength: 6
 });
