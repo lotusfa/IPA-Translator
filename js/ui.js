@@ -7,13 +7,34 @@
  * Usage:
  *   import { initIPAPage } from '../js/ui.js';
  *   await initIPAPage({ language: 'zh-HK', tableJsonPath: '../json/zh_hk.json' });
+ *
+ * ============================================================
+ * FUNCTION USAGE BY PAGE TYPE:
+ * ============================================================
+ *
+ * For ipa_list*.html pages (IPA database view):
+ *   - initIPAPage()      : Full page initialization (DataTable + TTS + Dark mode)
+ *   - initIPATable()     : DataTable initialization only
+ *
+ * For index.html pages (Translation UI):
+ *   - initDarkMode()     : Dark mode toggle only
+ *   - generateLanguageButtons() : Language navigation buttons
+ *   - initLanguageButtons()     : Helper wrapper for generateLanguageButtons
+ *   - setResponsiveTextareaRows() : Mobile-responsive textarea sizing
+ *   - initResponsiveTextareaRows() : Initialize with resize listener
+ *
  */
 
 import { loadIPADatabase, normalizeIPAData } from './ipa-core.js';
 import { createSpeakButton, preloadVoiceSupport, hasVoiceSupport } from './tts.js';
 
+// ============================================================
+// FOR IPA_LIST PAGES - DataTable Initialization
+// ============================================================
+
 /**
  * Initialize IPA DataTable with optional TTS speak buttons
+ * FOR: ipa_list*.html pages only
  * Replaces ~50 lines of inline DataTable code in ipa_list*.html files
  *
  * @param {Object} options - Configuration:
@@ -119,8 +140,13 @@ export function initIPATable(options) {
   });
 }
 
+// ============================================
+// Full Page Initialization (ipa_list pages)
+// ============================================
+
 /**
  * Initialize a standard IPA page with all common features
+ * FOR: ipa_list*.html pages only
  * Single function replaces ~70 lines of inline JavaScript in ipa_list*.html files
  *
  * @param {Object} options - Page configuration:
@@ -175,8 +201,12 @@ export async function initIPAPage(options = {}) {
 }
 
 // ============================================
-// Dark Mode
+// SHARED UTILITIES (Used by index.html and ipa_list.html)
 // ============================================
+
+// --------------------------------------------
+// Dark Mode
+// --------------------------------------------
 
 /**
  * Initialize dark mode toggle functionality
@@ -218,6 +248,7 @@ export function initDarkMode(toggleId) {
 /**
  * Generate and insert language buttons for "Other Languages" section
  * Reads from config/languages.json and dynamically builds the list
+ * USED BY: Both index.html and ipa_list*.html pages
  *
  * @param {object} options - Options:
  *   @param {string} options.containerId - ID of container element (default: "lang-buttons-container")
@@ -302,7 +333,7 @@ export function initLanguageButtons(options) {
 }
 
 // ============================================
-// Responsive Textarea Rows
+// Responsive Textarea (Shared Utility)
 // ============================================
 
 /**
