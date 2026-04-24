@@ -1,22 +1,23 @@
 /**
  * Shared UI Initialization for IPA-Translator Pages
  *
- * KISS Principle: One function to initialize all common page elements
+ * KISS Principle: Modular functions for different page types
  * Replaces ~70 lines of inline JavaScript in ipa_list*.html files
  *
  * Usage:
- *   import { initIPAPage } from '../js/ui.js';
- *   await initIPAPage({ language: 'zh-HK', tableJsonPath: '../json/zh_hk.json' });
+ *   For IPA list pages: import { initIPAListPage } from '../js/ui.js';
+ *   For index pages:    import { initIPAIndexPage } from '../js/ui.js';
  *
  * ============================================================
  * FUNCTION USAGE BY PAGE TYPE:
  * ============================================================
  *
  * For ipa_list*.html pages (IPA database view):
- *   - initIPAPage()      : Full page initialization (DataTable + TTS + Dark mode)
+ *   - initIPAListPage()  : Full page initialization (DataTable + TTS + Dark mode)
  *   - initIPATable()     : DataTable initialization only
  *
  * For index.html pages (Translation UI):
+ *   - initIPAIndexPage() : Full page initialization (TTS + Dark mode + Responsive textarea)
  *   - initDarkMode()     : Dark mode toggle only
  *   - generateLanguageButtons() : Language navigation buttons
  *   - initLanguageButtons()     : Helper wrapper for generateLanguageButtons
@@ -146,7 +147,7 @@ export function initIPATable(options) {
 
 /**
  * Initialize a standard IPA page with all common features
- * FOR: ipa_list*.html pages only
+ * FOR: ipa_list*.html pages only (IPA database view)
  * Single function replaces ~70 lines of inline JavaScript in ipa_list*.html files
  *
  * @param {Object} options - Page configuration:
@@ -160,7 +161,7 @@ export function initIPATable(options) {
  *
  * @returns {Promise} Resolves when page is fully initialized
  */
-export async function initIPAPage(options = {}) {
+export async function initIPAListPage(options = {}) {
   const {
     language = null,
     tableJsonPath = null,
@@ -196,6 +197,57 @@ export async function initIPAPage(options = {}) {
       enableSpeakButtons: enableTTS,
       paging,
       pageLength
+    });
+  }
+}
+
+// ============================================
+// Full Page Initialization (index pages)
+// ============================================
+
+/**
+ * Initialize a standard IPA translation page with all common features
+ * FOR: index.html pages only (translation UI)
+ *
+ * @param {Object} options - Page configuration:
+ *   @param {string} options.language - Language code for TTS (e.g., 'zh-HK', 'en-US')
+ *   @param {string} options.tableId - DataTable element ID (default: 'DataTable')
+ *   @param {boolean} options.enableTTS - Enable TTS speak buttons (default: true)
+ *   @param {boolean} options.enableLanguageButtons - Show language navigation (default: true)
+ *   @param {boolean} options.enableResponsiveTextarea - Enable responsive textarea (default: true)
+ *
+ * @returns {Promise} Resolves when page is fully initialized
+ */
+export async function initIPAIndexPage(options = {}) {
+  const {
+    language = null,
+    tableId = 'DataTable',
+    enableTTS = true,
+    enableLanguageButtons = true,
+    enableResponsiveTextarea = true
+  } = options;
+
+  // Initialize dark mode
+  initDarkMode('dark-mode-toggle');
+
+  // Initialize language navigation if enabled
+  if (enableLanguageButtons) {
+    initLanguageButtons({
+      containerId: 'lang-buttons-container',
+      configPath: '../config/languages.json'
+    });
+  }
+
+  // Preload TTS voices if enabled
+  if (enableTTS && language) {
+    await preloadVoiceSupport(language);
+  }
+
+  // Initialize responsive textarea if enabled
+  if (enableResponsiveTextarea) {
+    initResponsiveTextareaRows({
+      mobileRows: 5,
+      desktopRows: 10
     });
   }
 }
