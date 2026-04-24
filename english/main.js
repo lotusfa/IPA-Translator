@@ -9,6 +9,7 @@ import { processTextLongestMatch } from '../js/ipa-core.js';
 initIPAIndexPage({
   databasePath: '../json/en_${variant}.json',
   variantRadioSelector: 'input[name="inlineRadioOptions"]',
+  variantMapping: { IPA_US: 'US', IPA_UK: 'UK' },
   process: processTextLongestMatch,
   getLanguage: () => {
     const variant = document.querySelector('input[name="inlineRadioOptions"]:checked')?.id;

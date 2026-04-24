@@ -4,8 +4,8 @@
 
 import { initIPAIndexPage, processTextCharBased } from '../js/ui.js';
 import {
-  formatIPA_org as formatCantoneseIPA_org,
-  formatIPA_num as formatCantoneseIPA_num,
+  formatCantoneseIPA_org,
+  formatCantoneseIPA_num,
   formatYueJyutping,
   formatYueGuangzhou,
   formatYueAcademy,

@@ -9,6 +9,7 @@ import { formatVietnameseOutput, formatIPANumbers } from '../js/vi.format.js';
 initIPAIndexPage({
   databasePath: '../json/vi_${variant}.json',
   variantRadioSelector: 'input[name="variant"]',
+  variantMapping: { variant_C: 'C', variant_N: 'N', variant_S: 'S' },
   process: processTextCharBased,
   formatRadioSelector: 'input[name="format"]',
   formatMapping: {
