@@ -15,6 +15,7 @@ import {
 initIPAIndexPage({
   databasePath: '../json/${variant}.json',
   variantRadioSelector: 'input[name="zhTypeOption"]',
+  variantMapping: { zh_type1: 'zh_hant', zh_type2: 'zh_hans' },
   process: processTextCharBased,
   formatRadioSelector: 'input[name="format"]',
   formatMapping: {

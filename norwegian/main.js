@@ -1,8 +1,9 @@
 /** Norwegian IPA Translator */
-import { initIPAIndexPage, processTextLongestMatch } from '../js/ipa-core.js';
+import { initIPAIndexPage, processTextLongestMatch } from '../js/ui.js';
 
 initIPAIndexPage({
   databasePath: '../json/nb.json',
-  process: ({ input, lookupTable }) => processTextLongestMatch({ input, lookupTable, withWords: isElementChecked('wf_c_words') }),
-  speakButtonOptions: { language: 'nb-NO' }
+  process: processTextLongestMatch,
+  ttsLanguage: 'nb-NO',
+  withWordsCheckboxId: 'wf_c_words'
 });

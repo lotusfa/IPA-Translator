@@ -1,8 +1,9 @@
 /** Swahili IPA Translator */
-import { initIPAIndexPage, processTextLongestMatch } from '../js/ipa-core.js';
+import { initIPAIndexPage, processTextLongestMatch } from '../js/ui.js';
 
 initIPAIndexPage({
   databasePath: '../json/sw.json',
-  process: ({ input, lookupTable }) => processTextLongestMatch({ input, lookupTable, withWords: isElementChecked('wf_c_words') }),
-  speakButtonOptions: { language: 'sw' }
+  process: processTextLongestMatch,
+  ttsLanguage: 'sw',
+  withWordsCheckboxId: 'wf_c_words'
 });

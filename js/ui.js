@@ -232,6 +232,8 @@ export async function initIPAListPage(options = {}) {
  *   @param {Function} options.outputFormatter - Optional output formatter function
  *   @param {number} options.maxWordLength - Max word length for char-based processing (default: 6)
  *   @param {number} options.maxPhraseLength - Max phrase length for longest-match (default: 5)
+ *   @param {string} options.withWordsCheckboxId - Auto-handle "with words" checkbox (shortcut for withWordsId + wrapper)
+ *   @param {string} options.ttsLanguage - TTS language code (shortcut for speakButtonOptions.language)
  *
  *   OPTIONAL - UI customization:
  *   @param {boolean} options.enableLanguageButtons - Show language navigation (default: true)
@@ -241,6 +243,7 @@ export async function initIPAListPage(options = {}) {
  *   @param {number} options.desktopRows - Desktop textarea rows (default: 10)
  *   @param {Object} options.formatMapping - Format radio to formatter mapping (optional)
  *   @param {Function} options.getLanguage - Function returning TTS language code (for variant-specific TTS)
+ *   @param {Object} options.speakButtonOptions - TTS button options: { language } (deprecated, use ttsLanguage)
  *
  * @returns {Object} Public API: { translate, destroy }
  */
@@ -266,8 +269,15 @@ export function initIPAIndexPage(options) {
     mobileRows = 5,
     desktopRows = 10,
     formatMapping = null,
-    getLanguage = null
+    getLanguage = null,
+    variantMapping = null,
+    withWordsCheckboxId = null,
+    ttsLanguage = null,
+    speakButtonOptions = null
   } = options;
+
+  // Support deprecated speakButtonOptions.language -> ttsLanguage
+  const effectiveTtsLanguage = ttsLanguage || (speakButtonOptions && speakButtonOptions.language) || null;
 
   // Validate required options
   if (!databasePath) throw new Error('initIPAIndexPage: "databasePath" is required');
@@ -296,7 +306,9 @@ export function initIPAIndexPage(options) {
   const getDatabasePath = () => {
     if (databasePath.includes('${variant}')) {
       const variant = getVariant();
-      return databasePath.replace('${variant}', variant || 'default');
+      // Apply variant mapping if provided
+      const mappedVariant = options.variantMapping && variant ? options.variantMapping[variant] : variant;
+      return databasePath.replace('${variant}', mappedVariant || 'default');
     }
     return databasePath;
   };
@@ -319,7 +331,9 @@ export function initIPAIndexPage(options) {
     setElementValue(outputId, 'loading....');
 
     setTimeout(() => {
-      const withWords = withWordsId ? isElementChecked(withWordsId) : false;
+      // Support withWordsCheckboxId as shorthand for withWordsId
+      const effectiveWithWordsId = withWordsCheckboxId || withWordsId;
+      const withWords = effectiveWithWordsId ? isElementChecked(effectiveWithWordsId) : false;
       const allowWordSearch = allowWordSearchId ? isElementChecked(allowWordSearchId) : false;
 
       let result = process({
@@ -416,7 +430,7 @@ export function initIPAIndexPage(options) {
     initSpeakButton({
       buttonId: speakButtonId,
       inputId: inputId,
-      getLanguage: getLanguage || (() => null)
+      getLanguage: getLanguage || (effectiveTtsLanguage ? () => effectiveTtsLanguage : () => null)
     });
   }
 

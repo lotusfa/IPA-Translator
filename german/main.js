@@ -1,8 +1,9 @@
 /** German IPA Translator */
-import { initIPAIndexPage, processTextLongestMatch } from '../js/ipa-core.js';
+import { initIPAIndexPage, processTextLongestMatch } from '../js/ui.js';
 
 initIPAIndexPage({
   databasePath: '../json/de.json',
-  process: ({ input, lookupTable }) => processTextLongestMatch({ input, lookupTable, withWords: isElementChecked('wf_c_words') }),
-  speakButtonOptions: { language: 'de-DE' }
+  process: processTextLongestMatch,
+  ttsLanguage: 'de-DE',
+  withWordsCheckboxId: 'wf_c_words'
 });

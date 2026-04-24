@@ -1,8 +1,9 @@
 /** Jamaican IPA Translator */
-import { initIPAIndexPage, processTextLongestMatch } from '../js/ipa-core.js';
+import { initIPAIndexPage, processTextLongestMatch } from '../js/ui.js';
 
 initIPAIndexPage({
   databasePath: '../json/jam.json',
-  process: ({ input, lookupTable }) => processTextLongestMatch({ input, lookupTable, withWords: isElementChecked('wf_c_words') }),
-  speakButtonOptions: { language: 'en-US' }
+  process: processTextLongestMatch,
+  ttsLanguage: 'en-US',
+  withWordsCheckboxId: 'wf_c_words'
 });
