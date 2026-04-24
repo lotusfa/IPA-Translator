@@ -3,7 +3,15 @@
  */
 
 import { initIPAIndexPage, processTextCharBased } from '../js/ui.js';
-import { formatYueOutput } from '../js/yue.format.js';
+import {
+  formatIPA_org as formatCantoneseIPA_org,
+  formatIPA_num as formatCantoneseIPA_num,
+  formatYueJyutping,
+  formatYueGuangzhou,
+  formatYueAcademy,
+  formatYueYale,
+  formatYueLiu
+} from '../js/ipa-core.js';
 
 // Initialize with char-based processing and Cantonese formatters
 initIPAIndexPage({
@@ -11,13 +19,13 @@ initIPAIndexPage({
   process: processTextCharBased,
   formatRadioSelector: 'input[name="format"]',
   formatMapping: {
-    IPA_org: (text) => text,
-    IPA_num: (text) => text.replace(/˥/g, '5').replace(/˧/g, '3').replace(/˨/g, '2').replace(/˩/g, '1'),
-    Jyutping: (text) => text,
-    Guangzhou: (text) => text,
-    Academy: (text) => text,
-    Yale: (text) => text,
-    Liu: (text) => text
+    IPA_org: formatCantoneseIPA_org,
+    IPA_num: formatCantoneseIPA_num,
+    Jyutping: formatYueJyutping,
+    Guangzhou: formatYueGuangzhou,
+    Academy: formatYueAcademy,
+    Yale: formatYueYale,
+    Liu: formatYueLiu
   },
   maxWordLength: 6
 });

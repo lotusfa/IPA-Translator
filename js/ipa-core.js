@@ -7,10 +7,12 @@
  */
 
 // ============================================
-// Re-export format functions from yue.format.js
+// Re-export Cantonese format functions from yue.format.js
 // ============================================
 
 export {
+  formatIPA_org as formatCantoneseIPA_org,
+  formatIPA_num as formatCantoneseIPA_num,
   formatJyutpingCantonese,
   formatJyutping,
   formatJyutping_num,
@@ -27,10 +29,13 @@ export {
 // ============================================
 
 export {
-  formatIPA_num,
-  formatIPA_org,
+  formatIPA_num as formatMandarinIPA_num,
+  formatIPA_org as formatMandarinIPA_org,
   formatJyutpingMandarin,
-  formatMandarinOutput
+  formatMandarinOutput,
+  convertIPATextToPinyin,
+  convertIPATextToPinyinWithMarks,
+  convertIPATextToZhuyin
 } from './zh.format.js';
 
 // ============================================

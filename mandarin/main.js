@@ -3,7 +3,13 @@
  */
 
 import { initIPAIndexPage, processTextCharBased } from '../js/ui.js';
-import { formatMandarinOutput } from '../js/zh.format.js';
+import {
+  formatMandarinIPA_org,
+  formatMandarinIPA_num,
+  convertIPATextToPinyin,
+  convertIPATextToPinyinWithMarks,
+  convertIPATextToZhuyin
+} from '../js/ipa-core.js';
 
 // Initialize with char-based processing and Mandarin formatters
 initIPAIndexPage({
@@ -12,11 +18,11 @@ initIPAIndexPage({
   process: processTextCharBased,
   formatRadioSelector: 'input[name="format"]',
   formatMapping: {
-    IPA_org: (text) => text,
-    IPA_num: (text) => text.replace(/˥/g, '5').replace(/˧/g, '3').replace(/˨/g, '2').replace(/˩/g, '1'),
-    Pinyin_num: (text) => text,
-    Pinyin: (text) => text,
-    Zhuyin: (text) => text
+    IPA_org: formatMandarinIPA_org,
+    IPA_num: formatMandarinIPA_num,
+    Pinyin_num: convertIPATextToPinyin,
+    Pinyin: convertIPATextToPinyinWithMarks,
+    Zhuyin: convertIPATextToZhuyin
   },
   maxWordLength: 6
 });
