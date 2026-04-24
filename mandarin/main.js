@@ -25,5 +25,6 @@ initIPAIndexPage({
     Pinyin: convertIPATextToPinyinWithMarks,
     Zhuyin: convertIPATextToZhuyin
   },
-  maxWordLength: 6
+  maxWordLength: 6,
+  ttsLanguage: 'zh-CN'
 });

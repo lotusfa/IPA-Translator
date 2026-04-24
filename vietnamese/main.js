@@ -17,5 +17,6 @@ initIPAIndexPage({
     IPA_num: formatIPANumbers,
     tone_simple: formatVietnameseOutput
   },
-  maxWordLength: 6
+  maxWordLength: 6,
+  ttsLanguage: 'vi-VN'
 });

@@ -27,5 +27,6 @@ initIPAIndexPage({
     Yale: formatYueYale,
     Liu: formatYueLiu
   },
-  maxWordLength: 6
+  maxWordLength: 6,
+  ttsLanguage: 'zh-HK'
 });

@@ -8,5 +8,6 @@ import { initIPAIndexPage, processTextCharBased } from '../js/ui.js';
 initIPAIndexPage({
   databasePath: '../json/ja.json',
   process: processTextCharBased,
-  maxWordLength: 6
+  maxWordLength: 6,
+  ttsLanguage: 'ja-JP'
 });

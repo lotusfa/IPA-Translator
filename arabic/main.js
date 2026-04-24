@@ -8,5 +8,6 @@ import { initIPAIndexPage, processTextLongestMatch } from '../js/ui.js';
 initIPAIndexPage({
   databasePath: '../json/ar.json',
   process: processTextLongestMatch,
-  maxWordLength: 5
+  maxWordLength: 5,
+  ttsLanguage: 'ar'
 });

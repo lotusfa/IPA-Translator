@@ -110,6 +110,7 @@ export function initIPATable(options) {
         paging,
         pageLength,
         lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
+        deferRender: true,
         ordering: true,
         searching: true,
         info: true,
