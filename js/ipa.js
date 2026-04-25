@@ -66,7 +66,7 @@ export {
   initSpeakButton
 } from './tts.js';
 // ============================================
-// Re-export shared utilities from core.js
+// Re-export shared utilities from utils.js
 // ============================================
 
 export {
@@ -78,7 +78,7 @@ export {
   isElementChecked,
   onTextInputChange,
   onMultipleChange
-} from './core.js';
+} from './utils.js';
 
 
 // ============================================
