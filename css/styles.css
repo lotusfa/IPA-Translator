@@ -809,3 +809,7 @@ body.dark-mode .dataTables_filter input {
     min-height: 80px !important;
   }
 }
+
+div.table-responsive > div.dataTables_wrapper > div.row > .col-sm-12 {
+  margin: auto;
+}
