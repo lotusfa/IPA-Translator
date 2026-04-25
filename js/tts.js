@@ -125,19 +125,15 @@ export function initSpeakButton({ buttonId = 'speak-btn', inputId = 'cWords_tBox
   if (!btn || !input) return;
 
   const svg = btn.querySelector('svg');
-  const paths = svg.querySelectorAll('path');
-  const playPaths = Array.from(paths).map(p => p.getAttribute('d'));
+  const pathEl = svg.querySelector('path');
+  const playPath = pathEl.getAttribute('d');
   let isPlaying = false;
 
   const setIcon = (showPause) => {
     if (showPause) {
-      paths[0].setAttribute('d', 'M6 4h4v16H6z');
-      paths[1].setAttribute('d', 'M14 4h4v16h-4z');
-      if (paths[2]) paths[2].setAttribute('d', '');
+      pathEl.setAttribute('d', ICONS.PAUSE);
     } else {
-      paths.forEach((p, i) => {
-        if (playPaths[i]) p.setAttribute('d', playPaths[i]);
-      });
+      pathEl.setAttribute('d', playPath);
     }
   };
 
