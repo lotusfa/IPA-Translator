@@ -3,7 +3,7 @@
  */
 
 import { initIPAIndexPage } from '../js/ui.js';
-import { processTextLongestMatch } from '../js/ipa-core.js';
+import { processTextLongestMatch } from '../js/ipa.js';
 
 // Initialize with variant support (en_US/en_UK)
 initIPAIndexPage({

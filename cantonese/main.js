@@ -11,7 +11,7 @@ import {
   formatYueAcademy,
   formatYueYale,
   formatYueLiu
-} from '../js/ipa-core.js';
+} from '../js/ipa.js';
 
 // Initialize with char-based processing and Cantonese formatters
 initIPAIndexPage({

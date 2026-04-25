@@ -26,7 +26,7 @@
  */
 
 import { loadIPADatabase, normalizeIPAData, isElementChecked, setElementValue, setElementValueAnimated } from './core.js';
-export { processTextCharBased, processTextLongestMatch } from './ipa-core.js';
+export { processTextCharBased, processTextLongestMatch } from './ipa.js';
 import { createSpeakButton, preloadVoiceSupport, hasVoiceSupport, initSpeakButton } from './tts.js';
 
 // ============================================================

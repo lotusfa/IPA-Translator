@@ -9,7 +9,7 @@ import {
   convertIPATextToPinyin,
   convertIPATextToPinyinWithMarks,
   convertIPATextToZhuyin
-} from '../js/ipa-core.js';
+} from '../js/ipa.js';
 
 // Initialize with char-based processing and Mandarin formatters
 initIPAIndexPage({
