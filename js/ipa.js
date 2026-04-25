@@ -248,6 +248,5 @@ export {
   initDarkMode,
   generateLanguageButtons,
   initLanguageButtons,
-  setResponsiveTextareaRows,
   initResponsiveTextareaRows
 } from './ui.js';

@@ -20,8 +20,7 @@
  *   - initDarkMode()     : Dark mode toggle only
  *   - generateLanguageButtons() : Language navigation buttons
  *   - initLanguageButtons()     : Helper wrapper for generateLanguageButtons
- *   - setResponsiveTextareaRows() : Mobile-responsive textarea sizing
- *   - initResponsiveTextareaRows() : Initialize with resize listener
+ *   - initResponsiveTextareaRows() : Set rows + re-check on resize
  *
  */
 
@@ -562,27 +561,7 @@ export function initLanguageButtons(options) {
 // ============================================
 
 /**
- * Set textarea rows based on screen width (mobile responsive)
- * Call this on page load to adjust rows for mobile devices
- */
-export function setResponsiveTextareaRows(options = {}) {
-  const isMobile = window.innerWidth <= 768;
-  const mobileRows = options.mobileRows || 5;
-  const desktopRows = options.desktopRows || 10;
-  const targets = options.targets || null;
-
-  const textareas = targets
-    ? targets.map(id => document.getElementById(id)).filter(el => el)
-    : document.querySelectorAll('textarea[id$="_tBox"]');
-
-  textareas.forEach(textarea => {
-    textarea.rows = isMobile ? mobileRows : desktopRows;
-  });
-}
-
-/**
- * Initialize responsive textarea rows on DOM ready
- * Automatically calls setResponsiveTextareaRows and re-checks on resize
+ * Set textarea rows based on screen width and re-check on resize
  */
 export function initResponsiveTextareaRows(options = {}) {
   const isMobile = window.innerWidth <= 768;
