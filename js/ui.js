@@ -273,12 +273,9 @@ export function initIPAIndexPage(options) {
     getLanguage = null,
     variantMapping = null,
     withWordsCheckboxId = null,
-    ttsLanguage = null,
-    speakButtonOptions = null
+    ttsLanguage = null
   } = options;
 
-  // Support deprecated speakButtonOptions.language -> ttsLanguage
-  const effectiveTtsLanguage = ttsLanguage || (speakButtonOptions && speakButtonOptions.language) || null;
 
   // Validate required options
   if (!databasePath) throw new Error('initIPAIndexPage: "databasePath" is required');
@@ -288,6 +285,7 @@ export function initIPAIndexPage(options) {
   let IPA_DB = {};
   let currentFormat = null;
   let debounceTimer = null;
+  let dbGeneration = 0 // bump on database reload to detect stale translates
 
   // Get variant from radio buttons
   const getVariant = () => {
@@ -329,10 +327,15 @@ export function initIPAIndexPage(options) {
     if (!inputEl || !outputEl) return;
 
     const input = inputEl.value;
+    if (input.length > 10000) {
+      setElementValue(outputId, 'Input too long (max 10,000 characters)');
+      return;
+    }
     setElementValue(outputId, 'loading....');
+    const gen = dbGeneration; // capture to detect stale results
 
     setTimeout(() => {
-      // Support withWordsCheckboxId as shorthand for withWordsId
+      if (gen !== dbGeneration) return; // stale, skip
       const effectiveWithWordsId = withWordsCheckboxId || withWordsId;
       const withWords = effectiveWithWordsId ? isElementChecked(effectiveWithWordsId) : false;
       const allowWordSearch = allowWordSearchId ? isElementChecked(allowWordSearchId) : false;
@@ -355,6 +358,7 @@ export function initIPAIndexPage(options) {
 
   // Load database
   const loadDatabase = () => {
+    dbGeneration++; // bump so in-flight translates become stale
     setElementValue(outputId, 'loading....');
     loadIPADatabase({
       basePath: getDatabasePath(),
@@ -431,7 +435,7 @@ export function initIPAIndexPage(options) {
     initSpeakButton({
       buttonId: speakButtonId,
       inputId: inputId,
-      getLanguage: getLanguage || (effectiveTtsLanguage ? () => effectiveTtsLanguage : () => null)
+      getLanguage: getLanguage || (ttsLanguage ? () => ttsLanguage : () => null)
     });
   }
 
@@ -500,68 +504,43 @@ export function initDarkMode(toggleId) {
  *   @param {string} options.containerId - ID of container element (default: "lang-buttons-container")
  *   @param {string} options.configPath - Path to languages.json config file (default: "../config/languages.json")
  *   @param {string} options.wrapperTag - HTML tag to wrap each item (default: "li")
- *   @param {function} [options.onSuccess] - Callback after successful generation
- *   @param {function} [options.onError] - Callback on error
  */
-export function generateLanguageButtons(options) {
+export async function generateLanguageButtons(options) {
   const {
     containerId = "lang-buttons-container",
     configPath = "../config/languages.json",
-    wrapperTag = "li",
-    onSuccess = null,
-    onError = null
+    wrapperTag = "li"
   } = options;
 
-  const xmlhttp = new XMLHttpRequest();
-
-  xmlhttp.onreadystatechange = function () {
-    if (this.readyState === 4 && this.status === 200) {
-      try {
-        const langConfig = JSON.parse(this.responseText);
-        const container = document.getElementById(containerId);
-
-        if (!container) {
-          const errorMsg = `Container with ID "${containerId}" not found`;
-          console.error(errorMsg);
-          if (onError) onError(errorMsg);
-          return;
-        }
-
-        const languages = langConfig.languages || [];
-        let html = "";
-
-        languages.forEach(lang => {
-          const name = lang.name || lang.nativeName || lang.code;
-          const href = lang.indexPath || "#";
-          const isCurrent = lang.isActive === true;
-          const style = isCurrent ? 'style="font-weight: bold; color: var(--accent-color);"' : "";
-
-          html += `<${wrapperTag} ${style}><a href="${href}">${name}</a></${wrapperTag}>`;
-        });
-
-        container.innerHTML = html;
-
-        if (onSuccess) onSuccess(languages);
-      } catch (e) {
-        const errorMsg = "Failed to parse language config: " + e.message;
-        console.error(errorMsg);
-        if (onError) onError(errorMsg);
-      }
-    } else if (this.readyState === 4) {
-      const errorMsg = "Failed to load language config: " + this.status;
-      console.error(errorMsg);
-      if (onError) onError(errorMsg);
+  try {
+    const response = await fetch(configPath);
+    if (!response.ok) {
+      throw new Error(`Failed to load language config: ${response.status}`);
     }
-  };
 
-  xmlhttp.onerror = function () {
-    const errorMsg = "Network error loading language config";
-    console.error(errorMsg);
-    if (onError) onError(errorMsg);
-  };
+    const langConfig = await response.json();
+    const container = document.getElementById(containerId);
 
-  xmlhttp.open("GET", configPath, true);
-  xmlhttp.send();
+    if (!container) {
+      throw new Error(`Container with ID "${containerId}" not found`);
+    }
+
+    const languages = langConfig.languages || [];
+    let html = "";
+
+    languages.forEach(lang => {
+      const name = lang.name || lang.nativeName || lang.code;
+      const href = lang.indexPath || "#";
+      const isCurrent = lang.isActive === true;
+      const style = isCurrent ? 'style="font-weight: bold; color: var(--accent-color);"' : "";
+
+      html += `<${wrapperTag} ${style}><a href="${href}">${name}</a></${wrapperTag}>`;
+    });
+
+    container.innerHTML = html;
+  } catch (e) {
+    console.error(e.message);
+  }
 }
 
 /**
