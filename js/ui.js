@@ -44,7 +44,6 @@ import { createSpeakButton, preloadVoiceSupport, hasVoiceSupport, initSpeakButto
  *   @param {boolean} options.enableSpeakButtons - Enable TTS buttons in table (default: true)
  *   @param {boolean} options.paging - Enable pagination (default: true)
  *   @param {number} options.pageLength - Default page size (default: 10)
- *   @param {Object} options.columnTitles - Custom column titles: { word, ipa } (optional)
  *
  * @returns {Promise} Resolves when table is initialized
  */
@@ -56,35 +55,7 @@ export function initIPATable(options) {
     enableSpeakButtons = true,
     paging = true,
     pageLength = 10,
-    columnTitles = null
   } = options;
-
-  // Derive column titles from languageCode if not provided
-  const getLanguageColumnTitles = (langCode) => {
-    if (!langCode) return { word: 'Word', ipa: 'IPA' };
-
-    const [lang, region] = langCode.toLowerCase().replace('-', '_').split('_');
-
-    // English variants
-    if (lang === 'en') {
-      return { word: 'English Word', ipa: 'IPA' };
-    }
-
-    // Cantonese (zh-HK)
-    if (lang === 'zh' && region === 'hk') {
-      return { word: '中文字 (Chinese)', ipa: '標音 (IPA)' };
-    }
-
-    // Mandarin variants (zh-CN, zh-TW)
-    if (lang === 'zh') {
-      return { word: '中文 (Chinese)', ipa: '標音 (IPA)' };
-    }
-
-    // Default fallback for other languages
-    return { word: `${lang.charAt(0).toUpperCase() + lang.slice(1)} Word`, ipa: 'IPA' };
-  };
-
-  const titles = columnTitles || getLanguageColumnTitles(languageCode);
 
   return new Promise((resolve, reject) => {
     $.get(jsonPath, function(data) {
@@ -101,11 +72,6 @@ export function initIPATable(options) {
       const $table = $(`#${tableId}`);
       $table.DataTable({
         data: tableData,
-        columns: [
-          { title: '#' },
-          { title: titles.word },
-          { title: titles.ipa }
-        ],
         paging,
         pageLength,
         lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
