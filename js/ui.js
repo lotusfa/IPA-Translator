@@ -471,7 +471,8 @@ export function initIPAIndexPage(options) {
             pairs: rawIpa,
             formattedPairs: formattedIpa,
             language: gameLabel || '',
-            format: currentFormat || ''
+            format: currentFormat || '',
+            ttsLanguage: ttsLanguage || ''
           }));
 
           window.location.href = '../game/index.html';

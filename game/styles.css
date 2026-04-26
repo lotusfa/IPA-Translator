@@ -112,6 +112,35 @@ body.dark-mode .game-progress-bar {
   background: var(--color-primary-dark, #888);
 }
 
+/* Word row — word + speak button side by side */
+.game-word-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.game-speak-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: var(--color-text, #333);
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.game-speak-btn:hover {
+  opacity: 1;
+}
+
+body.dark-mode .game-speak-btn {
+  color: var(--color-text, #ddd);
+}
+
 /* Summary block on start screen */
 .game-summary {
   margin: 10px 0;

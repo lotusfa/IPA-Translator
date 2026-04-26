@@ -142,6 +142,7 @@ function quizScreen() {
     showScreen(gameType.renderIpaToWord(pair, allPairs, progress));
   } else {
     showScreen(gameType.renderWordToIpa(pair, allPairs, progress));
+    wordToIpa.attachSpeakButton(pair, gameData.ttsLanguage);
   }
 
   const isWordToIpa = gameType.id === 'word-to-ipa';
