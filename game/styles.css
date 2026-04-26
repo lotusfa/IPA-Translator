@@ -138,11 +138,16 @@ body.dark-mode .game-progress-bar {
   color: #fff;
 }
 
-/* Start button — slightly larger */
+/* Start button — prominent CTA */
 .game-start-btn {
   margin: 12px 0;
   padding: 12px 40px;
   font-size: 1.4rem;
+}
+
+/* Back link — match Start button vertical padding */
+.game-link-btn {
+  padding: 12px 20px;
 }
 
 body.dark-mode .game-length-btn.correct {
