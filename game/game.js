@@ -1,7 +1,7 @@
 /**
  * IPA Game - Vanilla JS SPA
  * Reads game data from localStorage set by the main app.
- * Screens: start -> game1,2,3,4 -> congrats
+ * Screens: start (summary + length picker) -> quiz (mixed game types) -> congrats
  */
 
 // ============================================
@@ -16,10 +16,20 @@
 // ============================================
 // localStorage Contract
 // ============================================
-// The main app writes: { text, ipa, pairs, language, format }
-// - pairs: [[word, ipa], [word, ipa], ...]
-// - language: folder name (e.g. "cantonese")
-// - format: selected format id (e.g. "Jyutping")
+// The main app writes: { text, pairs, formattedPairs, language, format }
+// - pairs: [[word, rawIPA], ...]
+// - formattedPairs: [[word, formattedOutput], ...] (or same as pairs if no format)
+
+import { shuffle } from './game-types/utils.js';
+import * as wordToIpa from './game-types/wordToIpa.js';
+import * as ipaToWord from './game-types/ipaToWord.js';
+
+// Registered game types — add new types here
+const gameTypes = [wordToIpa, ipaToWord];
+
+function randomGameType() {
+  return gameTypes[Math.floor(Math.random() * gameTypes.length)];
+}
 
 const STORAGE_KEY = 'ipa_game_data';
 
@@ -31,10 +41,6 @@ function loadGameData() {
   } catch {
     return null;
   }
-}
-
-function clearGameData() {
-  localStorage.removeItem(STORAGE_KEY);
 }
 
 // ============================================
@@ -51,14 +57,13 @@ function showScreen(html) {
 // Game State
 // ============================================
 
-let gameData = null;   // { text, ipa, pairs, language, format }
-let currentPairs = []; // shuffled subset for current round
-let index = 0;         // current question index
+let gameData = null;     // { text, pairs, formattedPairs, language, format }
+let questionQueue = [];  // [{ pair, type }] shuffled queue for the session
+let index = 0;           // current question index
 let score = 0;
-let gameType = null;   // 'ipa-to-word' | 'word-to-ipa'
 
 // ============================================
-// Screens
+// Start Screen — summary + length picker
 // ============================================
 
 function startScreen() {
@@ -74,118 +79,107 @@ function startScreen() {
     return;
   }
 
+  const totalPairs = gameData.pairs.length;
   const formatLabel = gameData.format || 'IPA';
-  showScreen(`
-    <div class="game-screen active">
-      <h1>IPA Game</h1>
-      <p>${gameData.pairs.length} words | ${formatLabel}</p>
-      <div class="game-btn-grid">
-        <button data-type="word-to-ipa" class="game-btn game-type-btn">Word -> IPA</button>
-        <button data-type="ipa-to-word" class="game-btn game-type-btn">IPA -> Word</button>
-      </div>
-      <a href="../${gameData.language}/index.html" class="game-btn" style="display:inline-block; text-decoration:none; margin-top:20px;">Back to Translator</a>
-    </div>
-  `);
+  const langLabel = gameData.language || '';
 
-  app.querySelectorAll('.game-type-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      gameType = btn.dataset.type;
-      launchGame();
+  // Suggested lengths — cap at total pairs
+  let lengths = [...new Set([5, 10, 20, totalPairs].filter(n => n <= totalPairs))];
+  if (!lengths.includes(totalPairs)) lengths.push(totalPairs);
+  lengths.sort((a, b) => a - b);
+
+  let selectedLength = Math.min(10, totalPairs);
+
+  function render() {
+    showScreen(`
+      <div class="game-screen active">
+        <h1>IPA Game</h1>
+        <div class="game-summary">
+          <p><strong>${totalPairs}</strong> words &middot; ${formatLabel}${langLabel ? ' &middot; ' + langLabel : ''}</p>
+        </div>
+        <p>How many questions?</p>
+        <div class="game-length-picker">
+          ${lengths.map(n =>
+            `<button data-length="${n}" class="game-btn game-length-btn ${n === selectedLength ? 'correct' : ''}">${n === totalPairs ? `All ${n}` : n}</button>`
+          ).join('')}
+        </div>
+        <button id="start-game-btn" class="game-btn game-start-btn">Start</button>
+        <a href="../${gameData.language}/index.html" class="game-btn game-link-btn" style="display:inline-block; text-decoration:none;">Back to Translator</a>
+      </div>
+    `);
+
+    app.querySelectorAll('.game-length-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        selectedLength = parseInt(btn.dataset.length, 10);
+        render();
+      });
     });
-  });
+
+    app.querySelector('#start-game-btn').addEventListener('click', () => {
+      launchGame(selectedLength);
+    });
+  }
+
+  render();
 }
 
-function gameScreen() {
-  if (index >= currentPairs.length) {
+// ============================================
+// Quiz Screen — random game type per question
+// ============================================
+
+function quizScreen() {
+  if (index >= questionQueue.length) {
     congratsScreen();
     return;
   }
 
-  const [word, ipa] = currentPairs[index];
-  const progress = ((index) / currentPairs.length * 100).toFixed(0);
+  const { pair, type: gameType } = questionQueue[index];
+  const progress = (index / questionQueue.length * 100).toFixed(0);
+  const allPairs = questionQueue.map(q => q.pair);
 
-  if (gameType === 'word-to-ipa') {
-    // Show word, user picks IPA from options
-    const options = generateOptions(currentPairs, ipa);
-    showScreen(`
-      <div class="game-screen active">
-        <button class="game-btn game-back-btn" style="position:static;">Back</button>
-        <div class="game-progress"><div class="game-progress-bar" style="width:${progress}%"></div></div>
-        <h2>${word}</h2>
-        <p>Select the correct IPA:</p>
-        <div class="game-btn-grid">
-          ${options.map((opt, i) => `<button data-index="${i}" data-ipa="${opt}" class="game-btn game-option-btn">${opt}</button>`).join('')}
-        </div>
-      </div>
-    `);
-
-    app.querySelectorAll('.game-option-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const chosen = btn.dataset.ipa;
-        if (chosen === ipa) {
-          score++;
-          btn.classList.add('correct');
-        } else {
-          btn.classList.add('wrong');
-          // Highlight correct answer
-          app.querySelectorAll('.game-option-btn').forEach(b => {
-            if (b.dataset.ipa === ipa) b.classList.add('correct');
-          });
-        }
-        // Disable all buttons, advance after delay
-        app.querySelectorAll('.game-option-btn').forEach(b => b.disabled = true);
-        setTimeout(() => { index++; gameScreen(); }, 800);
-      });
-    });
-
-    app.querySelector('.game-back-btn').addEventListener('click', () => {
-      if (confirm('Quit this game?')) window.history.back();
-    });
-
-  } else if (gameType === 'ipa-to-word') {
-    // Show IPA, user picks word from options
-    const options = generateOptions(currentPairs, word, true);
-    showScreen(`
-      <div class="game-screen active">
-        <button class="game-btn game-back-btn" style="position:static;">Back</button>
-        <div class="game-progress"><div class="game-progress-bar" style="width:${progress}%"></div></div>
-        <h2>${ipa}</h2>
-        <p>Select the correct word:</p>
-        <div class="game-btn-grid">
-          ${options.map((opt, i) => `<button data-index="${i}" data-word="${opt}" class="game-btn game-option-btn">${opt}</button>`).join('')}
-        </div>
-      </div>
-    `);
-
-    app.querySelectorAll('.game-option-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const chosen = btn.dataset.word;
-        if (chosen === word) {
-          score++;
-          btn.classList.add('correct');
-        } else {
-          btn.classList.add('wrong');
-          app.querySelectorAll('.game-option-btn').forEach(b => {
-            if (b.dataset.word === word) b.classList.add('correct');
-          });
-        }
-        app.querySelectorAll('.game-option-btn').forEach(b => b.disabled = true);
-        setTimeout(() => { index++; gameScreen(); }, 800);
-      });
-    });
-
-    app.querySelector('.game-back-btn').addEventListener('click', () => {
-      if (confirm('Quit this game?')) window.history.back();
-    });
+  // Delegate rendering to the game type module
+  if (gameType.id === 'ipa-to-word') {
+    showScreen(gameType.renderIpaToWord(pair, allPairs, progress));
+  } else {
+    showScreen(gameType.renderWordToIpa(pair, allPairs, progress));
   }
+
+  const isWordToIpa = gameType.id === 'word-to-ipa';
+  const correctAnswer = isWordToIpa ? pair[1] : pair[0];
+
+  app.querySelectorAll('.game-option-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const chosen = isWordToIpa ? btn.dataset.ipa : btn.dataset.word;
+      if (chosen === correctAnswer) {
+        score++;
+        btn.classList.add('correct');
+      } else {
+        btn.classList.add('wrong');
+        app.querySelectorAll('.game-option-btn').forEach(b => {
+          const ca = isWordToIpa ? b.dataset.ipa : b.dataset.word;
+          if (ca === correctAnswer) b.classList.add('correct');
+        });
+      }
+      app.querySelectorAll('.game-option-btn').forEach(b => (b.disabled = true));
+      setTimeout(() => { index++; quizScreen(); }, 800);
+    });
+  });
+
+  app.querySelector('.game-back-btn').addEventListener('click', () => {
+    if (confirm('Quit this game?')) window.history.back();
+  });
 }
+
+// ============================================
+// Congrats Screen
+// ============================================
 
 function congratsScreen() {
   showScreen(`
     <div class="game-screen active">
       <h1>Congrats!</h1>
-      <p>Score: ${score} / ${currentPairs.length}</p>
-      <p>${(score / currentPairs.length * 100).toFixed(0)}%</p>
+      <p>Score: ${score} / ${questionQueue.length}</p>
+      <p>${(score / questionQueue.length * 100).toFixed(0)}%</p>
       <div class="game-btn-grid">
         <button class="game-btn game-restart-btn">Play Again</button>
         <a href="../${gameData.language}/index.html" class="game-btn" style="text-decoration:none;">Back to Translator</a>
@@ -194,37 +188,26 @@ function congratsScreen() {
   `);
 
   app.querySelector('.game-restart-btn').addEventListener('click', () => {
-    launchGame();
+    launchGame(questionQueue.length);
   });
 }
 
 // ============================================
-// Game Logic
+// Game Launch — build shuffled queue with random types
 // ============================================
 
-function shuffle(arr) {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
-
-function generateOptions(allPairs, correct, isWord = false) {
-  // Generate 4 options: correct + 3 random distractors
-  const pool = allPairs.filter(p => (isWord ? p[0] : p[1]) !== correct);
-  const distractors = shuffle(pool).slice(0, 3).map(p => isWord ? p[0] : p[1]);
-  return shuffle([correct, ...distractors]);
-}
-
-function launchGame() {
-  // Use formatted pairs if a format was selected, otherwise raw IPA
+function launchGame(length) {
   const pairs = (gameData.format && gameData.formattedPairs) ? gameData.formattedPairs : gameData.pairs;
-  currentPairs = shuffle(pairs);
+  const shuffled = shuffle(pairs).slice(0, length);
+
+  questionQueue = shuffle(shuffled.map(pair => ({
+    pair,
+    type: randomGameType(),
+  })));
+
   index = 0;
   score = 0;
-  gameScreen();
+  quizScreen();
 }
 
 // ============================================

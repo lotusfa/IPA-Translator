@@ -111,3 +111,42 @@ body.dark-mode .game-progress {
 body.dark-mode .game-progress-bar {
   background: var(--color-primary-dark, #888);
 }
+
+/* Summary block on start screen */
+.game-summary {
+  margin: 10px 0;
+  font-size: 1.1rem;
+}
+
+/* Length picker — horizontal row of number buttons */
+.game-length-picker {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 16px 0;
+}
+
+.game-length-btn {
+  min-width: 60px;
+}
+
+/* Selected length — reuses .correct green */
+.game-length-btn.correct {
+  border-color: #4caf50;
+  background: #4caf50;
+  color: #fff;
+}
+
+/* Start button — slightly larger */
+.game-start-btn {
+  margin: 12px 0;
+  padding: 12px 40px;
+  font-size: 1.4rem;
+}
+
+body.dark-mode .game-length-btn.correct {
+  border-color: #4caf50;
+  background: #4caf50;
+  color: #fff;
+}
