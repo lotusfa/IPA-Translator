@@ -1,7 +1,7 @@
 // Game type: show word, user picks IPA from 4 options
 
 import { generateOptions } from './utils.js';
-import { speak, selectBestVoice } from '../js/tts.js';
+import { speak, selectBestVoice, ICONS } from '../../js/tts.js';
 
 export const id = 'word-to-ipa';
 
@@ -36,18 +36,47 @@ export function renderWordToIpa(pair, allPairs, progress) {
   `;
 }
 
+// Detect TTS language from word text (fallback when lang is unknown)
+function detectLang(word) {
+  if (/\p{Script=Han}/u.test(word)) return 'zh-CN';
+  if (/\p{Script=Hiragana}/u.test(word) || /\p{Script=Katakana}/u.test(word)) return 'ja-JP';
+  if (/\p{Script=Hangul}/u.test(word)) return 'ko-KR';
+  return 'en-US';
+}
+
 // Call after render to wire up the speak button
 export function attachSpeakButton(pair, lang) {
   const btn = document.querySelector('.game-speak-btn');
   if (!btn) return;
 
+  const pathEl = btn.querySelector('svg path');
+  let isSpeaking = false;
+
   btn.addEventListener('click', async (e) => {
     e.stopPropagation();
-    const voiceOk = await checkVoice(lang);
-    if (voiceOk) {
-      speak(pair[0], lang);
-    } else {
-      btn.style.display = 'none';
+
+    if (isSpeaking) {
+      window.speechSynthesis.cancel();
+      isSpeaking = false;
+      pathEl.setAttribute('d', ICONS.PLAY);
+      return;
     }
+
+    const effectiveLang = lang || detectLang(pair[0]);
+    const voiceOk = await checkVoice(effectiveLang);
+    if (!voiceOk) {
+      btn.style.display = 'none';
+      return;
+    }
+
+    isSpeaking = true;
+    pathEl.setAttribute('d', ICONS.PAUSE);
+
+    speak(pair[0], effectiveLang, {
+      onEnd: () => {
+        isSpeaking = false;
+        pathEl.setAttribute('d', ICONS.PLAY);
+      }
+    });
   });
 }

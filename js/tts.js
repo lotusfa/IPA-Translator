@@ -3,7 +3,7 @@
  */
 
 // Icons: PLAY = speaker, PAUSE = 2 rectangles
-const ICONS = {
+export const ICONS = {
   PLAY: 'M11 5L6 9H2v6h4l5 4V5z M15.54 8.46a5 5 0 0 1 0 7.07 M19.07 4.93a10 10 0 0 1 0 14.14',
   PAUSE: 'M6 4h4v16H6z M14 4h4v16h-4z'
 };
@@ -57,7 +57,7 @@ const norm = (lang) => lang.toLowerCase().replace('_', '-');
 /**
  * Check if voice is available for a language
  */
-async function selectBestVoice(lang) {
+export async function selectBestVoice(lang) {
   const synth = window.speechSynthesis;
   let voices = synth.getVoices();
 
