@@ -20,7 +20,7 @@
 // - pairs: [[word, rawIPA], ...]
 // - formattedPairs: [[word, formattedOutput], ...] (or same as pairs if no format)
 
-import { shuffle } from './game-types/utils.js';
+import { shuffle, compressAndEncode, parseShareFromUrl, clearShareParams } from './game-types/utils.js';
 import * as wordToIpa from './game-types/wordToIpa.js';
 import * as ipaToWord from './game-types/ipaToWord.js';
 
@@ -40,6 +40,45 @@ function loadGameData() {
     return JSON.parse(raw);
   } catch {
     return null;
+  }
+}
+
+// ============================================
+// Share — encode game data into URL / decode from URL
+// ============================================
+
+async function createShareUrl() {
+  const data = loadGameData();
+  if (!data) return null;
+  const { text: _, ...shareData } = data; // skip original text — not needed for game
+  const b64 = await compressAndEncode(shareData);
+  const url = new URL(window.location.href);
+  url.searchParams.set('d', b64);
+  return url.toString();
+}
+
+async function copyShareUrl() {
+  const url = await createShareUrl();
+  if (!url) return;
+  try {
+    await navigator.clipboard.writeText(url);
+  } catch {
+    // Fallback for non-HTTPS or older browsers
+    const ta = document.createElement('textarea');
+    ta.value = url;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+  }
+}
+
+// Import data from URL if present (runs before startScreen)
+async function importFromUrl() {
+  const raw = await parseShareFromUrl();
+  if (raw) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(raw));
+    clearShareParams();
   }
 }
 
@@ -104,7 +143,10 @@ function startScreen() {
           ).join('')}
         </div>
         <button id="start-game-btn" class="game-btn game-start-btn">Start</button>
-        <a href="../${gameData.language}/index.html" class="game-btn game-link-btn" style="display:inline-block; text-decoration:none;">Back to Translator</a>
+        <div style="display:flex; gap:10px; justify-content:center;">
+          <button id="share-btn" class="game-btn">Share</button>
+          <a href="../${gameData.language}/index.html" class="game-btn game-link-btn" style="display:inline-block; text-decoration:none;">Back to Translator</a>
+        </div>
       </div>
     `);
 
@@ -117,6 +159,10 @@ function startScreen() {
 
     app.querySelector('#start-game-btn').addEventListener('click', () => {
       launchGame(selectedLength);
+    });
+
+    app.querySelector('#share-btn').addEventListener('click', async () => {
+      await copyShareUrl();
     });
   }
 
@@ -183,6 +229,7 @@ function congratsScreen() {
       <p>${(score / questionQueue.length * 100).toFixed(0)}%</p>
       <div class="game-btn-grid">
         <button class="game-btn game-restart-btn">Play Again</button>
+        <button id="share-btn" class="game-btn">Share</button>
         <a href="../${gameData.language}/index.html" class="game-btn" style="text-decoration:none;">Back to Translator</a>
       </div>
     </div>
@@ -190,6 +237,10 @@ function congratsScreen() {
 
   app.querySelector('.game-restart-btn').addEventListener('click', () => {
     launchGame(questionQueue.length);
+  });
+
+  app.querySelector('#share-btn').addEventListener('click', async () => {
+    await copyShareUrl();
   });
 }
 
@@ -215,4 +266,7 @@ function launchGame(length) {
 // Init
 // ============================================
 
-startScreen();
+(async () => {
+  await importFromUrl();
+  startScreen();
+})();
