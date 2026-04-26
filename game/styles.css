@@ -1,0 +1,82 @@
+/* Game-specific styles — extends css/styles.css */
+
+#game-app {
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+/* Screen pages */
+.game-screen {
+  display: none;
+  width: 100%;
+  max-width: 600px;
+  text-align: center;
+}
+
+.game-screen.active {
+  display: block;
+}
+
+/* Game button grid */
+.game-btn-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.game-btn {
+  padding: 15px 10px;
+  font-size: 1.2rem;
+  border: 2px solid var(--border-color, #ccc);
+  border-radius: 8px;
+  background: var(--bg-color, #fff);
+  color: var(--text-color, #333);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.game-btn:hover {
+  border-color: var(--accent-color, #4a90d9);
+  background: var(--accent-color, #4a90d9);
+  color: #fff;
+}
+
+.game-btn.correct {
+  border-color: #4caf50;
+  background: #4caf50;
+  color: #fff;
+}
+
+.game-btn.wrong {
+  border-color: #f44336;
+  background: #f44336;
+  color: #fff;
+}
+
+/* Progress bar */
+.game-progress {
+  width: 100%;
+  height: 6px;
+  background: var(--border-color, #eee);
+  border-radius: 3px;
+  margin: 10px 0;
+  overflow: hidden;
+}
+
+.game-progress-bar {
+  height: 100%;
+  background: var(--accent-color, #4a90d9);
+  transition: width 0.3s;
+}
+
+/* Back button */
+.game-back-btn {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}

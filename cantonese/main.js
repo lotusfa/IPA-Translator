@@ -28,5 +28,6 @@ initIPAIndexPage({
     Liu: formatYueLiu
   },
   maxWordLength: 6,
-  ttsLanguage: 'zh-HK'
+  ttsLanguage: 'zh-HK',
+  gameLabel: 'cantonese'
 });

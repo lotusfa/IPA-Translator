@@ -238,7 +238,9 @@ export function initIPAIndexPage(options) {
     getLanguage = null,
     variantMapping = null,
     withWordsCheckboxId = null,
-    ttsLanguage = null
+    ttsLanguage = null,
+    gameLabel = null,
+    enableGameButton = true,
   } = options;
 
 
@@ -318,6 +320,12 @@ export function initIPAIndexPage(options) {
       if (formatter) result = formatter(result);
 
       setElementValueAnimated(outputId, result);
+
+      // Show game button after successful translation
+      if (enableGameButton) {
+        const gameBtn = document.getElementById('game-btn');
+        if (gameBtn) gameBtn.style.display = 'inline-flex';
+      }
     }, 10);
   };
 
@@ -402,6 +410,68 @@ export function initIPAIndexPage(options) {
       inputId: inputId,
       getLanguage: getLanguage || (ttsLanguage ? () => ttsLanguage : () => null)
     });
+  }
+
+  // Initialize game button if enabled
+  if (enableGameButton) {
+    const outputEl = document.getElementById(outputId);
+    if (outputEl) {
+      const outputLabel = outputEl.closest('.form-group')?.querySelector('label');
+      if (outputLabel) {
+        const gameBtn = document.createElement('button');
+        gameBtn.id = 'game-btn';
+        gameBtn.className = 'btn-icon';
+        gameBtn.setAttribute('aria-label', 'Start IPA Game');
+        gameBtn.style.display = 'none';
+        gameBtn.innerHTML = `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M6 12h4M10 12v4M14 12h4M18 12v-4a2 2 0 0 0-4 0M14 8a2 2 0 0 0-4 0"/>
+        </svg>`;
+        outputLabel.appendChild(gameBtn);
+
+        gameBtn.addEventListener('click', () => {
+          const input = document.getElementById(inputId)?.value || '';
+          if (!input.trim()) return;
+
+          const effectiveWithWordsId = withWordsCheckboxId || withWordsId;
+          const withWords = effectiveWithWordsId ? isElementChecked(effectiveWithWordsId) : false;
+          const allowWordSearch = allowWordSearchId ? isElementChecked(allowWordSearchId) : false;
+
+          const pairs = process({
+            input,
+            lookupTable: IPA_DB,
+            withWords,
+            allowWordSearch,
+            maxWordLength,
+            maxPhraseLength,
+            pairsOnly: true
+          });
+
+          if (pairs.length < 2) {
+            alert('Need at least 2 matched words to start a game.');
+            return;
+          }
+
+          const rawIpa = pairs.map(([w, ipa]) => [w, ipa]);
+
+          // Also get formatted pairs if formatter exists
+          const formatter = getFormatter();
+          let formattedIpa = rawIpa;
+          if (formatter) {
+            formattedIpa = pairs.map(([w, ipa]) => [w, formatter(ipa)]);
+          }
+
+          localStorage.setItem('ipa_game_data', JSON.stringify({
+            text: input,
+            pairs: rawIpa,
+            formattedPairs: formattedIpa,
+            language: gameLabel || '',
+            format: currentFormat || ''
+          }));
+
+          window.location.href = '../game/index.html';
+        });
+      }
+    }
   }
 
   // Setup event listeners and load database

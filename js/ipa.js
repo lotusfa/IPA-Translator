@@ -107,7 +107,8 @@ export function preprocessText(text) {
  *   @param {boolean} [options.withWords] - Show word:ipa format (default: false)
  *   @param {boolean} [options.allowWordSearch] - Enable multi-char matching (default: false)
  *   @param {number} [options.maxWordLength] - Max word length for matching (default: 6)
- * @returns {string} Processed result
+ *   @param {boolean} [options.pairsOnly] - Return [[word, ipa], ...] array instead of string (default: false)
+ * @returns {string|string[][]} Processed result or pairs array
  */
 export function processTextCharBased(options) {
   const {
@@ -115,10 +116,12 @@ export function processTextCharBased(options) {
     lookupTable,
     withWords = false,
     allowWordSearch = false,
-    maxWordLength = 6
+    maxWordLength = 6,
+    pairsOnly = false
   } = options;
 
   let result = "";
+  let pairs = [];
   let i = 0;
 
   while (i < input.length) {
@@ -154,6 +157,7 @@ export function processTextCharBased(options) {
     // Add result
     if (matchedWord) {
       result += withWords ? `( ${matchedWord} ${matchedIPA} ) ` : `${matchedIPA} `;
+      if (pairsOnly) pairs.push([matchedWord, matchedIPA]);
       i += wordLength;
     } else {
       result += input[i] + " ";
@@ -161,6 +165,7 @@ export function processTextCharBased(options) {
     }
   }
 
+  if (pairsOnly) return pairs;
   return result.trim();
 }
 
@@ -174,24 +179,27 @@ export function processTextCharBased(options) {
  *   @param {object} options.lookupTable - IPA lookup table with word->IPA mappings
  *   @param {boolean} [options.withWords] - Show word:IPA format (default: false)
  *   @param {function} [options.onProgress] - Callback for progress updates
- * @returns {string} Processed result with IPA transcription
+ *   @param {boolean} [options.pairsOnly] - Return [[word, ipa], ...] array instead of string (default: false)
+ * @returns {string|string[][]} Processed result or pairs array
  */
 export function processTextLongestMatch(options) {
   const {
     input,
     lookupTable,
     withWords = false,
-    onProgress = null
+    onProgress = null,
+    pairsOnly = false
   } = options;
 
   // Split text into words (Vietnamese uses spaces as word separators)
   const words = input.trim().split(/\s+/).filter(w => w.length > 0);
 
   if (words.length === 0) {
-    return "";
+    return pairsOnly ? [] : "";
   }
 
   let result = "";
+  let pairs = [];
   let i = 0;
 
   while (i < words.length) {
@@ -226,6 +234,7 @@ export function processTextLongestMatch(options) {
 
     if (matchedIPA) {
       result += withWords ? `( ${matchedWord} ${matchedIPA} ) ` : matchedIPA + " ";
+      if (pairsOnly) pairs.push([matchedWord, matchedIPA]);
       i += matchLength; // Skip all matched words
     } else {
       // No match found, keep original word
@@ -236,6 +245,7 @@ export function processTextLongestMatch(options) {
     if (onProgress) onProgress(result);
   }
 
+  if (pairsOnly) return pairs;
   return result.trim();
 }
 
