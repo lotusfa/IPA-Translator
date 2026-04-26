@@ -14,5 +14,6 @@ initIPAIndexPage({
   getLanguage: () => {
     const variant = document.querySelector('input[name="inlineRadioOptions"]:checked')?.id;
     return variant === 'IPA_Spain' ? 'es-ES' : 'es-MX';
-  }
+  },
+  gameLabel: 'spanish'
 });

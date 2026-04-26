@@ -18,5 +18,6 @@ initIPAIndexPage({
     tone_simple: formatVietnameseOutput
   },
   maxWordLength: 6,
-  ttsLanguage: 'vi-VN'
+  ttsLanguage: 'vi-VN',
+  gameLabel: 'vietnamese'
 });

@@ -8,5 +8,6 @@ initIPAIndexPage({
   databasePath: '../json/fa.json',
   process: processTextLongestMatch,
   ttsLanguage: 'fa',
-  withWordsCheckboxId: 'wf_c_words'
+  withWordsCheckboxId: 'wf_c_words',
+  gameLabel: 'persian'
 });

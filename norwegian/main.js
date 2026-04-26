@@ -5,5 +5,6 @@ initIPAIndexPage({
   databasePath: '../json/nb.json',
   process: processTextLongestMatch,
   ttsLanguage: 'nb-NO',
-  withWordsCheckboxId: 'wf_c_words'
+  withWordsCheckboxId: 'wf_c_words',
+  gameLabel: 'norwegian'
 });

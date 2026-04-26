@@ -8,5 +8,6 @@ initIPAIndexPage({
   databasePath: '../json/or.json',
   process: processTextLongestMatch,
   withWordsCheckboxId: 'wf_c_words',
-  enableSpeakButton: false
+  enableSpeakButton: false,
+  gameLabel: 'odia'
 });

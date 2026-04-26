@@ -9,5 +9,6 @@ initIPAIndexPage({
   databasePath: '../json/ja.json',
   process: processTextCharBased,
   maxWordLength: 6,
-  ttsLanguage: 'ja-JP'
+  ttsLanguage: 'ja-JP',
+  gameLabel: 'japanese'
 });

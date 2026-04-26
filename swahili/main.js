@@ -5,5 +5,6 @@ initIPAIndexPage({
   databasePath: '../json/sw.json',
   process: processTextLongestMatch,
   ttsLanguage: 'sw',
-  withWordsCheckboxId: 'wf_c_words'
+  withWordsCheckboxId: 'wf_c_words',
+  gameLabel: 'swahili'
 });

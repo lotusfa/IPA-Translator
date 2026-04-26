@@ -9,5 +9,6 @@ initIPAIndexPage({
   databasePath: '../json/eo.json',
   process: processTextLongestMatch,
   maxWordLength: 5,
-  ttsLanguage: 'eo'
+  ttsLanguage: 'eo',
+  gameLabel: 'esperanto'
 });

@@ -9,5 +9,6 @@ initIPAIndexPage({
   databasePath: '../json/ar.json',
   process: processTextLongestMatch,
   maxWordLength: 5,
-  ttsLanguage: 'ar'
+  ttsLanguage: 'ar',
+  gameLabel: 'arabic'
 });

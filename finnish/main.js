@@ -5,5 +5,6 @@ initIPAIndexPage({
   databasePath: '../json/fi.json',
   process: processTextLongestMatch,
   ttsLanguage: 'fi-FI',
-  withWordsCheckboxId: 'wf_c_words'
+  withWordsCheckboxId: 'wf_c_words',
+  gameLabel: 'finnish'
 });
