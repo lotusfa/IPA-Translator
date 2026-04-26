@@ -5,6 +5,15 @@
  */
 
 // ============================================
+// Dark Mode (sync with main app theme)
+// ============================================
+
+(function applyTheme() {
+  const saved = localStorage.getItem('theme');
+  if (saved === 'dark') document.body.classList.add('dark-mode');
+})();
+
+// ============================================
 // localStorage Contract
 // ============================================
 // The main app writes: { text, ipa, pairs, language, format }
@@ -65,10 +74,11 @@ function startScreen() {
     return;
   }
 
+  const formatLabel = gameData.format || 'IPA';
   showScreen(`
     <div class="game-screen active">
       <h1>IPA Game</h1>
-      <p>${gameData.pairs.length} words loaded from ${gameData.language}</p>
+      <p>${gameData.pairs.length} words | ${formatLabel}</p>
       <div class="game-btn-grid">
         <button data-type="word-to-ipa" class="game-btn game-type-btn">Word -> IPA</button>
         <button data-type="ipa-to-word" class="game-btn game-type-btn">IPA -> Word</button>
@@ -209,7 +219,9 @@ function generateOptions(allPairs, correct, isWord = false) {
 }
 
 function launchGame() {
-  currentPairs = shuffle(gameData.pairs);
+  // Use formatted pairs if a format was selected, otherwise raw IPA
+  const pairs = (gameData.format && gameData.formattedPairs) ? gameData.formattedPairs : gameData.pairs;
+  currentPairs = shuffle(pairs);
   index = 0;
   score = 0;
   gameScreen();
