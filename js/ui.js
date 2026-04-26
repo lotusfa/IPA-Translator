@@ -472,7 +472,7 @@ export function initIPAIndexPage(options) {
             formattedPairs: formattedIpa,
             language: gameLabel || '',
             format: currentFormat || '',
-            ttsLanguage: ttsLanguage || ''
+            ttsLanguage: ttsLanguage || (getLanguage ? getLanguage() : '')
           }));
 
           window.location.href = '../game/index.html';
