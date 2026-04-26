@@ -92,6 +92,18 @@ body.dark-mode .game-btn:hover {
   color: #fff;
 }
 
+body.dark-mode .game-btn.correct {
+  border-color: #4caf50;
+  background: #4caf50;
+  color: #fff;
+}
+
+body.dark-mode .game-btn.wrong {
+  border-color: #f44336;
+  background: #f44336;
+  color: #fff;
+}
+
 body.dark-mode .game-progress {
   background: var(--color-bg-secondary, #333);
 }
