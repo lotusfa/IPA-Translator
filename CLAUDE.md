@@ -4,71 +4,124 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-IPA-Translator is a static HTML/JavaScript web application that translates text from various languages to International Phonetic Alphabet (IPA). It supports multiple languages with separate folders for each.
+IPA-Translator is a static HTML/JavaScript web application that translates text from various languages to International Phonetic Alphabet (IPA). It supports 18+ languages with separate folders for each. No build step or server required — pure ES modules in the browser.
 
 ## Architecture
 
-**Structure:**
-- Each language has its own folder (e.g., `cantonese/`, `english/`, `mandarin/`) containing:
-  - `index.html` - Main UI page
-  - `ipa_list*.html` - IPA database view pages
-  - `main.js` - Translation logic
+### Directory Structure
 
-- `json/` - Contains IPA mapping data files (one per language/dialect)
-- `css/` - Shared stylesheets
-- `lib/` - Third-party libraries (jQuery, DataTables)
+```
+├── <language>/           # One folder per language (cantonese/, mandarin/, etc.)
+│   ├── index.html        # Translation UI page
+│   ├── ipa_list*.html    # IPA database reference pages (multiple for variant languages)
+│   └── main.js           # Thin wrapper: imports shared modules, calls initIPAIndexPage()
+├── js/                   # Shared JavaScript modules (ES modules)
+│   ├── ipa.js            # Core: processTextCharBased, processTextLongestMatch + re-exports
+│   ├── ui.js             # UI: initIPAIndexPage, initIPAListPage, dark mode, language buttons
+│   ├── utils.js          # Utilities: loadIPADatabase, normalizeIPAData, DOM helpers
+│   ├── tts.js            # TTS: speak(), selectBestVoice(), initSpeakButton, createSpeakButton
+│   ├── yue.format.js     # Cantonese formatters (Jyutping, Yale, Guangzhou, Academy, Liu)
+│   ├── zh.format.js      # Mandarin formatters (Pinyin with marks, Zhuyin)
+│   └── vi.format.js      # Vietnamese formatters (tone formatting, IPA numbers)
+├── json/                 # IPA mapping data (one file per language/variant)
+├── config/               # Shared configuration (languages.json → nav buttons)
+├── css/                  # Shared stylesheets
+├── img/                  # SVG icons (dark/light mode, speak/pause)
+├── lib/                  # Third-party libs (jQuery, DataTables)
+└── test/                 # Test suites (test/yue/, test/zh/)
+```
 
-**Data Flow:**
-1. User inputs text in textarea (`cWords_tBox`)
-2. `main.js` loads language-specific JSON from `../json/[lang].json`
-3. `normalize_ipa_data()` flattens nested JSON into character→IPA lookup map
-4. Text is converted character-by-character (with optional word-level matching)
-5. Results displayed in output textarea (`IPA_tBox`)
+### Shared Module Design
 
-**Key Functions in main.js:**
-- `get_IPA_DB()` - Fetches IPA JSON data via XMLHttpRequest
-- `normalize_ipa_data()` - Flattens JSON to lookup map
-- `update_result()` - Main translation logic
-- `format_main()` + `format_*()` - Output formatting (IPA numbers, Jyutping, etc.)
-- `get_IPA_tBox()` / `set_IPA_tBox()` - Textarea value access
+Language `main.js` files are thin wrappers. The real logic lives in `js/`:
 
-## Language Variants
+- **`initIPAIndexPage(options)`** (ui.js) — Full translation page bootstrap. Required: `databasePath`, `process`. Optional: format mapping, variant mapping, TTS, element IDs
+- **`initIPAListPage(options)`** (ui.js) — Full IPA reference page bootstrap. Initializes DataTable + TTS + dark mode + language nav
+- **`processTextCharBased(options)`** (ipa.js) — Character-by-character with optional multi-char word matching. Use for CJK languages.
+- **`processTextLongestMatch(options)`** (ipa.js) — Greedy longest-phrase matching. Use for space-separated languages (Vietnamese, Arabic).
+- **`loadIPADatabase(options)`** (utils.js) — Fetches JSON, normalizes via callback. Uses XMLHttpRequest.
+- **`normalizeIPAData(data)`** (utils.js) — Extracts first key from JSON, flattens to `{ word: ipa }` lookup map.
 
-Some languages support multiple dialects/variants controlled by radio buttons:
-- **English**: US (`en_US.json`) vs UK (`en_UK.json`)
-- **French**: France (`fr_FR.json`) vs Quebec (`fr_QC.json`)
-- **Mandarin**: Traditional (`zh_hant.json`) vs Simplified (`zh_hans.json`)
-- **Spanish**: Spain (`es_ES.json`) vs Mexico (`es_MX.json`)
+**Import pattern for language main.js files:**
+- Import `initIPAIndexPage` from `../js/ui.js` (it re-exports `processText*` from `ipa.js`)
+- OR import `initIPAIndexPage, processText*` from `../js/ipa.js` (it re-exports everything)
+- Import formatters directly from `../js/[lang].format.js` or via `../js/ipa.js` re-exports
 
-## Common Features
+**Dependency chain:** utils.js ← ipa.js ← ui.js (imports from both). ipa.js re-exports from all modules. No circular deps.
 
-All pages include:
-- Dark mode toggle (persisted in localStorage)
-- "With [Language] Words" checkbox (shows original text + IPA)
-- "Allow Words Search" checkbox (matches multi-character words)
-- Auto-update on input (debounced via `input` event)
-- Select-all-on-focus for input textarea
+### Data Flow
 
-## Development Tasks
+1. User inputs text → triggers debounced `translate()` in `initIPAIndexPage`
+2. `loadIPADatabase()` fetches JSON → `normalizeIPAData()` flattens to lookup map
+3. `processTextCharBased()` or `processTextLongestMatch()` converts text to IPA
+4. Optional formatter (e.g., `formatYueOutput`) post-processes result
+5. `setElementValueAnimated()` displays result with fade-in
 
-**To add a new language:**
-1. Create folder with language name
-2. Copy `index.html` and adapt labels/text
-3. Copy `main.js` and adapt:
-   - `normalize_ipa_data()` for your JSON structure
-   - `get_IPA_DB()` to point to correct JSON file
-   - Language-specific preprocessors if needed
-4. Add corresponding JSON file in `json/`
+### Language Variant Support
 
-**To modify output format:**
-Add new `format_*()` function and corresponding radio button in HTML
+Languages with multiple dialects use `${variant}` in `databasePath` + `variantMapping`:
 
-**To update IPA data:**
-Edit JSON files in `json/` folder (structure: array of objects with language key like `"yue"`, `"en_US"`, etc.)
+```javascript
+initIPAIndexPage({
+  databasePath: '../json/en_${variant}.json',
+  variantMapping: { IPA_US: 'US', IPA_UK: 'UK' },
+  // ...
+});
+```
+
+### Adding a New Language
+
+1. Create folder (e.g., `italian/`)
+2. Create `index.html` — adapt labels, add format radios if needed
+3. Create `main.js`:
+   ```javascript
+   import { initIPAIndexPage, processTextLongestMatch } from '../js/ui.js';
+   initIPAIndexPage({
+     databasePath: '../json/it.json',
+     process: processTextLongestMatch, // or processTextCharBased for CJK
+     ttsLanguage: 'it-IT'
+   });
+   ```
+4. Add JSON file in `json/it.json` (array of `{ char: ipa }` objects under a single key)
+5. Add entry in `config/languages.json` for nav button
+
+### Modifying Output Format
+
+Add a formatter function in `js/[lang].format.js`, export it, and add to `formatMapping` in the language's `main.js`:
+
+```javascript
+formatMapping: {
+  IPA_org: formatIPA_org,
+  IPA_num: formatIPA_num,
+  Pinyin: formatPinyin
+}
+```
+
+### Key API Reference
+
+**initIPAIndexPage options:**
+- `databasePath` (required) — Path to JSON, supports `${variant}` placeholder
+- `process` (required) — `processTextCharBased` or `processTextLongestMatch`
+- `formatRadioSelector` — CSS selector for format radio buttons
+- `formatMapping` — `{ radioId: formatterFn }` map
+- `variantRadioSelector` — CSS selector for variant radios (default: `'input[name="inlineRadioOptions"]'`)
+- `variantMapping` — `{ radioId: jsonSuffix }` map
+- `ttsLanguage` — TTS language code (e.g., `'zh-HK'`)
+- `getLanguage` — Function returning TTS language (for variant-dependent TTS)
+- `maxWordLength` — Max word match length (default: 6)
+- `inputId`, `outputId`, `withWordsId`, `allowWordSearchId` — Custom element IDs
+
+**initIPAListPage options:**
+- `language` — TTS language code
+- `tableJsonPath` — Path to JSON for DataTable
+- `tableId` — Table element ID (default: `'DataTable'`)
+- `enableTTS`, `enableLanguageButtons`, `paging`, `pageLength`
 
 ## Development Guidelines
 
 - **KISS**: Keep solutions simple and direct. Avoid over-engineering.
-- **Use subagents for long/multi-step tasks**: Prevents context bloat and keeps work organized
-- **Use `/graphify` skill for knowledge graph tasks**: Any input that needs to be structured as a knowledge graph
-- **Use `Agent` browser skill when browsing/testing websites**: For tasks requiring web interaction or testing
+- **ES modules only**: All `js/` files use `export`/`import`. No CommonJS.
+- **Language main.js should be thin**: ~10-20 lines calling `initIPAIndexPage()`. Don't add new logic to language files — put shared logic in `js/`.
+- **Use subagents for long/multi-step tasks**: Prevents context bloat.
+- **Use `/graphify` skill for knowledge graph tasks**.
+- **Use `Agent` browser skill when testing websites**.
