@@ -15,6 +15,10 @@ IPA-Translator is a static HTML/JavaScript web application that translates text 
 │   ├── index.html        # Translation UI page
 │   ├── ipa_list*.html    # IPA database reference pages (multiple for variant languages)
 │   └── main.js           # Thin wrapper: imports shared modules, calls initIPAIndexPage()
+├── game/                 # IPA learning game (vanilla JS SPA, no heavy frameworks)
+│   ├── index.html        # Minimal shell (<div id="game-app">)
+│   ├── game.js           # Game logic: screens (start, quiz, congrats), localStorage reader
+│   └── styles.css        # Game-specific styles (button grid, progress bar, correct/wrong)
 ├── js/                   # Shared JavaScript modules (ES modules)
 │   ├── ipa.js            # Core: processTextCharBased, processTextLongestMatch + re-exports
 │   ├── ui.js             # UI: initIPAIndexPage, initIPAListPage, dark mode, language buttons
@@ -97,6 +101,42 @@ formatMapping: {
 }
 ```
 
+### Game Architecture (`game/`)
+
+The game is a vanilla JS SPA (no heavy frameworks) for IPA learning. Users enter from the translator by clicking a gamepad button near the output textarea.
+
+**Entry flow:**
+1. User translates text in any language page → gamepad button appears after first translation
+2. Click gamepad → `initIPAIndexPage` re-runs the processor with `pairsOnly: true`, extracts `[[word, ipa], ...]` pairs
+3. Saves to `localStorage['ipa_game_data']` and redirects to `game/index.html`
+4. Game reads localStorage, presents quiz screens (start → word→IPA / IPA→word → congrats)
+
+**localStorage contract (`ipa_game_data`):**
+```json
+{
+  "text": "原始輸入文字",
+  "pairs": [["字", "tsɪ˥"], ["詞", "sʰɐ˨"]],
+  "formattedPairs": [["字", "tsi1"], ["詞", "ci4"]],
+  "language": "cantonese",
+  "format": "Jyutping"
+}
+```
+
+- `pairs` — Raw IPA from database: `[[word, rawIPA], ...]` (e.g., `"tsɪ˥"`)
+- `formattedPairs` — Formatted output: raw IPA wrapped in `/.../`, passed through active formatter, content extracted. e.g., `"/tsɪ˥/" → formatJyutping → "/tsi1/" → "tsi1"`. Same as `pairs` if no formatter active.
+- `language` — From `gameLabel` in language main.js (e.g., `"cantonese"`)
+- `format` — Currently selected format radio ID (e.g., `"Jyutping"`, `""` if none)
+
+**`pairsOnly` option:** Both `processTextCharBased()` and `processTextLongestMatch()` accept `pairsOnly: true` — returns `[[word, rawIPA], ...]` array instead of a formatted string.
+
+**Adding game support to a language:** Add `gameLabel: 'foldername'` to the language's `main.js` `initIPAIndexPage()` call. The gamepad button is injected automatically by `ui.js`.
+
+**Game design goals (from handwritten notes):**
+- No keyboard — on-screen buttons only (vocal game concept)
+- Easy mode: simple study quiz (current implementation)
+- Hard mode (future): number running race, drag & drop, memory matching
+- Game types: IPA→word, word→IPA, phoneme→IPA, phoneme→words (TTS model limitation)
+
 ### Key API Reference
 
 **initIPAIndexPage options:**
@@ -110,6 +150,8 @@ formatMapping: {
 - `getLanguage` — Function returning TTS language (for variant-dependent TTS)
 - `maxWordLength` — Max word match length (default: 6)
 - `inputId`, `outputId`, `withWordsId`, `allowWordSearchId` — Custom element IDs
+- `gameLabel` — Language folder name for game (enables gamepad button)
+- `enableGameButton` — Enable gamepad button (default: `true`)
 
 **initIPAListPage options:**
 - `language` — TTS language code
