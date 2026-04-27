@@ -223,7 +223,8 @@ function quizScreen() {
       currentSubState = syllableFill.createSubState(pair, lang);
       // If decomposition failed (e.g., unsupported syllable), fall back to word-to-ipa
       if (!currentSubState) {
-        index++; quizScreen();
+        questionQueue[index].type = wordToIpa;
+        quizScreen(); // re-render with the fallback type
         return;
       }
     }
