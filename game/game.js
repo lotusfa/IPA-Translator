@@ -59,6 +59,21 @@ async function createShareUrl() {
   return url.toString();
 }
 
+async function createTranslatorUrl() {
+  const data = loadGameData();
+  if (!data) return `../${data?.language || 'cantonese'}/index.html`;
+  const shareData = {
+    page: 'translator',
+    lang: data.language || '',
+    text: data.text || '',
+    format: data.format || '',
+  };
+  const b64 = await compressAndEncode(shareData);
+  const url = new URL(`../${data.language}/index.html`, window.location.href);
+  url.searchParams.set('d', b64);
+  return url.toString();
+}
+
 async function copyShareUrl() {
   const url = await createShareUrl();
   if (!url) return;
@@ -104,10 +119,13 @@ function startScreen() {
       <div class="game-screen active">
         <h1>IPA Game</h1>
         <p>No game data found. Go back to the translator and click the gamepad button.</p>
-        <a href="../${gameData ? '' : 'cantonese/'}index.html" class="game-btn" style="display:inline-block; text-decoration:none;">Back to Translator</a>
+        <button class="game-btn game-back-translator-btn" style="display:inline-block; text-decoration:none;">Back to Translator</button>
       </div>
     `);
-    return;
+  app.querySelector('.game-back-translator-btn').addEventListener('click', async () => {
+    window.location.href = await createTranslatorUrl();
+  });
+  return;
   }
 
   const totalPairs = gameData.pairs.length;
@@ -137,7 +155,7 @@ function startScreen() {
         <button id="start-game-btn" class="game-btn game-start-btn">Start</button>
         <div style="display:flex; gap:10px; justify-content:center;">
           <button id="share-btn" class="game-btn" style="width:50px;">${svgShare}</button>
-          <a href="../${gameData.language}/index.html" class="game-btn game-link-btn" style="display:inline-block; text-decoration:none;">Back to Translator</a>
+          <button class="game-btn game-link-btn" style="display:inline-block; text-decoration:none;">Back to Translator</button>
         </div>
       </div>
     `);
@@ -158,6 +176,10 @@ function startScreen() {
       await copyShareUrl();
       btn.innerHTML = svgTick;
       setTimeout(() => { btn.innerHTML = svgShare; }, 2000);
+    });
+
+    app.querySelector('.game-link-btn').addEventListener('click', async () => {
+      window.location.href = await createTranslatorUrl();
     });
   }
 
@@ -207,8 +229,8 @@ function quizScreen() {
     });
   });
 
-  app.querySelector('.game-back-btn').addEventListener('click', () => {
-    if (confirm('Quit this game?')) { const lang = gameData?.language || 'cantonese'; window.location.href = `../${lang}/index.html`; }
+  app.querySelector('.game-back-btn').addEventListener('click', async () => {
+    if (confirm('Quit this game?')) window.location.href = await createTranslatorUrl();
   });
 }
 
@@ -225,7 +247,7 @@ function congratsScreen() {
       <div class="game-btn-grid">
         <button class="game-btn game-restart-btn">Play Again</button>
         <button id="share-btn" class="game-btn" style="width:50px;">${svgShare}</button>
-        <a href="../${gameData.language}/index.html" class="game-btn" style="text-decoration:none;">Back to Translator</a>
+        <button class="game-btn game-back-translator-btn" style="text-decoration:none;">Back to Translator</button>
       </div>
     </div>
   `);
@@ -239,6 +261,10 @@ function congratsScreen() {
     await copyShareUrl();
     btn.innerHTML = svgTick;
     setTimeout(() => { btn.innerHTML = svgShare; }, 2000);
+  });
+
+  app.querySelector('.game-back-translator-btn').addEventListener('click', async () => {
+    window.location.href = await createTranslatorUrl();
   });
 }
 
