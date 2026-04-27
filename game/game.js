@@ -21,6 +21,7 @@
 // - formattedPairs: [[word, formattedOutput], ...] (or same as pairs if no format)
 
 import { shuffle, compressAndEncode, parseShareFromUrl, clearShareParams } from './game-types/utils.js';
+import { svgShare } from '../js/svg.js';
 import * as wordToIpa from './game-types/wordToIpa.js';
 import * as ipaToWord from './game-types/ipaToWord.js';
 
@@ -144,7 +145,7 @@ function startScreen() {
         </div>
         <button id="start-game-btn" class="game-btn game-start-btn">Start</button>
         <div style="display:flex; gap:10px; justify-content:center;">
-          <button id="share-btn" class="game-btn">Share</button>
+          <button id="share-btn" class="game-btn" style="width:50px;">${svgShare}</button>
           <a href="../${gameData.language}/index.html" class="game-btn game-link-btn" style="display:inline-block; text-decoration:none;">Back to Translator</a>
         </div>
       </div>
@@ -229,7 +230,7 @@ function congratsScreen() {
       <p>${(score / questionQueue.length * 100).toFixed(0)}%</p>
       <div class="game-btn-grid">
         <button class="game-btn game-restart-btn">Play Again</button>
-        <button id="share-btn" class="game-btn">Share</button>
+        <button id="share-btn" class="game-btn" style="width:50px;">${svgShare}</button>
         <a href="../${gameData.language}/index.html" class="game-btn" style="text-decoration:none;">Back to Translator</a>
       </div>
     </div>
