@@ -2,7 +2,11 @@
  * Text-to-Speech (TTS) Module (Lean Edition)
  */
 
-// Icons: PLAY = speaker, PAUSE = 2 rectangles
+import { svgVoice, svgPause } from './svg.js';
+
+export { svgVoice, svgPause };
+
+// Path data for dynamic icon toggling (re-export for backward compatibility)
 export const ICONS = {
   PLAY: 'M11 5L6 9H2v6h4l5 4V5z M15.54 8.46a5 5 0 0 1 0 7.07 M19.07 4.93a10 10 0 0 1 0 14.14',
   PAUSE: 'M6 4h4v16H6z M14 4h4v16h-4z'
@@ -202,9 +206,9 @@ export function createSpeakButton(text, lang = 'en-US') {
   const btn = document.createElement('button');
   btn.className = 'btn-icon speak-word-btn';
   btn.setAttribute('aria-label', '朗讀單字');
-  btn.innerHTML = `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path class="voice-icon-path" d="${ICONS.PLAY}"/></svg>`;
+  btn.innerHTML = svgVoice;
 
-  const iconPath = btn.querySelector('.voice-icon-path');
+  const setIcon = (html) => { btn.innerHTML = html; };
 
   btn.addEventListener('click', (e) => {
     e.stopPropagation();
@@ -212,17 +216,17 @@ export function createSpeakButton(text, lang = 'en-US') {
     if (speakBtnState.isPlaying) {
       window.speechSynthesis.cancel();
       speakBtnState.isPlaying = false;
-      iconPath.setAttribute('d', ICONS.PLAY);
+      setIcon(svgVoice);
       return;
     }
 
     speakBtnState.isPlaying = true;
-    iconPath.setAttribute('d', ICONS.PAUSE);
+    setIcon(svgPause);
 
     speak(text, lang, {
       onEnd: () => {
         speakBtnState.isPlaying = false;
-        iconPath.setAttribute('d', ICONS.PLAY);
+        setIcon(svgVoice);
       }
     });
   });

@@ -213,7 +213,7 @@ function quizScreen() {
   });
 
   app.querySelector('.game-back-btn').addEventListener('click', () => {
-    if (confirm('Quit this game?')) window.history.back();
+    if (confirm('Quit this game?')) { const lang = gameData?.language || 'cantonese'; window.location.href = `../${lang}/index.html`; }
   });
 }
 
