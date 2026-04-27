@@ -602,6 +602,13 @@ export function initIPAIndexPage(options) {
 
   // Setup event listeners and load database
   setupEventListeners();
+
+  // Initialize currentFormat from pre-selected format radio
+  if (formatRadioSelector) {
+    const checked = document.querySelector(`${formatRadioSelector}:checked`);
+    if (checked) currentFormat = checked.id;
+  }
+
   loadDatabase();
 
   // Return public API

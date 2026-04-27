@@ -29,7 +29,7 @@ export function renderWordToIpa(pair, allPairs, progress) {
           ${svgVoice}
         </button>
       </h2>
-      <p>Select the correct IPA:</p>
+      <p>Select the correct transcription:</p>
       <div class="game-btn-grid">
         ${options.map(opt => `<button data-ipa="${opt}" class="game-btn game-option-btn">${opt}</button>`).join('')}
       </div>

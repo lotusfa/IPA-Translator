@@ -230,6 +230,43 @@ const SCHEME_MAPS = {
   }
 };
 
+// Jyutping initials for distractor generation (derived from jyutping scheme map)
+export const JYUTPING_INITIALS = Object.values(SCHEME_MAPS.jyutping.initials).filter(v => v);
+
+// Reverse vowel map: IPA vowel (without tones) → Jyutping vowel
+const JYUTPING_REVERSE_VOWELS = {};
+for (const [ipa, jp] of Object.entries(SCHEME_MAPS.jyutping.vowels)) {
+  JYUTPING_REVERSE_VOWELS[ipa] = jp;
+}
+
+/**
+ * Decompose a raw IPA syllable to Jyutping { onset, rhyme, tone }
+ */
+export function decomposeToJyutping(ipa) {
+  const clean = ipa.replace(/^\/*|\/*$/g, '');
+  const tone = getTone(clean);
+  const base = removeTones(clean);
+
+  let initial = '';
+  let rest = base;
+  for (const init of IPA_INITIALS) {
+    if (base.startsWith(init)) {
+      initial = init;
+      rest = base.substring(init.length);
+      break;
+    }
+  }
+
+  const jyutpingInitial = SCHEME_MAPS.jyutping.initials[initial] || '';
+  const jyutpingVowel = JYUTPING_REVERSE_VOWELS[rest] || rest;
+
+  return {
+    onset: jyutpingInitial,
+    rhyme: jyutpingVowel,
+    tone: tone
+  };
+}
+
 /**
  * Convert single IPA syllable to target scheme
  */
