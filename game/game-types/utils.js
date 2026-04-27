@@ -15,6 +15,3 @@ export function generateOptions(allPairs, correct, isWord = false) {
   const distractors = shuffle(pool).slice(0, 3).map(p => isWord ? p[0] : p[1]);
   return shuffle([correct, ...distractors]);
 }
-
-// Share functions — re-exported from shared module
-export { compressAndEncode, decodeAndDecompress, parseShareFromUrl, clearShareParams } from '../js/share.js';
