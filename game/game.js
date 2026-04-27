@@ -21,7 +21,7 @@
 // - formattedPairs: [[word, formattedOutput], ...] (or same as pairs if no format)
 
 import { shuffle, compressAndEncode, parseShareFromUrl, clearShareParams } from './game-types/utils.js';
-import { svgShare } from '../js/svg.js';
+import { svgShare, svgTick } from '../js/svg.js';
 import * as wordToIpa from './game-types/wordToIpa.js';
 import * as ipaToWord from './game-types/ipaToWord.js';
 
@@ -163,7 +163,10 @@ function startScreen() {
     });
 
     app.querySelector('#share-btn').addEventListener('click', async () => {
+      const btn = app.querySelector('#share-btn');
       await copyShareUrl();
+      btn.innerHTML = svgTick;
+      setTimeout(() => { btn.innerHTML = svgShare; }, 2000);
     });
   }
 
@@ -241,7 +244,10 @@ function congratsScreen() {
   });
 
   app.querySelector('#share-btn').addEventListener('click', async () => {
+    const btn = app.querySelector('#share-btn');
     await copyShareUrl();
+    btn.innerHTML = svgTick;
+    setTimeout(() => { btn.innerHTML = svgShare; }, 2000);
   });
 }
 
