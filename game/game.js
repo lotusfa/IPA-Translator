@@ -90,7 +90,13 @@ async function copyShareUrl() {
 async function importFromUrl() {
   const raw = await parseShareFromUrl();
   if (raw) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(raw));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      text: raw.text || '',
+      pairs: raw.pairs || [],
+      formattedPairs: raw.formattedPairs || raw.pairs || [],
+      language: raw.language || raw.lang || '',
+      format: raw.format || '',
+    }));
     clearShareParams();
   }
 }
