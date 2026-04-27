@@ -1,12 +1,27 @@
 /* Game-specific styles — extends css/styles.css */
 
+:root {
+  /* Correct / Wrong colors — light mode (muted, matches translator palette) */
+  --color-correct: #6b9e6b;
+  --color-correct-text: #fff;
+  --color-wrong: #c47a7a;
+  --color-wrong-text: #fff;
+}
+
+body.dark-mode {
+  --color-correct: #7aab7a;
+  --color-correct-text: #1a1a1a;
+  --color-wrong: #d49090;
+  --color-wrong-text: #1a1a1a;
+}
+
 #game-app {
   min-height: 80vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: var(--spacing-xl);
 }
 
 /* Screen pages */
@@ -25,24 +40,25 @@
 .game-btn-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: 10px;
-  margin: 20px 0;
+  gap: var(--spacing-sm);
+  margin: var(--spacing-xl) 0;
 }
 
 .game-btn {
-  padding: 15px 10px;
-  font-size: 1.2rem;
-  border: 2px solid var(--color-border, #e1e1e8);
-  border-radius: 8px;
-  background: var(--color-bg-secondary, #f5f5f5);
-  color: var(--color-text, #333);
+  padding: 12px 10px;
+  font-size: var(--font-xl);
+  font-family: inherit;
+  border: 1px solid var(--color-btn-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-btn-bg);
+  color: var(--color-text);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all var(--transition-normal);
 }
 
-.game-btn:hover {
-  border-color: var(--color-primary, #666);
-  background: var(--color-primary, #666);
+.game-btn:hover:not(:disabled) {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
   color: #fff;
 }
 
@@ -52,64 +68,31 @@
 }
 
 .game-btn.correct {
-  border-color: #4caf50;
-  background: #4caf50;
-  color: #fff;
+  border-color: var(--color-correct);
+  background: var(--color-correct);
+  color: var(--color-correct-text);
 }
 
 .game-btn.wrong {
-  border-color: #f44336;
-  background: #f44336;
-  color: #fff;
+  border-color: var(--color-wrong);
+  background: var(--color-wrong);
+  color: var(--color-wrong-text);
 }
 
 /* Progress bar */
 .game-progress {
   width: 100%;
-  height: 6px;
-  background: var(--color-bg-secondary, #f5f5f5);
-  border-radius: 3px;
-  margin: 10px 0;
+  height: 4px;
+  background: var(--color-bg-secondary);
+  border-radius: 2px;
+  margin: var(--spacing-sm) 0;
   overflow: hidden;
 }
 
 .game-progress-bar {
   height: 100%;
-  background: var(--color-primary, #666);
+  background: var(--color-primary);
   transition: width 0.3s;
-}
-
-/* Dark mode overrides for game elements */
-body.dark-mode .game-btn {
-  border-color: var(--color-border, #555);
-  background: var(--color-bg-secondary, #333);
-  color: var(--color-text, #ddd);
-}
-
-body.dark-mode .game-btn:hover {
-  border-color: var(--color-primary-dark, #888);
-  background: var(--color-primary-dark, #888);
-  color: #fff;
-}
-
-body.dark-mode .game-btn.correct {
-  border-color: #4caf50;
-  background: #4caf50;
-  color: #fff;
-}
-
-body.dark-mode .game-btn.wrong {
-  border-color: #f44336;
-  background: #f44336;
-  color: #fff;
-}
-
-body.dark-mode .game-progress {
-  background: var(--color-bg-secondary, #333);
-}
-
-body.dark-mode .game-progress-bar {
-  background: var(--color-primary-dark, #888);
 }
 
 /* Word row — word + speak button side by side */
@@ -129,7 +112,7 @@ body.dark-mode .game-progress-bar {
   border: none;
   background: transparent;
   cursor: pointer;
-  color: var(--color-text, #333);
+  color: var(--color-text);
   opacity: 0.7;
   transition: opacity 0.2s;
 }
@@ -143,13 +126,9 @@ body.dark-mode .game-progress-bar {
   opacity: 1;
 }
 
-body.dark-mode .game-speak-btn {
-  color: var(--color-text, #ddd);
-}
-
 /* Summary block on start screen */
 .game-summary {
-  margin: 10px 0;
+  margin: var(--spacing-sm) 0;
   font-size: 1.1rem;
 }
 
@@ -166,11 +145,11 @@ body.dark-mode .game-speak-btn {
   min-width: 60px;
 }
 
-/* Selected length — reuses .correct green */
+/* Selected length — reuses .correct styling */
 .game-length-btn.correct {
-  border-color: #4caf50;
-  background: #4caf50;
-  color: #fff;
+  border-color: var(--color-correct);
+  background: var(--color-correct);
+  color: var(--color-correct-text);
 }
 
 /* Start button — prominent CTA */
@@ -183,10 +162,4 @@ body.dark-mode .game-speak-btn {
 /* Back link — match Start button vertical padding */
 .game-link-btn {
   padding: 12px 20px;
-}
-
-body.dark-mode .game-length-btn.correct {
-  border-color: #4caf50;
-  background: #4caf50;
-  color: #fff;
 }
