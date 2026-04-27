@@ -214,7 +214,24 @@ function quizScreen() {
 
   const { pair, type: gameType } = questionQueue[index];
   const progress = (index / questionQueue.length * 100).toFixed(0);
-  const allPairs = questionQueue.map(q => q.pair);
+
+  // Normalize allPairs so distractors match the current question's format
+  let allPairs;
+  if (gameType.id === 'syllable-fill') {
+    // syllable-fill needs raw IPA for decomposition
+    allPairs = questionQueue.map(q => {
+      const raw = gameData.pairs.find(rp => rp[0] === q.pair[0]);
+      return raw || q.pair;
+    });
+  } else if (gameData.format && gameData.formattedPairs) {
+    // word-to-ipa / ipa-to-word: use formatted pairs consistently
+    allPairs = questionQueue.map(q => {
+      const fmt = gameData.formattedPairs.find(fp => fp[0] === q.pair[0]);
+      return fmt || q.pair;
+    });
+  } else {
+    allPairs = questionQueue.map(q => q.pair);
+  }
 
   // --- syllable-fill: multi-step game type ---
   if (gameType.id === 'syllable-fill') {
@@ -224,6 +241,10 @@ function quizScreen() {
       // If decomposition failed (e.g., unsupported syllable), fall back to word-to-ipa
       if (!currentSubState) {
         questionQueue[index].type = wordToIpa;
+        if (gameData.format && gameData.formattedPairs) {
+          const fp = gameData.formattedPairs.find(p => p[0] === pair[0]);
+          if (fp) questionQueue[index].pair = fp;
+        }
         quizScreen(); // re-render with the fallback type
         return;
       }
