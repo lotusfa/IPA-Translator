@@ -25,12 +25,15 @@ import { compressAndEncode, copyToClipboard, parseShareFromUrl, clearShareParams
 import { svgShare, svgTick } from '../js/svg.js';
 import * as wordToIpa from './game-types/wordToIpa.js';
 import * as ipaToWord from './game-types/ipaToWord.js';
+import * as syllableFill from './game-types/syllableFill.js';
 
 // Registered game types — add new types here
-const gameTypes = [wordToIpa, ipaToWord];
+const gameTypes = [wordToIpa, ipaToWord, syllableFill];
 
 function randomGameType() {
-  return gameTypes[Math.floor(Math.random() * gameTypes.length)];
+  const lang = gameData?.language || '';
+  const eligible = gameTypes.filter(gt => !gt.canUse || gt.canUse(lang));
+  return eligible[Math.floor(Math.random() * eligible.length)];
 }
 
 const STORAGE_KEY = 'ipa_game_data';
@@ -119,6 +122,7 @@ let gameData = null;     // { text, pairs, formattedPairs, language, format }
 let questionQueue = [];  // [{ pair, type }] shuffled queue for the session
 let index = 0;           // current question index
 let score = 0;
+let currentSubState = null; // internal state for multi-step game types (syllable fill)
 
 // ============================================
 // Start Screen — summary + length picker
@@ -212,34 +216,92 @@ function quizScreen() {
   const progress = (index / questionQueue.length * 100).toFixed(0);
   const allPairs = questionQueue.map(q => q.pair);
 
-  // Delegate rendering to the game type module
-  if (gameType.id === 'ipa-to-word') {
-    showScreen(gameType.renderIpaToWord(pair, allPairs, progress));
-  } else {
-    showScreen(gameType.renderWordToIpa(pair, allPairs, progress));
-    wordToIpa.attachSpeakButton(pair, gameData.ttsLanguage || gameData.language);
-  }
-
-  const isWordToIpa = gameType.id === 'word-to-ipa';
-  const correctAnswer = isWordToIpa ? pair[1] : pair[0];
-
-  app.querySelectorAll('.game-option-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const chosen = isWordToIpa ? btn.dataset.ipa : btn.dataset.word;
-      if (chosen === correctAnswer) {
-        score++;
-        btn.classList.add('correct');
-      } else {
-        btn.classList.add('wrong');
-        app.querySelectorAll('.game-option-btn').forEach(b => {
-          const ca = isWordToIpa ? b.dataset.ipa : b.dataset.word;
-          if (ca === correctAnswer) b.classList.add('correct');
-        });
+  // --- syllable-fill: multi-step game type ---
+  if (gameType.id === 'syllable-fill') {
+    const lang = gameData.language;
+    if (!currentSubState) {
+      currentSubState = syllableFill.createSubState(pair, lang);
+      // If decomposition failed (e.g., unsupported syllable), fall back to word-to-ipa
+      if (!currentSubState) {
+        index++; quizScreen();
+        return;
       }
-      app.querySelectorAll('.game-option-btn').forEach(b => (b.disabled = true));
-      setTimeout(() => { index++; quizScreen(); }, 800);
+    }
+
+    const html = syllableFill.renderSyllableFill(pair, progress, currentSubState);
+    showScreen(html);
+
+    const container = document.getElementById('syllable-options');
+    const { step, positions, parts } = currentSubState;
+    const partName = positions[step];
+    const correctValue = parts[partName];
+
+    container.querySelectorAll('.game-option-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const chosen = btn.dataset.value;
+        if (chosen === correctValue) {
+          btn.classList.add('correct');
+        } else {
+          btn.classList.add('wrong');
+          container.querySelectorAll('.game-option-btn').forEach(b => {
+            if (b.dataset.value === correctValue) b.classList.add('correct');
+          });
+        }
+        container.querySelectorAll('.game-option-btn').forEach(b => (b.disabled = true));
+
+        // Mark this blank as filled with the correct value
+        currentSubState.filled[partName] = correctValue;
+        currentSubState.step++;
+
+        const isLastStep = step >= positions.length - 1;
+        setTimeout(() => {
+          if (isLastStep) {
+            score++;
+            currentSubState = null;
+            index++;
+            quizScreen();
+          } else {
+            quizScreen(); // re-render next sub-step
+          }
+        }, 800);
+      });
     });
-  });
+
+  // --- ipa-to-word: single-step ---
+  } else if (gameType.id === 'ipa-to-word') {
+    showScreen(gameType.renderIpaToWord(pair, allPairs, progress));
+    const correctAnswer = pair[0];
+    app.querySelectorAll('.game-option-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const chosen = btn.dataset.word;
+        if (chosen === correctAnswer) { score++; btn.classList.add('correct'); }
+        else {
+          btn.classList.add('wrong');
+          app.querySelectorAll('.game-option-btn').forEach(b => { if (b.dataset.word === correctAnswer) b.classList.add('correct'); });
+        }
+        app.querySelectorAll('.game-option-btn').forEach(b => (b.disabled = true));
+        setTimeout(() => { index++; quizScreen(); }, 800);
+      });
+    });
+
+  // --- word-to-ipa: single-step (default) ---
+  } else {
+    showScreen(wordToIpa.renderWordToIpa(pair, allPairs, progress));
+    wordToIpa.attachSpeakButton(pair, gameData.ttsLanguage || gameData.language);
+    const correctAnswer = pair[1];
+    app.querySelectorAll('.game-option-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const chosen = btn.dataset.ipa;
+        if (chosen === correctAnswer) { score++; btn.classList.add('correct'); }
+        else {
+          btn.classList.add('wrong');
+          app.querySelectorAll('.game-option-btn').forEach(b => { if (b.dataset.ipa === correctAnswer) b.classList.add('correct'); });
+        }
+        app.querySelectorAll('.game-option-btn').forEach(b => (b.disabled = true));
+        setTimeout(() => { index++; quizScreen(); }, 800);
+      });
+    });
+  }
 
   app.querySelector('.game-back-btn').addEventListener('click', async () => {
     if (confirm('Quit this game?')) window.location.href = await createTranslatorUrl();
@@ -286,15 +348,19 @@ function congratsScreen() {
 
 function launchGame(length) {
   const pairs = (gameData.format && gameData.formattedPairs) ? gameData.formattedPairs : gameData.pairs;
+  const rawPairs = gameData.pairs; // syllable-fill needs raw IPA
   const shuffled = shuffle(pairs).slice(0, length);
 
-  questionQueue = shuffle(shuffled.map(pair => ({
-    pair,
-    type: randomGameType(),
-  })));
+  questionQueue = shuffle(shuffled.map(pair => {
+    const type = randomGameType();
+    // syllable-fill must use raw IPA pairs (not formatted)
+    const usePair = type.id === 'syllable-fill' && rawPairs !== pairs ? rawPairs.find(rp => rp[0] === pair[0]) || pair : pair;
+    return { pair: usePair, type };
+  }));
 
   index = 0;
   score = 0;
+  currentSubState = null;
   quizScreen();
 }
 

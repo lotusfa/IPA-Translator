@@ -4,7 +4,7 @@
  */
 
 // IPA initials - ordered from longest to shortest for proper matching
-const IPA_INITIALS = ['kʷʰ', 'kʷ', 'tsʰ', 'ts', 'pʰ', 'tʰ', 'kʰ', 'ŋ', 'k', 'm', 'f', 'n', 'l', 'h', 's', 'w', 'j', 't', 'p', 'd', 'g'];
+export const IPA_INITIALS = ['kʷʰ', 'kʷ', 'tsʰ', 'ts', 'pʰ', 'tʰ', 'kʰ', 'ŋ', 'k', 'm', 'f', 'n', 'l', 'h', 's', 'w', 'j', 't', 'p', 'd', 'g'];
 
 // Tone Unicode characters
 const TONE_5 = '\u02e5';  // ˥ high level
