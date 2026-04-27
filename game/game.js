@@ -243,6 +243,7 @@ function quizScreen() {
           btn.classList.add('correct');
         } else {
           btn.classList.add('wrong');
+          currentSubState.allCorrect = false;
           container.querySelectorAll('.game-option-btn').forEach(b => {
             if (b.dataset.value === correctValue) b.classList.add('correct');
           });
@@ -256,7 +257,7 @@ function quizScreen() {
         const isLastStep = step >= positions.length - 1;
         setTimeout(() => {
           if (isLastStep) {
-            score++;
+            if (currentSubState.allCorrect) score++;
             currentSubState = null;
             index++;
             quizScreen();

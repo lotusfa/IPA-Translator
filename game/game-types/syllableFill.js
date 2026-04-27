@@ -34,6 +34,7 @@ export function createSubState(pair, language) {
     positions,
     parts,
     filled: {},
+    allCorrect: true, // tracks if every sub-step was answered correctly
   };
 }
 
