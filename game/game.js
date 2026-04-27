@@ -52,8 +52,14 @@ function loadGameData() {
 async function createShareUrl() {
   const data = loadGameData();
   if (!data) return null;
-  const { text: _, ...shareData } = data; // skip original text — not needed for game
-  const b64 = await compressAndEncode(shareData);
+  const b64 = await compressAndEncode({
+    page: 'game',
+    lang: data.language || '',
+    text: data.text || '',
+    pairs: data.pairs || [],
+    formattedPairs: data.formattedPairs || [],
+    format: data.format || '',
+  });
   const url = new URL(window.location.href);
   url.searchParams.set('d', b64);
   return url.toString();
@@ -154,7 +160,7 @@ function startScreen() {
         </div>
         <button id="start-game-btn" class="game-btn game-start-btn">Start</button>
         <div style="display:flex; gap:10px; justify-content:center;">
-          <button id="share-btn" class="game-btn" style="width:50px;">${svgShare}</button>
+          <button id="share-btn" class="game-btn">${svgShare}</button>
           <button class="game-btn game-link-btn" style="display:inline-block; text-decoration:none;">Back to Translator</button>
         </div>
       </div>
@@ -244,9 +250,9 @@ function congratsScreen() {
       <h1>Congrats!</h1>
       <p>Score: ${score} / ${questionQueue.length}</p>
       <p>${(score / questionQueue.length * 100).toFixed(0)}%</p>
-      <div class="game-btn-grid">
+      <div class="game-congrats-actions">
         <button class="game-btn game-restart-btn">Play Again</button>
-        <button id="share-btn" class="game-btn" style="width:50px;">${svgShare}</button>
+        <button id="share-btn" class="game-btn">${svgShare}</button>
         <button class="game-btn game-back-translator-btn" style="text-decoration:none;">Back to Translator</button>
       </div>
     </div>

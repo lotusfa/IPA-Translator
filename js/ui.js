@@ -500,11 +500,39 @@ export function initIPAIndexPage(options) {
           getShareData: () => {
             const input = document.getElementById(inputId)?.value || '';
             if (!input.trim()) return null;
+
+            const effectiveWithWordsId = withWordsCheckboxId || withWordsId;
+            const withWords = effectiveWithWordsId ? isElementChecked(effectiveWithWordsId) : false;
+            const allowWordSearch = allowWordSearchId ? isElementChecked(allowWordSearchId) : false;
+
+            const rawPairs = process({
+              input,
+              lookupTable: IPA_DB,
+              withWords,
+              allowWordSearch,
+              maxWordLength,
+              maxPhraseLength,
+              pairsOnly: true
+            });
+
+            const formattedPairs = rawPairs.map(([w, ipa]) => {
+              const formatter = getFormatter();
+              if (formatter) {
+                const wrapped = '/' + ipa + '/';
+                const formatted = formatter(wrapped);
+                const match = formatted.match(/\/(.+?)\//);
+                return [w, match ? match[1] : formatted];
+              }
+              return [w, ipa];
+            });
+
             return {
               page: 'translator',
               lang: gameLabel || '',
               text: input,
               format: currentFormat || '',
+              pairs: rawPairs,
+              formattedPairs,
             };
           }
         });
@@ -516,7 +544,24 @@ export function initIPAIndexPage(options) {
   // Import shared data from URL if present (runs before database load)
   (async () => {
     const raw = await parseShareFromUrl();
-    if (!raw || raw.page !== 'translator') return;
+    if (!raw) return;
+
+    // Handle game-shared data (page === 'game' or no page field)
+    if (raw.page === 'game' || (!raw.page && raw.pairs)) {
+      clearShareParams();
+      if (raw.pairs && raw.pairs.length >= 2) {
+        localStorage.setItem('ipa_game_data', JSON.stringify({
+          text: raw.text || '',
+          pairs: raw.pairs,
+          formattedPairs: raw.formattedPairs || raw.pairs,
+          language: raw.language || raw.lang || '',
+          format: raw.format || '',
+        }));
+      }
+      return;
+    }
+
+    if (raw.page !== 'translator') return;
 
     // If language doesn't match, redirect to correct language page with same share param
     if (raw.lang && raw.lang !== gameLabel) {
@@ -541,6 +586,17 @@ export function initIPAIndexPage(options) {
         formatRadio.checked = true;
         currentFormat = raw.format;
       }
+    }
+
+    // Store pre-computed pairs for the game (avoids re-processing)
+    if (raw.pairs && raw.pairs.length >= 2) {
+      localStorage.setItem('ipa_game_data', JSON.stringify({
+        text: raw.text || '',
+        pairs: raw.pairs,
+        formattedPairs: raw.formattedPairs || raw.pairs,
+        language: raw.lang || '',
+        format: raw.format || '',
+      }));
     }
   })();
 

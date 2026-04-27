@@ -56,6 +56,13 @@ body.dark-mode {
   transition: all var(--transition-normal);
 }
 
+.game-btn svg {
+  width: 1em;
+  height: 1em;
+  display: inline-block;
+  vertical-align: middle;
+}
+
 .game-btn:hover:not(:disabled) {
   border-color: var(--color-primary);
   background: var(--color-primary);
@@ -162,4 +169,17 @@ body.dark-mode {
 /* Back link — match Start button vertical padding */
 .game-link-btn {
   padding: 12px 20px;
+}
+
+/* Congrats action buttons — centered flex row */
+.game-congrats-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: var(--spacing-xl) 0;
+}
+
+.game-congrats-actions .game-btn {
+  min-width: auto;
 }
