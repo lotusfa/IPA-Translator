@@ -444,7 +444,7 @@ export function initIPAIndexPage(options) {
           const withWords = effectiveWithWordsId ? isElementChecked(effectiveWithWordsId) : false;
           const allowWordSearch = allowWordSearchId ? isElementChecked(allowWordSearchId) : false;
 
-          const pairs = process({
+          const { result, pairs } = process({
             input,
             lookupTable: IPA_DB,
             withWords,
@@ -456,26 +456,20 @@ export function initIPAIndexPage(options) {
 
           if (pairs.length < 2) return;
 
-          const rawIpa = pairs.map(([w, ipa]) => [w, ipa]);
-
-          // Also get formatted pairs if formatter exists
-          // Formatters expect /ipa/ wrapped text, so wrap raw IPA before formatting
+          // Format the result string same as normal translation, then parse for formatted pairs
           const formatter = getFormatter();
-          let formattedIpa = rawIpa;
-          if (formatter) {
-            formattedIpa = pairs.map(([w, ipa]) => {
-              const wrapped = '/' + ipa + '/';
-              const formatted = formatter(wrapped);
-              // Extract content between /.../ if formatter preserved it
-              const match = formatted.match(/\/(.+?)\//);
-              return [w, match ? match[1] : formatted];
-            });
+          const formattedResult = formatter ? formatter(result) : result;
+          const formattedPairs = [];
+          const regex = /\/([^/]+)\//g;
+          let m;
+          for (let i = 0; i < pairs.length && (m = regex.exec(formattedResult)) !== null; i++) {
+            formattedPairs.push([pairs[i][0], m[1]]);
           }
 
           localStorage.setItem('ipa_game_data', JSON.stringify({
             text: input,
-            pairs: rawIpa,
-            formattedPairs: formattedIpa,
+            pairs,
+            formattedPairs: formattedPairs.length ? formattedPairs : pairs.map(([w, ipa]) => [w, ipa.replace(/\/|\\/g, '')]),
             language: gameLabel || '',
             format: currentFormat || '',
             ttsLanguage: ttsLanguage || (getLanguage ? getLanguage() : '')
@@ -505,7 +499,7 @@ export function initIPAIndexPage(options) {
             const withWords = effectiveWithWordsId ? isElementChecked(effectiveWithWordsId) : false;
             const allowWordSearch = allowWordSearchId ? isElementChecked(allowWordSearchId) : false;
 
-            const rawPairs = process({
+            const { result, pairs } = process({
               input,
               lookupTable: IPA_DB,
               withWords,
@@ -515,24 +509,22 @@ export function initIPAIndexPage(options) {
               pairsOnly: true
             });
 
-            const formattedPairs = rawPairs.map(([w, ipa]) => {
-              const formatter = getFormatter();
-              if (formatter) {
-                const wrapped = '/' + ipa + '/';
-                const formatted = formatter(wrapped);
-                const match = formatted.match(/\/(.+?)\//);
-                return [w, match ? match[1] : formatted];
-              }
-              return [w, ipa];
-            });
+            const formatter = getFormatter();
+            const formattedResult = formatter ? formatter(result) : result;
+            const formattedPairs = [];
+            const regex = /\/([^/]+)\//g;
+            let m;
+            for (let i = 0; i < pairs.length && (m = regex.exec(formattedResult)) !== null; i++) {
+              formattedPairs.push([pairs[i][0], m[1]]);
+            }
 
             return {
               page: 'translator',
               lang: gameLabel || '',
               text: input,
               format: currentFormat || '',
-              pairs: rawPairs,
-              formattedPairs,
+              pairs,
+              formattedPairs: formattedPairs.length ? formattedPairs : pairs.map(([w, ipa]) => [w, ipa.replace(/\/|\\/g, '')]),
             };
           }
         });

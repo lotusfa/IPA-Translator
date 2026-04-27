@@ -165,7 +165,7 @@ export function processTextCharBased(options) {
     }
   }
 
-  if (pairsOnly) return pairs;
+  if (pairsOnly) return { result: result.trim(), pairs };
   return result.trim();
 }
 
@@ -245,7 +245,7 @@ export function processTextLongestMatch(options) {
     if (onProgress) onProgress(result);
   }
 
-  if (pairsOnly) return pairs;
+  if (pairsOnly) return { result: result.trim(), pairs };
   return result.trim();
 }
 
