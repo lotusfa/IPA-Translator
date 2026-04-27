@@ -123,7 +123,8 @@ export function createShareButton(options) {
   btn.setAttribute('aria-label', 'Share');
   btn.innerHTML = svgShare;
 
-  btn.addEventListener('click', async () => {
+  btn.addEventListener('click', async (e) => {
+    e.stopPropagation();
     const data = await Promise.resolve(getShareData());
     if (!data) return;
     const b64 = await compressAndEncode(data);

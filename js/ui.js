@@ -435,7 +435,8 @@ export function initIPAIndexPage(options) {
         gameBtn.innerHTML = svgGamepad;
         outputLabel.appendChild(gameBtn);
 
-        gameBtn.addEventListener('click', () => {
+        gameBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
           const input = document.getElementById(inputId)?.value || '';
           if (!input.trim()) return;
 
@@ -453,10 +454,7 @@ export function initIPAIndexPage(options) {
             pairsOnly: true
           });
 
-          if (pairs.length < 2) {
-            alert('Need at least 2 matched words to start a game.');
-            return;
-          }
+          if (pairs.length < 2) return;
 
           const rawIpa = pairs.map(([w, ipa]) => [w, ipa]);
 
