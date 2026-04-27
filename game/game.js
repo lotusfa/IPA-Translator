@@ -228,7 +228,7 @@ function quizScreen() {
       }
     }
 
-    const html = syllableFill.renderSyllableFill(pair, progress, currentSubState);
+    const html = syllableFill.renderSyllableFill(pair, progress, currentSubState, allPairs, lang);
     showScreen(html);
 
     const container = document.getElementById('syllable-options');

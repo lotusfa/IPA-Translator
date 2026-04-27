@@ -13,12 +13,6 @@ const LANGUAGE_INITIALS = {
 };
 
 const CHAO_TONES = '˥˦˧˨˩';
-const chaoSet = new Set(CHAO_TONES.split(''));
-
-const LANGUAGE_INITIALS = {
-  cantonese: IPA_INITIALS,
-  mandarin: INITIAL_PATTERNS,
-};
 
 /**
  * Check if a language supports syllable decomposition.
