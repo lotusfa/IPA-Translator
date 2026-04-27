@@ -20,7 +20,8 @@
 // - pairs: [[word, rawIPA], ...]
 // - formattedPairs: [[word, formattedOutput], ...] (or same as pairs if no format)
 
-import { shuffle, compressAndEncode, parseShareFromUrl, clearShareParams } from './game-types/utils.js';
+import { shuffle } from './game-types/utils.js';
+import { compressAndEncode, copyToClipboard, parseShareFromUrl, clearShareParams } from '../js/share.js';
 import { svgShare, svgTick } from '../js/svg.js';
 import * as wordToIpa from './game-types/wordToIpa.js';
 import * as ipaToWord from './game-types/ipaToWord.js';
@@ -61,17 +62,7 @@ async function createShareUrl() {
 async function copyShareUrl() {
   const url = await createShareUrl();
   if (!url) return;
-  try {
-    await navigator.clipboard.writeText(url);
-  } catch {
-    // Fallback for non-HTTPS or older browsers
-    const ta = document.createElement('textarea');
-    ta.value = url;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
-  }
+  await copyToClipboard(url);
 }
 
 // Import data from URL if present (runs before startScreen)

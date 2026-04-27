@@ -27,7 +27,8 @@
 import { loadIPADatabase, normalizeIPAData, isElementChecked, setElementValue, setElementValueAnimated } from './utils.js';
 export { processTextCharBased, processTextLongestMatch } from './ipa.js';
 import { createSpeakButton, preloadVoiceSupport, hasVoiceSupport, initSpeakButton } from './tts.js';
-import { svgGamepad } from './svg.js';
+import { svgGamepad, svgShare } from './svg.js';
+import { createShareButton, parseShareFromUrl, clearShareParams } from './share.js';
 
 // ============================================================
 // FOR IPA_LIST PAGES - DataTable Initialization
@@ -242,6 +243,7 @@ export function initIPAIndexPage(options) {
     ttsLanguage = null,
     gameLabel = null,
     enableGameButton = true,
+    enableShareButton = true,
   } = options;
 
 
@@ -326,6 +328,12 @@ export function initIPAIndexPage(options) {
       if (enableGameButton) {
         const gameBtn = document.getElementById('game-btn');
         if (gameBtn) gameBtn.style.display = 'inline-flex';
+      }
+
+      // Show share button after successful translation
+      if (enableShareButton) {
+        const shareBtn = document.getElementById('share-btn');
+        if (shareBtn) shareBtn.style.display = 'inline-flex';
       }
     }, 10);
   };
@@ -480,6 +488,63 @@ export function initIPAIndexPage(options) {
       }
     }
   }
+
+  // Initialize share button if enabled
+  if (enableShareButton) {
+    const outputEl = document.getElementById(outputId);
+    if (outputEl) {
+      const outputLabel = outputEl.closest('.form-group')?.querySelector('label');
+      if (outputLabel) {
+        const shareBtn = createShareButton({
+          buttonId: 'share-btn',
+          className: 'btn-icon',
+          parentEl: outputLabel,
+          getShareData: () => {
+            const input = document.getElementById(inputId)?.value || '';
+            if (!input.trim()) return null;
+            return {
+              page: 'translator',
+              lang: gameLabel || '',
+              text: input,
+              format: currentFormat || '',
+            };
+          }
+        });
+        shareBtn.style.display = 'none';
+      }
+    }
+  }
+
+  // Import shared data from URL if present (runs before database load)
+  (async () => {
+    const raw = await parseShareFromUrl();
+    if (!raw || raw.page !== 'translator') return;
+
+    // If language doesn't match, redirect to correct language page with same share param
+    if (raw.lang && raw.lang !== gameLabel) {
+      const params = new URLSearchParams(window.location.search);
+      const b64 = params.get('d');
+      if (b64) window.location.href = `../${raw.lang}/index.html?d=${b64}`;
+      return;
+    }
+
+    clearShareParams();
+
+    // Auto-populate input text
+    if (raw.text) {
+      const inputEl = document.getElementById(inputId);
+      if (inputEl) inputEl.value = raw.text;
+    }
+
+    // Select format radio if specified
+    if (raw.format && formatRadioSelector) {
+      const formatRadio = document.querySelector(`${formatRadioSelector}[id="${raw.format}"]`);
+      if (formatRadio) {
+        formatRadio.checked = true;
+        currentFormat = raw.format;
+      }
+    }
+  })();
 
   // Setup event listeners and load database
   setupEventListeners();
