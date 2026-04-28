@@ -6,6 +6,7 @@
 
 import { decomposeSyllable, getInitialsForLanguage, supportsDecomposition } from '../../js/syllable-decompose.js';
 import { decomposeToJyutping, JYUTPING_INITIALS } from '../../js/yue.format.js';
+import { decomposeToPinyin, MANDARIN_INITIALS } from '../../js/zh.format.js';
 import { shuffle } from './utils.js';
 
 export const id = 'syllable-fill';
@@ -15,6 +16,16 @@ export function canUse(lang) {
 }
 
 const partLabels = { onset: 'Initial', rhyme: 'Rhyme', tone: 'Tone' };
+
+const decomposeByLang = {
+  cantonese: decomposeToJyutping,
+  mandarin: decomposeToPinyin,
+};
+
+const initialsByLang = {
+  cantonese: JYUTPING_INITIALS,
+  mandarin: MANDARIN_INITIALS,
+};
 
 /**
  * Create initial sub-state for a word.
@@ -30,15 +41,16 @@ export function createSubState(pair, language) {
 
   if (positions.length < 2) return null; // need at least rhyme + tone
 
-  const jyutpingParts = decomposeToJyutping(ipa);
+  const decomposeFn = decomposeByLang[language] || decomposeToJyutping;
+  const formattedParts = decomposeFn(ipa);
 
   return {
     step: 0,
     positions,
     parts,
-    jyutpingParts,
+    formattedParts,
     filled: {},
-    jyutpingFilled: {},
+    formattedFilled: {},
     allCorrect: true, // tracks if every sub-step was answered correctly
   };
 }
@@ -49,9 +61,12 @@ export function createSubState(pair, language) {
 function getStepOptions(subState, language, allPairs) {
   const partName = subState.positions[subState.step];
 
+  const decomposeFn = decomposeByLang[language] || decomposeToJyutping;
+  const initialsPool = initialsByLang[language] || JYUTPING_INITIALS;
+
   if (partName === 'onset') {
-    const pool = JYUTPING_INITIALS.filter(v => v !== subState.jyutpingParts[partName]);
-    return shuffle([subState.jyutpingParts[partName], ...shuffle(pool).slice(0, 3)]);
+    const pool = initialsPool.filter(v => v !== subState.formattedParts[partName]);
+    return shuffle([subState.formattedParts[partName], ...shuffle(pool).slice(0, 3)]);
   }
 
   // For rhyme/tone: collect from other words in the session
@@ -60,12 +75,12 @@ function getStepOptions(subState, language, allPairs) {
     const clean = ipa.replace(/^\/*|\/*$/g, '');
     if (clean.includes(' ')) continue;
     try {
-      const jp = decomposeToJyutping(clean);
-      if (jp[partName] && jp[partName] !== subState.jyutpingParts[partName]) values.push(jp[partName]);
+      const fp = decomposeFn(clean);
+      if (fp[partName] && fp[partName] !== subState.formattedParts[partName]) values.push(fp[partName]);
     } catch { /* skip unparseable */ }
   }
   const unique = [...new Set(values)];
-  return shuffle([subState.jyutpingParts[partName], ...shuffle(unique).slice(0, 3)]);
+  return shuffle([subState.formattedParts[partName], ...shuffle(unique).slice(0, 3)]);
 }
 
 /**
@@ -75,11 +90,11 @@ function getStepOptions(subState, language, allPairs) {
  */
 export function renderSyllableFill(pair, progress, subState, allPairs, language) {
   const [word] = pair;
-  const { positions, jyutpingFilled } = subState;
+  const { positions, formattedFilled } = subState;
   const partName = positions[subState.step];
 
   const blanksHtml = positions.map(pos => {
-    const val = jyutpingFilled[pos];
+    const val = formattedFilled[pos];
     const cls = val ? 'game-syllable-blank filled' : 'game-syllable-blank';
     return `<div class="game-syllable-blank-wrap"><div class="${cls}">${val || '___'}</div><div class="game-syllable-part-label">${pos}</div></div>`;
   }).join('');

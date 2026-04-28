@@ -254,9 +254,9 @@ function quizScreen() {
     showScreen(html);
 
     const container = document.getElementById('syllable-options');
-    const { step, positions, parts, jyutpingParts } = currentSubState;
+    const { step, positions, parts, formattedParts } = currentSubState;
     const partName = positions[step];
-    const correctValue = jyutpingParts[partName];
+    const correctValue = formattedParts[partName];
 
     container.querySelectorAll('.game-option-btn').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -274,7 +274,7 @@ function quizScreen() {
 
         // Mark this blank as filled with the correct value
         currentSubState.filled[partName] = parts[partName];
-        currentSubState.jyutpingFilled[partName] = jyutpingParts[partName];
+        currentSubState.formattedFilled[partName] = formattedParts[partName];
         currentSubState.step++;
 
         const isLastStep = step >= positions.length - 1;

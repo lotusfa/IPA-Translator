@@ -16,6 +16,9 @@ export const INITIAL_MAP = {
 
 export const INITIAL_PATTERNS = ['tɕʰ', 'tʂʰ', 'ʈʂʰ', 'tɕ', 'tʂ', 'ʈʂ', 'tsʰ', 'ɕ', 'ʂ', 'ʐ', 'ɻ', 'ts', 'q', 'x', 'pʰ', 'tʰ', 'kʰ', 'p', 't', 'k', 'ɡ', 'j', 's', 'f', 'h', 'm', 'n', 'l', 'w'];
 
+// Pinyin initials for syllable-fill game distractor generation
+export const MANDARIN_INITIALS = ['b', 'p', 'm', 'f', 'd', 't', 'n', 'l', 'g', 'k', 'h', 'j', 'q', 'x', 'zh', 'ch', 'sh', 'r', 'z', 'c', 's', 'y', 'w'];
+
 // Tone marker unicode characters
 const TONE = {
   FIVE: '˥', FOUR: '˦', THREE: '˧', TWO: '˨', ONE: '˩'
@@ -187,6 +190,32 @@ export function convertSyllableToPinyin(ipaSyllable) {
   const finalPart = convertFinal(ipaNoTone, '', false);
   const prefixed = addVowelPrefix(ipaNoTone, finalPart);
   return prefixed + tone;
+}
+
+/**
+ * Decompose a raw IPA syllable to Pinyin { onset, rhyme, tone }.
+ * Used by the syllable-fill game type for Mandarin.
+ */
+export function decomposeToPinyin(ipa) {
+  const clean = ipa.replace(/^\/*|\/*$/g, '');
+  if (!clean) return { onset: '', rhyme: '', tone: '' };
+
+  const tone = getToneNumber(clean);
+  const ipaNoTone = removeToneMarks(clean);
+  const initialLen = getInitialLength(ipaNoTone);
+
+  if (initialLen > 0) {
+    const initialIPA = ipaNoTone.slice(0, initialLen);
+    const vowelPart = ipaNoTone.slice(initialLen);
+    const pinyinInitial = convertInitial(initialIPA);
+    const isZero = isZeroInitial(initialIPA, vowelPart);
+    const pinyinFinal = convertFinal(vowelPart, pinyinInitial, isZero);
+    return { onset: pinyinInitial, rhyme: pinyinFinal, tone };
+  }
+
+  const finalPart = convertFinal(ipaNoTone, '', false);
+  const prefixed = addVowelPrefix(ipaNoTone, finalPart);
+  return { onset: '', rhyme: prefixed, tone };
 }
 
 export function applyToneMarkToSyllable(pinyinWithNumber) {
