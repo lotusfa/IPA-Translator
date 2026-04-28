@@ -82,7 +82,7 @@ export function createGameButton(options) {
 
     const { withWords, allowWordSearch } = getProcessorOptions();
 
-    const pairs = process({
+    const { pairs } = process({
       input,
       lookupTable: IPA_DB,
       withWords,

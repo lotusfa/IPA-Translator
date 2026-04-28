@@ -217,7 +217,7 @@ export function initIPAIndexPage(options) {
           const withWords = effectiveWithWordsId ? isElementChecked(effectiveWithWordsId) : false;
           const allowWordSearch = allowWordSearchId ? isElementChecked(allowWordSearchId) : false;
 
-          const pairs = process({
+          const { pairs } = process({
             input,
             lookupTable: IPA_DB,
             withWords,
