@@ -254,6 +254,26 @@ export function convertIPATextToPinyinWithMarks(text) {
 // Zhuyin (注音) Conversion - 重寫重點區域
 // ============================================
 
+export function splitPinyinToInitialFinal(pinyinSyllableWithNum) {
+  if (!pinyinSyllableWithNum) return { initial: '', final: '', tone: '3' };
+  const toneMatch = pinyinSyllableWithNum.match(/([0-5])$/);
+  const tone = toneMatch ? toneMatch[1] : '3';
+  let syllable = pinyinSyllableWithNum.replace(/[0-5]$/, '');
+
+  const possibleInitials = ['zh', 'ch', 'sh', 'r', 'z', 'c', 's', 'b', 'p', 'm', 'f', 'd', 't', 'n', 'l', 'g', 'k', 'h', 'j', 'q', 'x']
+    .sort((a, b) => b.length - a.length);
+
+  let initial = '';
+  for (const init of possibleInitials) {
+    if (syllable.startsWith(init)) {
+      initial = init;
+      break;
+    }
+  }
+  const final = syllable.slice(initial.length);
+  return { initial, final, tone };
+}
+
 export const PINYIN_TO_ZHUYIN_INITIAL = {
   'b': 'ㄅ', 'p': 'ㄆ', 'm': 'ㄇ', 'f': 'ㄈ',
   'd': 'ㄉ', 't': 'ㄊ', 'n': 'ㄋ', 'l': 'ㄌ',
@@ -299,27 +319,6 @@ function handleComplexFinal(pinyinFinal) {
   return result;
 }
 
-// 穩健的 initial/final 切割（取代原本 regex）
-function splitPinyinToInitialFinal(pinyinSyllableWithNum) {
-  if (!pinyinSyllableWithNum) return { initial: '', final: '', tone: '3' };
-  const toneMatch = pinyinSyllableWithNum.match(/([0-5])$/);
-  const tone = toneMatch ? toneMatch[1] : '3';
-  let syllable = pinyinSyllableWithNum.replace(/[0-5]$/, '');
-
-  const possibleInitials = ['zh', 'ch', 'sh', 'r', 'z', 'c', 's', 'b', 'p', 'm', 'f', 'd', 't', 'n', 'l', 'g', 'k', 'h', 'j', 'q', 'x']
-    .sort((a, b) => b.length - a.length);
-
-  let initial = '';
-  for (const init of possibleInitials) {
-    if (syllable.startsWith(init)) {
-      initial = init;
-      break;
-    }
-  }
-  const final = syllable.slice(initial.length);
-  return { initial, final, tone };
-}
-
 export function convertSyllableToZhuyin(ipaSyllable) {
   const pinyinWithNum = convertSyllableToPinyin(ipaSyllable);
   if (!pinyinWithNum) return '';
@@ -346,6 +345,36 @@ export function convertSyllableToZhuyin(ipaSyllable) {
   const toneMark = ZHUYIN_TONE[tone] || '';
   if (tone === '0' || tone === '5') return '˙' + zhInitial + zhFinal;
   return zhInitial + zhFinal + toneMark;
+}
+
+/**
+ * Decompose a raw IPA syllable to Zhuyin { onset, rhyme, tone }.
+ * Used by the syllable-fill game type for Mandarin Zhuyin mode.
+ */
+export function decomposeToZhuyin(ipa) {
+  const pinyinWithNum = convertSyllableToPinyin(ipa);
+  if (!pinyinWithNum) return { onset: '', rhyme: '', tone: '' };
+
+  const { initial: pyInitial, final: pyFinal, tone } = splitPinyinToInitialFinal(pinyinWithNum);
+
+  // j/q/x 後的 u 其實是 ü
+  let effectiveFinal = pyFinal;
+  if (['j', 'q', 'x'].includes(pyInitial)) {
+    if (pyFinal === 'u') effectiveFinal = 'ü';
+    else if (pyFinal === 'ue') effectiveFinal = 'üe';
+    else if (pyFinal === 'uan') effectiveFinal = 'üan';
+    else if (pyFinal === 'un') effectiveFinal = 'ün';
+  }
+
+  let zhInitial = PINYIN_TO_ZHUYIN_INITIAL[pyInitial] || '';
+  let zhFinal = PINYIN_TO_ZHUYIN_FINAL[effectiveFinal] || handleComplexFinal(effectiveFinal);
+
+  // 空韻（zhi, chi, shi, ri, zi, ci, si）
+  if (['zh', 'ch', 'sh', 'r', 'z', 'c', 's'].includes(pyInitial) && (pyFinal === 'i' || pyFinal === '')) {
+    zhFinal = '';
+  }
+
+  return { onset: zhInitial, rhyme: zhFinal, tone };
 }
 
 export function convertIPATextToZhuyin(text) {

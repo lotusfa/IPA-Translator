@@ -236,8 +236,9 @@ function quizScreen() {
   // --- syllable-fill: multi-step game type ---
   if (gameType.id === 'syllable-fill') {
     const lang = gameData.language;
+    const fmt = gameData.format || '';
     if (!currentSubState) {
-      currentSubState = syllableFill.createSubState(pair, lang);
+      currentSubState = syllableFill.createSubState(pair, lang, fmt);
       // If decomposition failed (e.g., unsupported syllable), fall back to word-to-ipa
       if (!currentSubState) {
         questionQueue[index].type = wordToIpa;
@@ -250,7 +251,7 @@ function quizScreen() {
       }
     }
 
-    const html = syllableFill.renderSyllableFill(pair, progress, currentSubState, allPairs, lang);
+    const html = syllableFill.renderSyllableFill(pair, progress, currentSubState, allPairs, lang, fmt);
     showScreen(html);
 
     const container = document.getElementById('syllable-options');

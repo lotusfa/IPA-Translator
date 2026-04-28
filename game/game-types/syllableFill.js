@@ -6,7 +6,7 @@
 
 import { decomposeSyllable, getInitialsForLanguage, supportsDecomposition } from '../../js/syllable-decompose.js';
 import { decomposeToJyutping, JYUTPING_INITIALS } from '../../js/yue.format.js';
-import { decomposeToPinyin, MANDARIN_INITIALS } from '../../js/zh.format.js';
+import { decomposeToPinyin, decomposeToZhuyin, MANDARIN_INITIALS } from '../../js/zh.format.js';
 import { shuffle } from './utils.js';
 
 export const id = 'syllable-fill';
@@ -17,21 +17,26 @@ export function canUse(lang) {
 
 const partLabels = { onset: 'Initial', rhyme: 'Rhyme', tone: 'Tone' };
 
-const decomposeByLang = {
-  cantonese: decomposeToJyutping,
-  mandarin: decomposeToPinyin,
+const decomposeByFormat = {
+  Pinyin: decomposeToPinyin,
+  'Pinyin_num': decomposeToPinyin,
+  Zhuyin: decomposeToZhuyin,
 };
 
-const initialsByLang = {
-  cantonese: JYUTPING_INITIALS,
-  mandarin: MANDARIN_INITIALS,
+const initialsByFormat = {
+  Pinyin: MANDARIN_INITIALS,
+  'Pinyin_num': MANDARIN_INITIALS,
+  Zhuyin: ['ㄅ', 'ㄆ', 'ㄇ', 'ㄈ', 'ㄉ', 'ㄊ', 'ㄋ', 'ㄌ', 'ㄍ', 'ㄎ', 'ㄏ', 'ㄐ', 'ㄑ', 'ㄒ', 'ㄓ', 'ㄔ', 'ㄕ', 'ㄖ', 'ㄗ', 'ㄘ', 'ㄙ'],
 };
 
 /**
  * Create initial sub-state for a word.
+ * @param {Object} pair - [word, rawIPA]
+ * @param {string} language - "cantonese" or "mandarin"
+ * @param {string} format - Currently selected format (e.g., "Pinyin", "Zhuyin", or "")
  * @returns {Object|null} subState or null if decomposition failed
  */
-export function createSubState(pair, language) {
+export function createSubState(pair, language, format) {
   const ipa = pair[1].replace(/^\/*|\/*$/g, '');
   if (ipa.includes(' ')) return null; // skip multi-syllable words
 
@@ -41,8 +46,9 @@ export function createSubState(pair, language) {
 
   if (positions.length < 2) return null; // need at least rhyme + tone
 
-  const decomposeFn = decomposeByLang[language] || decomposeToJyutping;
-  const formattedParts = decomposeFn(ipa);
+  const decomposeFn = getDecomposer(language, format);
+  // Use formatted decomposition if available, otherwise fall back to raw IPA parts
+  const formattedParts = decomposeFn ? decomposeFn(ipa) : { onset: parts.onset, rhyme: parts.rhyme, tone: parts.tone };
 
   return {
     step: 0,
@@ -56,31 +62,56 @@ export function createSubState(pair, language) {
 }
 
 /**
+ * Get the decompose function for a language/format combination.
+ */
+function getDecomposer(language, format) {
+  if (format && decomposeByFormat[format]) return decomposeByFormat[format];
+  // Default: raw IPA (use decomposeSyllable directly)
+  return null;
+}
+
+/**
  * Generate options for the current sub-step.
  */
-function getStepOptions(subState, language, allPairs) {
+function getStepOptions(subState, language, allPairs, format) {
   const partName = subState.positions[subState.step];
 
-  const decomposeFn = decomposeByLang[language] || decomposeToJyutping;
-  const initialsPool = initialsByLang[language] || JYUTPING_INITIALS;
+  const decomposeFn = getDecomposer(language, format);
+  const initialsPool = (format && initialsByFormat[format]) || getInitialsForLanguage(language);
 
   if (partName === 'onset') {
-    const pool = initialsPool.filter(v => v !== subState.formattedParts[partName]);
-    return shuffle([subState.formattedParts[partName], ...shuffle(pool).slice(0, 3)]);
+    const correctValue = subState.formattedParts[partName];
+    if (decomposeFn) {
+      // Formatted mode (Pinyin/Zhuyin): use predefined initials list
+      const pool = initialsPool.filter(v => v !== correctValue);
+      return shuffle([correctValue, ...shuffle(pool).slice(0, 3)]);
+    } else {
+      // Raw IPA mode: collect initials from other syllables in the session
+      const values = [];
+      for (const [, ipa] of allPairs) {
+        const clean = ipa.replace(/^\/*|\/*$/g, '');
+        if (clean.includes(' ')) continue;
+        const p = decomposeSyllable(clean, language);
+        if (p.onset && p.onset !== correctValue) values.push(p.onset);
+      }
+      const unique = [...new Set(values)];
+      return shuffle([correctValue, ...shuffle(unique).slice(0, 3)]);
+    }
   }
 
   // For rhyme/tone: collect from other words in the session
+  const correctValue = subState.formattedParts[partName];
   const values = [];
   for (const [, ipa] of allPairs) {
     const clean = ipa.replace(/^\/*|\/*$/g, '');
     if (clean.includes(' ')) continue;
     try {
-      const fp = decomposeFn(clean);
-      if (fp[partName] && fp[partName] !== subState.formattedParts[partName]) values.push(fp[partName]);
+      const fp = decomposeFn ? decomposeFn(clean) : decomposeSyllable(clean, language);
+      if (fp[partName] && fp[partName] !== correctValue) values.push(fp[partName]);
     } catch { /* skip unparseable */ }
   }
   const unique = [...new Set(values)];
-  return shuffle([subState.formattedParts[partName], ...shuffle(unique).slice(0, 3)]);
+  return shuffle([correctValue, ...shuffle(unique).slice(0, 3)]);
 }
 
 /**
@@ -88,7 +119,7 @@ function getStepOptions(subState, language, allPairs) {
  * Options are pre-rendered with data-value attributes.
  * Caller attaches click handlers to .game-option-btn buttons.
  */
-export function renderSyllableFill(pair, progress, subState, allPairs, language) {
+export function renderSyllableFill(pair, progress, subState, allPairs, language, format) {
   const [word] = pair;
   const { positions, formattedFilled } = subState;
   const partName = positions[subState.step];
@@ -99,7 +130,7 @@ export function renderSyllableFill(pair, progress, subState, allPairs, language)
     return `<div class="game-syllable-blank-wrap"><div class="${cls}">${val || '___'}</div><div class="game-syllable-part-label">${pos}</div></div>`;
   }).join('');
 
-  const options = getStepOptions(subState, language, allPairs);
+  const options = getStepOptions(subState, language, allPairs, format);
 
   return `
     <div class="game-screen active">
