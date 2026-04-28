@@ -202,6 +202,21 @@ function startScreen() {
   render();
 }
 
+// --- Attach answer handler for single-step game types ---
+function attachSingleStepHandler(selector, dataAttr, correctAnswer) {
+  app.querySelectorAll(selector).forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (btn.dataset[dataAttr] === correctAnswer) { score++; btn.classList.add('correct'); }
+      else {
+        btn.classList.add('wrong');
+        app.querySelectorAll(selector).forEach(b => { if (b.dataset[dataAttr] === correctAnswer) b.classList.add('correct'); });
+      }
+      app.querySelectorAll(selector).forEach(b => (b.disabled = true));
+      setTimeout(() => { index++; quizScreen(); }, 800);
+    });
+  });
+}
+
 // ============================================
 // Quiz Screen — random game type per question
 // ============================================
@@ -295,37 +310,13 @@ function quizScreen() {
   // --- ipa-to-word: single-step ---
   } else if (gameType.id === 'ipa-to-word') {
     showScreen(gameType.renderIpaToWord(pair, allPairs, progress));
-    const correctAnswer = pair[0];
-    app.querySelectorAll('.game-option-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const chosen = btn.dataset.word;
-        if (chosen === correctAnswer) { score++; btn.classList.add('correct'); }
-        else {
-          btn.classList.add('wrong');
-          app.querySelectorAll('.game-option-btn').forEach(b => { if (b.dataset.word === correctAnswer) b.classList.add('correct'); });
-        }
-        app.querySelectorAll('.game-option-btn').forEach(b => (b.disabled = true));
-        setTimeout(() => { index++; quizScreen(); }, 800);
-      });
-    });
+    attachSingleStepHandler('.game-option-btn', 'word', pair[0]);
 
   // --- word-to-ipa: single-step (default) ---
   } else {
     showScreen(wordToIpa.renderWordToIpa(pair, allPairs, progress));
     wordToIpa.attachSpeakButton(pair, gameData.ttsLanguage || gameData.language);
-    const correctAnswer = pair[1];
-    app.querySelectorAll('.game-option-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const chosen = btn.dataset.ipa;
-        if (chosen === correctAnswer) { score++; btn.classList.add('correct'); }
-        else {
-          btn.classList.add('wrong');
-          app.querySelectorAll('.game-option-btn').forEach(b => { if (b.dataset.ipa === correctAnswer) b.classList.add('correct'); });
-        }
-        app.querySelectorAll('.game-option-btn').forEach(b => (b.disabled = true));
-        setTimeout(() => { index++; quizScreen(); }, 800);
-      });
-    });
+    attachSingleStepHandler('.game-option-btn', 'ipa', pair[1]);
   }
 
   app.querySelector('.game-back-btn').addEventListener('click', async () => {
