@@ -10,8 +10,8 @@
     },
     {
       "code": "mandarin",
-      "name": "普通话 (zh)",
-      "nativeName": "普通話",
+      "name": "漢語 (zh)",
+      "nativeName": "漢語",
       "indexPath": "../mandarin/index.html",
       "ipaListPath": "../mandarin/ipa_list_zh_hans.html",
       "isActive": false
