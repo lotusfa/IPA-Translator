@@ -59,8 +59,8 @@ function assert(name, actual, expected) {
 function extractFormattedPairs(pairs, formatter) {
   return pairs.map(([w, ipa]) => {
     if (!formatter) return [w, ipa];
-    const wrapped = '/' + ipa + '/';
-    const formatted = formatter(wrapped);
+    // IPA values already have slashes from the database (e.g. "/ni˥˩/")
+    const formatted = formatter(ipa);
     const match = formatted.match(/\/(.+?)\//);
     return [w, match ? match[1] : formatted];
   });
@@ -70,7 +70,7 @@ function extractFormattedPairs(pairs, formatter) {
 // Cantonese: No Formatter (raw IPA passthrough)
 // ============================================
 
-const cantonesePairs = [["你", "nei˥˩"], ["好", "hou21"]];
+const cantonesePairs = [["你", "/nei˥˩/"], ["好", "/hou21/"]];
 
 console.log('\n=== Cantonese: No Formatter ===');
 {
@@ -165,7 +165,7 @@ console.log('\n=== Cantonese: Liu ===');
 // Mandarin: IPA_org (identity)
 // ============================================
 
-const mandarinPairs = [["你", "ni˥˩"], ["好", "xau˥˩"]];
+const mandarinPairs = [["你", "/ni˥˩/"], ["好", "/xau˥˩/"]];
 
 console.log('\n=== Mandarin: IPA_org ===');
 {
@@ -212,7 +212,7 @@ console.log('\n=== Mandarin: Zhuyin ===');
 // Vietnamese: IPA Numbers
 // ============================================
 
-const vietnamesePairs = [["xin", "sin˧˥"], ["chào", "za̞w˨˩"]];
+const vietnamesePairs = [["xin", "/sin˧˥/"], ["chào", "/za̞w˨˩/"]];
 
 console.log('\n=== Vietnamese: IPA Numbers ===');
 {
@@ -227,7 +227,7 @@ console.log('\n=== Vietnamese: IPA Numbers ===');
 
 console.log('\n=== Edge Case: Repeated Characters ===');
 {
-  const pairs = [["人", "jan45"], ["人", "jan45"]];
+  const pairs = [["人", "/jan45/"], ["人", "/jan45/"]];
   const result = extractFormattedPairs(pairs, null);
   assert('人[0] → jan45', result[0], ["人", "jan45"]);
   assert('人[1] → jan45', result[1], ["人", "jan45"]);
@@ -235,14 +235,14 @@ console.log('\n=== Edge Case: Repeated Characters ===');
 
 console.log('\n=== Edge Case: Single Pair ===');
 {
-  const pairs = [["我", "ngɐ5"]];
+  const pairs = [["我", "/ngɐ5/"]];
   const result = extractFormattedPairs(pairs, null);
   assert('我 → ngɐ5', result[0], ["我", "ngɐ5"]);
 }
 
 console.log('\n=== Edge Case: Empty IPA ===');
 {
-  const pairs = [["字", ""], ["詞", "ci4"]];
+  const pairs = [["字", "/ /"], ["詞", "/ci4/"]];
   const result = extractFormattedPairs(pairs, null);
   assert('字 → ""', result[0], ["字", ""]);
   assert('詞 → ci4', result[1], ["詞", "ci4"]);
@@ -250,7 +250,7 @@ console.log('\n=== Edge Case: Empty IPA ===');
 
 console.log('\n=== Edge Case: IPA_num with Complex Tones ===');
 {
-  const pairs = [["字", "tsɪ˥˧"], ["詞", "sʰɐ˨˩˦"]];
+  const pairs = [["字", "/tsɪ˥˧/"], ["詞", "/sʰɐ˨˩˦/"]];
   const result = extractFormattedPairs(pairs, formatCantoneseIPA_num);
   // ˥→5 ˧→3 → "tsɪ53"
   // ˨→2 ˩→1 → "sʰɐ21˦" (˦ not converted by formatter)

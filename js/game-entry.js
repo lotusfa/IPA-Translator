@@ -70,8 +70,7 @@ export function createGameButton(options) {
     const formatter = currentFormat ? window[currentFormat] : null;
     const formattedIpa = pairs.map(([w, ipa]) => {
       if (!formatter) return [w, ipa];
-      const wrapped = '/' + ipa + '/';
-      const formatted = formatter(wrapped);
+      const formatted = formatter(ipa);
       const match = formatted.match(/\/(.+?)\//);
       return [w, match ? match[1] : formatted];
     });
