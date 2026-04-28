@@ -249,14 +249,4 @@ export function processTextLongestMatch(options) {
   return result.trim();
 }
 
-// ============================================
-// Event Helpers (re-exported from core.js above)
-// ============================================
 
-// Export UI functions from ui.js for backward compatibility
-export {
-  initDarkMode,
-  generateLanguageButtons,
-  initLanguageButtons,
-  initResponsiveTextareaRows
-} from './ui.js';
