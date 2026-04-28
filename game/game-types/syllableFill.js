@@ -5,7 +5,7 @@
  */
 
 import { decomposeSyllable, getInitialsForLanguage, supportsDecomposition } from '../../js/syllable-decompose.js';
-import { decomposeToJyutping, JYUTPING_INITIALS } from '../../js/yue.format.js';
+import { decomposeToJyutping, JYUTPING_INITIALS, formatIPA_num as yueFormatIPANum } from '../../js/yue.format.js';
 import { decomposeToPinyin, decomposeToZhuyin, MANDARIN_INITIALS } from '../../js/zh.format.js';
 import { shuffle } from './utils.js';
 
@@ -17,16 +17,33 @@ export function canUse(lang) {
 
 const partLabels = { onset: 'Initial', rhyme: 'Rhyme', tone: 'Tone' };
 
+function decomposeToIPA_num(ipa) {
+  const parts = decomposeSyllable(ipa);
+  return {
+    onset: parts.onset,
+    rhyme: parts.rhyme,
+    tone: yueFormatIPANum(parts.tone),
+  };
+}
+
+function decomposeToIPA_org(ipa) {
+  return decomposeSyllable(ipa);
+}
+
 const decomposeByFormat = {
   Pinyin: decomposeToPinyin,
   'Pinyin_num': decomposeToPinyin,
   Zhuyin: decomposeToZhuyin,
+  'IPA_num': decomposeToIPA_num,
+  'IPA_org': decomposeToIPA_org,
 };
 
 const initialsByFormat = {
   Pinyin: MANDARIN_INITIALS,
   'Pinyin_num': MANDARIN_INITIALS,
   Zhuyin: ['ㄅ', 'ㄆ', 'ㄇ', 'ㄈ', 'ㄉ', 'ㄊ', 'ㄋ', 'ㄌ', 'ㄍ', 'ㄎ', 'ㄏ', 'ㄐ', 'ㄑ', 'ㄒ', 'ㄓ', 'ㄔ', 'ㄕ', 'ㄖ', 'ㄗ', 'ㄘ', 'ㄙ'],
+  'IPA_num': null, // will fall through to getInitialsForLanguage
+  'IPA_org': null, // will fall through to getInitialsForLanguage
 };
 
 /**
