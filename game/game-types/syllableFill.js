@@ -5,7 +5,9 @@
  */
 
 import { decomposeSyllable, getInitialsForLanguage, supportsDecomposition } from '../../js/syllable-decompose.js';
-import { decomposeToJyutping, JYUTPING_INITIALS, formatIPA_num as yueFormatIPANum } from '../../js/yue.format.js';
+import { decomposeToJyutping, decomposeToGuangzhou, decomposeToAcademy, decomposeToYale, decomposeToLiu,
+         JYUTPING_INITIALS, GUANGZHOU_INITIALS, ACADEMY_INITIALS, YALE_INITIALS, LIU_INITIALS,
+         formatIPA_num as yueFormatIPANum } from '../../js/yue.format.js';
 import { decomposeToPinyin, decomposeToZhuyin, MANDARIN_INITIALS } from '../../js/zh.format.js';
 import { shuffle } from './utils.js';
 
@@ -36,12 +38,22 @@ const decomposeByFormat = {
   Zhuyin: decomposeToZhuyin,
   'IPA_num': decomposeToIPA_num,
   'IPA_org': decomposeToIPA_org,
+  Jyutping: decomposeToJyutping,
+  Guangzhou: decomposeToGuangzhou,
+  Academy: decomposeToAcademy,
+  Yale: decomposeToYale,
+  Liu: decomposeToLiu,
 };
 
 const initialsByFormat = {
   Pinyin: MANDARIN_INITIALS,
   'Pinyin_num': MANDARIN_INITIALS,
   Zhuyin: ['ㄅ', 'ㄆ', 'ㄇ', 'ㄈ', 'ㄉ', 'ㄊ', 'ㄋ', 'ㄌ', 'ㄍ', 'ㄎ', 'ㄏ', 'ㄐ', 'ㄑ', 'ㄒ', 'ㄓ', 'ㄔ', 'ㄕ', 'ㄖ', 'ㄗ', 'ㄘ', 'ㄙ'],
+  Jyutping: JYUTPING_INITIALS,
+  Guangzhou: GUANGZHOU_INITIALS,
+  Academy: ACADEMY_INITIALS,
+  Yale: YALE_INITIALS,
+  Liu: LIU_INITIALS,
 };
 
 /**

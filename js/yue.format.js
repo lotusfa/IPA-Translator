@@ -240,9 +240,9 @@ for (const [ipa, jp] of Object.entries(SCHEME_MAPS.jyutping.vowels)) {
 }
 
 /**
- * Decompose a raw IPA syllable to Jyutping { onset, rhyme, tone }
+ * Decompose a raw IPA syllable to a target Cantonese scheme { onset, rhyme, tone }
  */
-export function decomposeToJyutping(ipa) {
+function decomposeToScheme(ipa, scheme) {
   const clean = ipa.replace(/^\/*|\/*$/g, '');
   const tone = getTone(clean);
   const base = removeTones(clean);
@@ -257,15 +257,36 @@ export function decomposeToJyutping(ipa) {
     }
   }
 
-  const jyutpingInitial = SCHEME_MAPS.jyutping.initials[initial] || '';
-  const jyutpingVowel = JYUTPING_REVERSE_VOWELS[rest] || rest;
+  const map = SCHEME_MAPS[scheme];
+  let onset = map.initials[initial] || '';
+  let rhyme = map.vowels[rest] || rest;
 
-  return {
-    onset: jyutpingInitial,
-    rhyme: jyutpingVowel,
-    tone: tone
-  };
+  // Yale post-processing: yyu -> yu (onset y + rhyme yu absorbs onset)
+  if (scheme === 'yale' && onset === 'y' && rhyme === 'yu') {
+    onset = '';
+  }
+
+  // Guangzhou post-processing: z/c/s -> j/q/x before i/ü vowels
+  if (scheme === 'guangzhou') {
+    const gzRemap = { z: 'j', c: 'q', s: 'x' };
+    if (onset in gzRemap && (rhyme.startsWith('i') || rhyme.startsWith('ü'))) {
+      onset = gzRemap[onset];
+    }
+  }
+
+  return { onset, rhyme, tone };
 }
+
+export function decomposeToJyutping(ipa) { return decomposeToScheme(ipa, 'jyutping'); }
+export function decomposeToGuangzhou(ipa) { return decomposeToScheme(ipa, 'guangzhou'); }
+export function decomposeToAcademy(ipa) { return decomposeToScheme(ipa, 'academy'); }
+export function decomposeToYale(ipa) { return decomposeToScheme(ipa, 'yale'); }
+export function decomposeToLiu(ipa) { return decomposeToScheme(ipa, 'liu'); }
+
+export const GUANGZHOU_INITIALS = Object.values(SCHEME_MAPS.guangzhou.initials).filter(v => v);
+export const ACADEMY_INITIALS = Object.values(SCHEME_MAPS.academy.initials).filter(v => v);
+export const YALE_INITIALS = Object.values(SCHEME_MAPS.yale.initials).filter(v => v);
+export const LIU_INITIALS = Object.values(SCHEME_MAPS.liu.initials).filter(v => v);
 
 /**
  * Convert single IPA syllable to target scheme
