@@ -17,8 +17,8 @@ export function canUse(lang) {
 
 const partLabels = { onset: 'Initial', rhyme: 'Rhyme', tone: 'Tone' };
 
-function decomposeToIPA_num(ipa) {
-  const parts = decomposeSyllable(ipa);
+function decomposeToIPA_num(ipa, language) {
+  const parts = decomposeSyllable(ipa, language);
   return {
     onset: parts.onset,
     rhyme: parts.rhyme,
@@ -26,8 +26,8 @@ function decomposeToIPA_num(ipa) {
   };
 }
 
-function decomposeToIPA_org(ipa) {
-  return decomposeSyllable(ipa);
+function decomposeToIPA_org(ipa, language) {
+  return decomposeSyllable(ipa, language);
 }
 
 const decomposeByFormat = {
@@ -42,8 +42,6 @@ const initialsByFormat = {
   Pinyin: MANDARIN_INITIALS,
   'Pinyin_num': MANDARIN_INITIALS,
   Zhuyin: ['ㄅ', 'ㄆ', 'ㄇ', 'ㄈ', 'ㄉ', 'ㄊ', 'ㄋ', 'ㄌ', 'ㄍ', 'ㄎ', 'ㄏ', 'ㄐ', 'ㄑ', 'ㄒ', 'ㄓ', 'ㄔ', 'ㄕ', 'ㄖ', 'ㄗ', 'ㄘ', 'ㄙ'],
-  'IPA_num': null, // will fall through to getInitialsForLanguage
-  'IPA_org': null, // will fall through to getInitialsForLanguage
 };
 
 /**
@@ -80,9 +78,11 @@ export function createSubState(pair, language, format) {
 
 /**
  * Get the decompose function for a language/format combination.
+ * Returns a curried fn(ipa) → { onset, rhyme, tone }, or null for raw IPA.
  */
 function getDecomposer(language, format) {
-  if (format && decomposeByFormat[format]) return decomposeByFormat[format];
+  const fn = decomposeByFormat[format];
+  if (fn) return ipa => fn(ipa, language);
   // Default: raw IPA (use decomposeSyllable directly)
   return null;
 }
