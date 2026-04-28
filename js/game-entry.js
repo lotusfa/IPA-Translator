@@ -1,35 +1,6 @@
 import { svgGamepad } from './svg.js';
 
 /**
- * Extract formatted IPA pairs for the game.
- *
- * Takes the raw pairs array returned by a processor with pairsOnly: true.
- * If a formatter exists, wraps each IPA in /.../, runs through formatter,
- * and extracts content between /.../.
- *
- * @param {Function} processFn - The processor function (processTextCharBased or processTextLongestMatch)
- * @param {Array} pairs - Raw pairs array [[word, ipa], ...]
- * @param {Function|null} formatter - Optional formatter function
- * @returns {{ pairs: Array, formattedPairs: Array }}
- */
-export function extractFormattedPairs(processFn, pairs, formatter) {
-  const rawIpa = pairs.map(([w, ipa]) => [w, ipa]);
-
-  let formattedIpa = rawIpa;
-  if (formatter) {
-    formattedIpa = pairs.map(([w, ipa]) => {
-      const wrapped = '/' + ipa + '/';
-      const formatted = formatter(wrapped);
-      // Extract content between /.../ if formatter preserved it
-      const match = formatted.match(/\/(.+?)\//);
-      return [w, match ? match[1] : formatted];
-    });
-  }
-
-  return { pairs: rawIpa, formattedPairs: formattedIpa };
-}
-
-/**
  * Create the game button and attach it to the output label.
  *
  * @param {Object} options
@@ -82,6 +53,7 @@ export function createGameButton(options) {
 
     const { withWords, allowWordSearch } = getProcessorOptions();
 
+    // Get raw pairs for syllable-fill game type (needs unformatted IPA)
     const { pairs } = process({
       input,
       lookupTable: IPA_DB,
@@ -94,15 +66,46 @@ export function createGameButton(options) {
 
     if (pairs.length < 2) return;
 
+    // Get translator's formatted output — guarantees same result as what user sees
+    const rawText = process({
+      input,
+      lookupTable: IPA_DB,
+      withWords,
+      allowWordSearch,
+      maxWordLength,
+      maxPhraseLength
+    });
+
     const currentFormat = getCurrentFormat();
     const formatter = currentFormat ? window[currentFormat] : null;
+    const formattedText = formatter ? formatter(rawText) : rawText;
 
-    const { pairs: rawIpa, formattedPairs } = extractFormattedPairs(process, pairs, formatter);
+    // Extract formatted pairs by walking through the translator's output
+    const formattedIpa = [];
+    let text = formattedText;
+    for (let i = 0; i < pairs.length; i++) {
+      const [word] = pairs[i];
+      const idx = text.indexOf(word);
+      if (idx === -1) { formattedIpa.push([word, '']); continue; }
+
+      const afterWord = text.slice(idx + word.length);
+      let nextPos = text.length - idx;
+
+      for (let j = i + 1; j < pairs.length; j++) {
+        const pos = text.indexOf(pairs[j][0], idx + word.length);
+        if (pos !== -1 && pos < nextPos) {
+          nextPos = pos - (idx + word.length);
+        } else { break; }
+      }
+
+      formattedIpa.push([word, afterWord.slice(0, nextPos).trim()]);
+      text = text.slice(idx + word.length);
+    }
 
     localStorage.setItem('ipa_game_data', JSON.stringify({
       text: input,
-      pairs: rawIpa,
-      formattedPairs,
+      pairs,
+      formattedPairs: formattedIpa,
       language: gameLabel || '',
       format: currentFormat || '',
       ttsLanguage: ttsLanguage || (getLanguage ? getLanguage() : '')
