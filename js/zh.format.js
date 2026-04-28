@@ -67,6 +67,10 @@ function isZeroInitial(initialIPA, vowelPart) {
   return initialIPA === 'j';
 }
 
+function isPalatalInitial(initialIPA) {
+  return initialIPA === 'tɕ' || initialIPA === 'tɕʰ' || initialIPA === 'ɕ';
+}
+
 function fixOrthography(text, initial = '') {
   let result = text.replace(/y/g, 'ü').replace(/ɥ/g, 'ü');
   // 只有 j, q, x, y 之後才把 ü 轉為 u
@@ -116,6 +120,8 @@ function convertFinal(ipaFinal, pinyinInitial = '', isZeroInitialCase = false) {
   // 但因為上方已經優先處理了空韻，這裡主要是清理剩餘的特殊符號
   if (result === 'ɥɛn') {
     result = isZeroInitialCase ? 'yuan' : 'uan';
+  } else if (['j', 'q', 'x'].includes(pinyinInitial)) {
+    result = result.replace(/ɥ/g, 'ü');
   } else {
     result = result.replace(/ɥ/g, 'u');
   }
@@ -210,7 +216,7 @@ export function decomposeToPinyin(ipa) {
     const pinyinInitial = convertInitial(initialIPA);
     const isZero = isZeroInitial(initialIPA, vowelPart);
     const pinyinFinal = convertFinal(vowelPart, pinyinInitial, isZero);
-    return { onset: pinyinInitial, rhyme: pinyinFinal, tone };
+    return { onset: isZero ? '' : pinyinInitial, rhyme: pinyinFinal, tone };
   }
 
   const finalPart = convertFinal(ipaNoTone, '', false);
