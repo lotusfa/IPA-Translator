@@ -66,7 +66,7 @@
     },
     {
       "code": "arabic",
-      "name": "العربية (ar)"
+      "name": "العربية (ar)",
       "nativeName": "العربية",
       "indexPath": "../arabic/index.html",
       "ipaListPath": "../arabic/ipa_list.html",
@@ -82,7 +82,7 @@
     },
     {
       "code": "german",
-      "name": "Deutsch (de)"
+      "name": "Deutsch (de)",
       "nativeName": "Deutsch",
       "indexPath": "../german/index.html",
       "ipaListPath": "../german/ipa_list.html",
@@ -138,7 +138,7 @@
     },
     {
       "code": "odia",
-      "name": "ଓଡ଼ିଆ (or)"
+      "name": "ଓଡ଼ିଆ (or)",
       "nativeName": "ଓଡ଼ିଆ",
       "indexPath": "../odia/index.html",
       "ipaListPath": "../odia/ipa_list.html",
