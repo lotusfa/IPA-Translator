@@ -66,41 +66,15 @@ export function createGameButton(options) {
 
     if (pairs.length < 2) return;
 
-    // Get translator's formatted output — guarantees same result as what user sees
-    const rawText = process({
-      input,
-      lookupTable: IPA_DB,
-      withWords,
-      allowWordSearch,
-      maxWordLength,
-      maxPhraseLength
-    });
-
     const currentFormat = getCurrentFormat();
     const formatter = currentFormat ? window[currentFormat] : null;
-    const formattedText = formatter ? formatter(rawText) : rawText;
-
-    // Extract formatted pairs by walking through the translator's output
-    const formattedIpa = [];
-    let text = formattedText;
-    for (let i = 0; i < pairs.length; i++) {
-      const [word] = pairs[i];
-      const idx = text.indexOf(word);
-      if (idx === -1) { formattedIpa.push([word, '']); continue; }
-
-      const afterWord = text.slice(idx + word.length);
-      let nextPos = text.length - idx;
-
-      for (let j = i + 1; j < pairs.length; j++) {
-        const pos = text.indexOf(pairs[j][0], idx + word.length);
-        if (pos !== -1 && pos < nextPos) {
-          nextPos = pos - (idx + word.length);
-        } else { break; }
-      }
-
-      formattedIpa.push([word, afterWord.slice(0, nextPos).trim()]);
-      text = text.slice(idx + word.length);
-    }
+    const formattedIpa = pairs.map(([w, ipa]) => {
+      if (!formatter) return [w, ipa];
+      const wrapped = '/' + ipa + '/';
+      const formatted = formatter(wrapped);
+      const match = formatted.match(/\/(.+?)\//);
+      return [w, match ? match[1] : formatted];
+    });
 
     localStorage.setItem('ipa_game_data', JSON.stringify({
       text: input,
