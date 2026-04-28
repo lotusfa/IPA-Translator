@@ -2,7 +2,7 @@
   "languages": [
     {
       "code": "cantonese",
-      "name": "Cantonese (廣東話)",
+      "name": "粵語 (yue)",
       "nativeName": "廣東話",
       "indexPath": "../cantonese/index.html",
       "ipaListPath": "../cantonese/ipa_list.html",
@@ -10,7 +10,7 @@
     },
     {
       "code": "mandarin",
-      "name": "Mandarin",
+      "name": "普通话 (zh)",
       "nativeName": "普通話",
       "indexPath": "../mandarin/index.html",
       "ipaListPath": "../mandarin/ipa_list_zh_hans.html",
@@ -18,7 +18,7 @@
     },
     {
       "code": "english",
-      "name": "English",
+      "name": "English (en)",
       "nativeName": "English",
       "indexPath": "../english/index.html",
       "ipaListPath": "../english/ipa_list_us.html",
@@ -26,7 +26,7 @@
     },
     {
       "code": "french",
-      "name": "French",
+      "name": "Français (fr)",
       "nativeName": "Français",
       "indexPath": "../french/index.html",
       "ipaListPath": "../french/ipa_list.html",
@@ -34,7 +34,7 @@
     },
     {
       "code": "esperanto",
-      "name": "Esperanto",
+      "name": "Esperanto (eo)",
       "nativeName": "Esperanto",
       "indexPath": "../esperanto/index.html",
       "ipaListPath": "../esperanto/ipa_list.html",
@@ -42,7 +42,7 @@
     },
     {
       "code": "persian",
-      "name": "Persian",
+      "name": "فارسی (fa)",
       "nativeName": "فارسی",
       "indexPath": "../persian/index.html",
       "ipaListPath": "../persian/ipa_list.html",
@@ -50,7 +50,7 @@
     },
     {
       "code": "spanish",
-      "name": "Spanish",
+      "name": "Español (es)",
       "nativeName": "Español",
       "indexPath": "../spanish/index.html",
       "ipaListPath": "../spanish/ipa_list.html",
@@ -58,7 +58,7 @@
     },
     {
       "code": "japanese",
-      "name": "Japanese",
+      "name": "日本語 (ja)",
       "nativeName": "日本語",
       "indexPath": "../japanese/index.html",
       "ipaListPath": "../japanese/ipa_list.html",
@@ -66,7 +66,7 @@
     },
     {
       "code": "arabic",
-      "name": "Arabic (العربية)",
+      "name": "العربية (ar)"
       "nativeName": "العربية",
       "indexPath": "../arabic/index.html",
       "ipaListPath": "../arabic/ipa_list.html",
@@ -74,7 +74,7 @@
     },
     {
       "code": "finnish",
-      "name": "Finnish",
+      "name": "Suomi (fi)",
       "nativeName": "Suomi",
       "indexPath": "../finnish/index.html",
       "ipaListPath": "../finnish/ipa_list.html",
@@ -82,7 +82,7 @@
     },
     {
       "code": "german",
-      "name": "German",
+      "name": "Deutsch (de)"
       "nativeName": "Deutsch",
       "indexPath": "../german/index.html",
       "ipaListPath": "../german/ipa_list.html",
@@ -90,7 +90,7 @@
     },
     {
       "code": "jamaican",
-      "name": "Jamaican Creole",
+      "name": "Jamaican (jam)",
       "nativeName": "Jamaican",
       "indexPath": "../jamaican/index.html",
       "ipaListPath": "../jamaican/ipa_list.html",
@@ -98,7 +98,7 @@
     },
     {
       "code": "norwegian",
-      "name": "Norwegian",
+      "name": "Norsk (nb)",
       "nativeName": "Norsk",
       "indexPath": "../norwegian/index.html",
       "ipaListPath": "../norwegian/ipa_list.html",
@@ -106,7 +106,7 @@
     },
     {
       "code": "swahili",
-      "name": "Swahili",
+      "name": "Kiswahili (sw)",
       "nativeName": "Kiswahili",
       "indexPath": "../swahili/index.html",
       "ipaListPath": "../swahili/ipa_list.html",
@@ -114,7 +114,7 @@
     },
     {
       "code": "swedish",
-      "name": "Swedish",
+      "name": "Svenska (sv)",
       "nativeName": "Svenska",
       "indexPath": "../swedish/index.html",
       "ipaListPath": "../swedish/ipa_list.html",
@@ -122,7 +122,7 @@
     },
     {
       "code": "vietnamese",
-      "name": "Vietnamese (Tiếng Việt)",
+      "name": "Tiếng Việt (vi)",
       "nativeName": "Tiếng Việt",
       "indexPath": "../vietnamese/index.html",
       "ipaListPath": "../vietnamese/ipa_list_s.html",
@@ -130,7 +130,7 @@
     },
     {
       "code": "malay",
-      "name": "Malay (Bahasa Melayu)",
+      "name": "Bahasa Melayu (ma)",
       "nativeName": "Bahasa Melayu",
       "indexPath": "../malay/index.html",
       "ipaListPath": "../malay/ipa_list.html",
@@ -138,7 +138,7 @@
     },
     {
       "code": "odia",
-      "name": "Odia (ଓଡ଼ିଆ)",
+      "name": "ଓଡ଼ିଆ (or)"
       "nativeName": "ଓଡ଼ିଆ",
       "indexPath": "../odia/index.html",
       "ipaListPath": "../odia/ipa_list.html",

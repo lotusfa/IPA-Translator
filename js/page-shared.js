@@ -65,12 +65,12 @@ export async function generateLanguageButtons(options) {
     let html = "";
 
     languages.forEach(lang => {
-      const name = lang.name || lang.nativeName || lang.code;
+      const label = lang.name || lang.code;
       const href = lang.indexPath || "#";
       const isCurrent = lang.isActive === true;
       const style = isCurrent ? 'style="font-weight: bold; color: var(--accent-color);"' : "";
 
-      html += `<${wrapperTag} ${style}><a href="${href}">${name}</a></${wrapperTag}>`;
+      html += `<${wrapperTag} ${style}><a href="${href}">${label}</a></${wrapperTag}>`;
     });
 
     container.innerHTML = html;
