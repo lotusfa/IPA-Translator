@@ -122,17 +122,12 @@ export function initSpeakButton({ buttonId = 'speak-btn', inputId = 'cWords_tBox
   const input = document.getElementById(inputId);
   if (!btn || !input) return;
 
-  const svg = btn.querySelector('svg');
-  const pathEl = svg.querySelector('path');
-  const playPath = pathEl.getAttribute('d');
+  btn.innerHTML = svgVoice;
+  const pathEl = btn.querySelector('path');
   let isPlaying = false;
 
   const setIcon = (showPause) => {
-    if (showPause) {
-      pathEl.setAttribute('d', pathPause);
-    } else {
-      pathEl.setAttribute('d', playPath);
-    }
+    pathEl.setAttribute('d', showPause ? pathPause : pathVoice);
   };
 
   const updateVisibility = async () => {
