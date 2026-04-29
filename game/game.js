@@ -36,6 +36,15 @@ function randomGameType() {
   return eligible[Math.floor(Math.random() * eligible.length)];
 }
 
+function getAllPairs(queue, gameTypeId, data) {
+  if (gameTypeId === 'syllable-fill') {
+    return queue.map(q => data.pairs.find(rp => rp[0] === q.pair[0]) || q.pair);
+  } else if (data.format && data.formattedPairs) {
+    return queue.map(q => data.formattedPairs.find(fp => fp[0] === q.pair[0]) || q.pair);
+  }
+  return queue.map(q => q.pair);
+}
+
 const STORAGE_KEY = 'ipa_game_data';
 
 function loadGameData() {
@@ -205,23 +214,7 @@ function quizScreen() {
   const { pair, type: gameType } = questionQueue[index];
   const progress = (index / questionQueue.length * 100).toFixed(0);
 
-  // Normalize allPairs so distractors match the current question's format
-  let allPairs;
-  if (gameType.id === 'syllable-fill') {
-    // syllable-fill needs raw IPA for decomposition
-    allPairs = questionQueue.map(q => {
-      const raw = gameData.pairs.find(rp => rp[0] === q.pair[0]);
-      return raw || q.pair;
-    });
-  } else if (gameData.format && gameData.formattedPairs) {
-    // word-to-ipa / ipa-to-word: use formatted pairs consistently
-    allPairs = questionQueue.map(q => {
-      const fmt = gameData.formattedPairs.find(fp => fp[0] === q.pair[0]);
-      return fmt || q.pair;
-    });
-  } else {
-    allPairs = questionQueue.map(q => q.pair);
-  }
+  const allPairs = getAllPairs(questionQueue, gameType.id, gameData);
 
   // --- syllable-fill: multi-step game type ---
   if (gameType.id === 'syllable-fill') {

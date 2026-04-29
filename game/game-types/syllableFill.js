@@ -4,6 +4,8 @@
  * User fills each blank one at a time with multiple choice buttons.
  */
 
+function stripSlash(ipa) { return stripSlash(ipa); }
+
 import { decomposeSyllable, getInitialsForLanguage, supportsDecomposition } from '../../js/syllable-decompose.js';
 import { decomposeToJyutping, decomposeToGuangzhou, decomposeToAcademy, decomposeToYale, decomposeToLiu,
          JYUTPING_INITIALS, GUANGZHOU_INITIALS, ACADEMY_INITIALS, YALE_INITIALS, LIU_INITIALS,
@@ -118,7 +120,7 @@ function getStepOptions(subState, language, allPairs, format) {
       // Raw IPA mode: collect initials from other syllables in the session
       const values = [];
       for (const [, ipa] of allPairs) {
-        const clean = ipa.replace(/^\/*|\/*$/g, '');
+        const clean = stripSlash(ipa);
         if (clean.includes(' ')) continue;
         const p = decomposeSyllable(clean, language);
         if (p.onset && p.onset !== correctValue) values.push(p.onset);
@@ -132,7 +134,7 @@ function getStepOptions(subState, language, allPairs, format) {
   const correctValue = subState.formattedParts[partName];
   const values = [];
   for (const [, ipa] of allPairs) {
-    const clean = ipa.replace(/^\/*|\/*$/g, '');
+    const clean = stripSlash(ipa);
     if (clean.includes(' ')) continue;
     try {
       const fp = decomposeFn ? decomposeFn(clean) : decomposeSyllable(clean, language);
