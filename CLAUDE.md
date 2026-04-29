@@ -17,16 +17,26 @@ IPA-Translator is a static HTML/JavaScript web application that translates text 
 │   └── main.js           # Thin wrapper: imports shared modules, calls initIPAIndexPage()
 ├── game/                 # IPA learning game (vanilla JS SPA, no heavy frameworks)
 │   ├── index.html        # Minimal shell (<div id="game-app">)
-│   ├── game.js           # Game logic: screens (start, quiz, congrats), localStorage reader
-│   └── styles.css        # Game-specific styles (button grid, progress bar, correct/wrong)
+│   ├── game.js           # Main game logic & state machine (screens: start, quiz, congrats)
+│   ├── styles.css        # Game-specific styles (button grid, progress bar, correct/wrong)
+│   └── game-types/       # Per-game-type logic (wordToIpa, ipaToWord, syllableFill)
 ├── js/                   # Shared JavaScript modules (ES modules)
-│   ├── ipa.js            # Core: processTextCharBased, processTextLongestMatch + re-exports
-│   ├── ui.js             # UI: initIPAIndexPage, initIPAListPage, dark mode, language buttons
+│   ├── format/           # Language-specific formatters
+│   │   ├── yue.format.js # Cantonese formatters (Jyutping, Yale, Guangzhou, Academy, Liu)
+│   │   ├── zh.format.js  # Mandarin formatters (Pinyin with marks, Zhuyin)
+│   │   └── vi.format.js  # Vietnamese formatters (tone formatting, IPA numbers)
+│   ├── page/             # Page initialization & shared UI logic
+│   │   ├── ipa-index-page.js  # initIPAIndexPage (translation pages)
+│   │   ├── ipa-list-page.js   # initIPATable, initIPAListPage (IPA reference pages)
+│   │   ├── page-shared.js     # initDarkMode, language nav, responsive textarea
+│   │   └── game-entry.js      # createGameButton
+│   ├── ipa.js            # Core: processTextCharBased, processTextLongestMatch + format re-exports
+│   ├── ui.js             # Barrel re-export of page/ modules (external-facing entry point)
 │   ├── utils.js          # Utilities: loadIPADatabase, normalizeIPAData, DOM helpers
 │   ├── tts.js            # TTS: speak(), selectBestVoice(), initSpeakButton, createSpeakButton
-│   ├── yue.format.js     # Cantonese formatters (Jyutping, Yale, Guangzhou, Academy, Liu)
-│   ├── zh.format.js      # Mandarin formatters (Pinyin with marks, Zhuyin)
-│   └── vi.format.js      # Vietnamese formatters (tone formatting, IPA numbers)
+│   ├── share.js          # Compress/encode data into shareable URLs, clipboard helpers
+│   ├── svg.js            # SVG icon data exported as strings
+│   └── syllable-decompose.js  # Breaks IPA into onset/rhyme/tone (imports from format/)
 ├── json/                 # IPA mapping data (one file per language/variant)
 ├── config/               # Shared configuration (languages.json → nav buttons)
 ├── css/                  # Shared stylesheets
@@ -39,19 +49,19 @@ IPA-Translator is a static HTML/JavaScript web application that translates text 
 
 Language `main.js` files are thin wrappers. The real logic lives in `js/`:
 
-- **`initIPAIndexPage(options)`** (ui.js) — Full translation page bootstrap. Required: `databasePath`, `process`. Optional: format mapping, variant mapping, TTS, element IDs
-- **`initIPAListPage(options)`** (ui.js) — Full IPA reference page bootstrap. Initializes DataTable + TTS + dark mode + language nav
+- **`initIPAIndexPage(options)`** (page/ipa-index-page.js) — Full translation page bootstrap. Required: `databasePath`, `process`. Optional: format mapping, variant mapping, TTS, element IDs
+- **`initIPAListPage(options)`** (page/ipa-list-page.js) — Full IPA reference page bootstrap. Initializes DataTable + TTS + dark mode + language nav
 - **`processTextCharBased(options)`** (ipa.js) — Character-by-character with optional multi-char word matching. Use for CJK languages.
 - **`processTextLongestMatch(options)`** (ipa.js) — Greedy longest-phrase matching. Use for space-separated languages (Vietnamese, Arabic).
 - **`loadIPADatabase(options)`** (utils.js) — Fetches JSON, normalizes via callback. Uses XMLHttpRequest.
 - **`normalizeIPAData(data)`** (utils.js) — Extracts first key from JSON, flattens to `{ word: ipa }` lookup map.
 
 **Import pattern for language main.js files:**
-- Import `initIPAIndexPage` from `../js/ui.js` (it re-exports `processText*` from `ipa.js`)
-- OR import `initIPAIndexPage, processText*` from `../js/ipa.js` (it re-exports everything)
-- Import formatters directly from `../js/[lang].format.js` or via `../js/ipa.js` re-exports
+- Import `initIPAIndexPage` from `../js/ui.js` (barrel re-export → page/ipa-index-page.js, also re-exports `processText*` from ipa.js)
+- Import formatters via `../js/ipa.js` re-exports (source: format/[lang].format.js)
+- **Do NOT import from `js/page/` or `js/format/` directly in language files** — use `js/ui.js` and `js/ipa.js` as the stable external entry points
 
-**Dependency chain:** utils.js ← ipa.js ← ui.js (imports from both). ipa.js re-exports from all modules. No circular deps.
+**Dependency chain:** utils.js ← ipa.js. page/ imports from utils.js, tts.js, share.js, svg.js. ui.js is a thin barrel re-export of page/. ipa.js re-exports format/ and tts/utils functions. No circular deps.
 
 ### Data Flow
 
@@ -91,7 +101,7 @@ initIPAIndexPage({
 
 ### Modifying Output Format
 
-Add a formatter function in `js/[lang].format.js`, export it, and add to `formatMapping` in the language's `main.js`:
+Add a formatter function in `js/format/[lang].format.js`, export it, re-export through `js/ipa.js`, and add to `formatMapping` in the language's `main.js`:
 
 ```javascript
 formatMapping: {
