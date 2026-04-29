@@ -22,7 +22,7 @@ export {
   formatYueYale,
   formatYueLiu,
   formatYueOutput
-} from './yue.format.js';
+} from './format/yue.format.js';
 
 // ============================================
 // Re-export Mandarin format functions from zh.format.js
@@ -36,7 +36,7 @@ export {
   convertIPATextToPinyin,
   convertIPATextToPinyinWithMarks,
   convertIPATextToZhuyin
-} from './zh.format.js';
+} from './format/zh.format.js';
 
 // ============================================
 // Re-export formatJyutpingMandarinNum from yue.format.js
@@ -45,7 +45,7 @@ export {
 
 export {
   formatJyutpingMandarinNum
-} from './yue.format.js';
+} from './format/yue.format.js';
 
 // ============================================
 // Re-export Vietnamese format functions from vi.format.js
@@ -56,7 +56,7 @@ export {
   formatVietnameseOutput,
   formatVietnameseStandard,
   formatIPANumbers
-} from './vi.format.js';
+} from './format/vi.format.js';
 
 // ============================================
 // Re-export TTS functions from tts.js

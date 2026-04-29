@@ -4,8 +4,8 @@
  * Used by the syllable-fill game type.
  */
 
-import { IPA_INITIALS } from './yue.format.js';
-import { INITIAL_PATTERNS } from './zh.format.js';
+import { IPA_INITIALS } from './format/yue.format.js';
+import { INITIAL_PATTERNS } from './format/zh.format.js';
 
 const LANGUAGE_INITIALS = {
   cantonese: IPA_INITIALS,

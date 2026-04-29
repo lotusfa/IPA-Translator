@@ -1,4 +1,4 @@
-import { svgGamepad } from './svg.js';
+import { svgGamepad } from '../svg.js';
 
 /**
  * Create the game button and attach it to the output label.

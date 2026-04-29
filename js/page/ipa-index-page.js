@@ -3,10 +3,10 @@
  * FOR: index.html pages only (translation UI)
  */
 
-import { loadIPADatabase, normalizeIPAData, isElementChecked, setElementValue, setElementValueAnimated } from './utils.js';
-import { initSpeakButton } from './tts.js';
+import { loadIPADatabase, normalizeIPAData, isElementChecked, setElementValue, setElementValueAnimated } from '../utils.js';
+import { initSpeakButton } from '../tts.js';
 import { createGameButton } from './game-entry.js';
-import { createShareButton, parseShareFromUrl, clearShareParams } from './share.js';
+import { createShareButton, parseShareFromUrl, clearShareParams } from '../share.js';
 import { initDarkMode, initLanguageButtons, initResponsiveTextareaRows } from './page-shared.js';
 
 export function initIPAIndexPage(options) {

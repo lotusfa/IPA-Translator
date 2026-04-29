@@ -2,7 +2,7 @@
  * Test IPA parsing issue with /kwɔ:k˧ tsɐi˧ jɐm˥ pi:u˥/
  */
 
-import { formatYueJyutping } from '../js/yue.format.js';
+import { formatYueJyutping } from '../js/format/yue.format.js';
 
 console.log('\n=== IPA Parsing Test ===\n');
 

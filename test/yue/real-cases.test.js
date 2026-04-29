@@ -11,7 +11,7 @@ import {
   formatYueAcademy,
   formatYueYale,
   formatYueLiu
-} from '../js/yue.format.js';
+} from '../js/format/yue.format.js';
 
 const results = {
   passed: 0,

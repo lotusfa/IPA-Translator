@@ -14,7 +14,7 @@
  * 4. /pi:u˥/ - Correct
  */
 
-import { formatYueJyutping } from '../js/yue.format.js';
+import { formatYueJyutping } from '../js/format/yue.format.js';
 
 console.log('\n=== User Input Analysis ===\n');
 

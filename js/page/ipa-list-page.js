@@ -5,8 +5,8 @@
  *
  */
 
-import { normalizeIPAData } from './utils.js';
-import { createSpeakButton, preloadVoiceSupport } from './tts.js';
+import { normalizeIPAData } from '../utils.js';
+import { createSpeakButton, preloadVoiceSupport } from '../tts.js';
 import { initDarkMode, initLanguageButtons } from './page-shared.js';
 
 /**

@@ -20,16 +20,16 @@ import {
   formatYueAcademy,
   formatYueYale,
   formatYueLiu,
-} from '../js/yue.format.js';
+} from '../js/format/yue.format.js';
 
 import {
   formatIPA_num as formatMandarinIPA_num,
   formatIPA_org as formatMandarinIPA_org,
   convertIPATextToPinyinWithMarks,
   convertIPATextToZhuyin,
-} from '../js/zh.format.js';
+} from '../js/format/zh.format.js';
 
-import { formatIPANumbers } from '../js/vi.format.js';
+import { formatIPANumbers } from '../js/format/vi.format.js';
 
 // ============================================
 // Test Infrastructure

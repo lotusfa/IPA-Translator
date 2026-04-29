@@ -2,7 +2,7 @@
  * Debug: Testing [kʷɔ:k] conversion
  */
 
-import { formatYueJyutping } from '../js/yue.format.js';
+import { formatYueJyutping } from '../js/format/yue.format.js';
 
 console.log('\n=== Debug: Testing [kʷɔ:k] conversion ===\n');
 

@@ -7,8 +7,8 @@
 import { decomposeSyllable, getInitialsForLanguage, supportsDecomposition } from '../../js/syllable-decompose.js';
 import { decomposeToJyutping, decomposeToGuangzhou, decomposeToAcademy, decomposeToYale, decomposeToLiu,
          JYUTPING_INITIALS, GUANGZHOU_INITIALS, ACADEMY_INITIALS, YALE_INITIALS, LIU_INITIALS,
-         formatIPA_num as yueFormatIPANum } from '../../js/yue.format.js';
-import { decomposeToPinyin, decomposeToZhuyin, MANDARIN_INITIALS } from '../../js/zh.format.js';
+         formatIPA_num as yueFormatIPANum } from '../../js/format/yue.format.js';
+import { decomposeToPinyin, decomposeToZhuyin, MANDARIN_INITIALS } from '../../js/format/zh.format.js';
 import { shuffle } from './utils.js';
 
 export const id = 'syllable-fill';

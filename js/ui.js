@@ -12,8 +12,8 @@
  *   import { initIPAListPage } from '../js/ui.js';
  */
 
-export { initIPAIndexPage } from './ipa-index-page.js';
-export { initIPATable, initIPAListPage } from './ipa-list-page.js';
-export { initDarkMode, generateLanguageButtons, initLanguageButtons, initResponsiveTextareaRows } from './page-shared.js';
+export { initIPAIndexPage } from './page/ipa-index-page.js';
+export { initIPATable, initIPAListPage } from './page/ipa-list-page.js';
+export { initDarkMode, generateLanguageButtons, initLanguageButtons, initResponsiveTextareaRows } from './page/page-shared.js';
 export { processTextCharBased, processTextLongestMatch } from './ipa.js';
-export { createGameButton } from './game-entry.js';
+export { createGameButton } from './page/game-entry.js';

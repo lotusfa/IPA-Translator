@@ -3,7 +3,7 @@
  */
 
 import { initIPAIndexPage, processTextLongestMatch } from '../js/ui.js';
-import { formatVietnameseOutput, formatIPANumbers } from '../js/vi.format.js';
+import { formatVietnameseOutput, formatIPANumbers } from '../js/format/vi.format.js';
 
 // Initialize with char-based processing and Vietnamese formatters
 initIPAIndexPage({

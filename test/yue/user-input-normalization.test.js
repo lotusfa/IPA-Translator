@@ -3,7 +3,7 @@
  * Users often type "kw" instead of "kʷ" (the proper IPA symbol)
  */
 
-import { formatYueJyutping } from '../js/yue.format.js';
+import { formatYueJyutping } from '../js/format/yue.format.js';
 
 console.log('\n=== Testing User-Friendly IPA Input ===\n');
 

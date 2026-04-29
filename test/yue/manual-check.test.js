@@ -9,7 +9,7 @@ import {
   formatYueAcademy,
   formatYueYale,
   formatYueLiu
-} from '../js/yue.format.js';
+} from '../js/format/yue.format.js';
 
 console.log('\n=== Manual Check: /kwɔ:k˧ tsɐi˧ jɐm˥ pi:u˥/ ===\n');
 
