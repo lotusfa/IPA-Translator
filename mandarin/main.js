@@ -25,7 +25,7 @@ initIPAIndexPage({
     Pinyin: convertIPATextToPinyinWithMarks,
     Zhuyin: convertIPATextToZhuyin
   },
-  maxWordLength: 6,
+  maxWordLength: 9,
   ttsLanguage: 'zh-CN',
   gameLabel: 'mandarin'
 });
