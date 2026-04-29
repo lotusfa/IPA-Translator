@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="한국어 단어 발음 목록 (Korean IPA word list with pronunciation.)" />
+    <title>한국어 - IPA List</title>
+    <link rel="icon" href="../favicon.svg" />
+    <link rel="stylesheet" href="../css/styles.css" />
+  </head>
+
+  <body>
+    <div class="header">
+      <div class="titles">
+        <h1>한국어 단어 목록 / Korean IPA List</h1>
+        <h2>한국어 (ko)</h2>
+      </div>
+      <button id="dark-mode-toggle" class="btn-theme" aria-label="Toggle dark mode">
+        <span class="icon"></span>
+      </button>
+    </div>
+    <hr />
+
+    <div class="container">
+      <div class="row" style="margin-bottom: 15px;">
+        <div class="col" style="flex: 0 0 auto;">
+          <h5 style="margin: 0;"><a href="./index.html">← 돌아가기 / Back to Translator</a></h5>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <div class="table-responsive">
+          <table class="table table-striped display" id="DataTable">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">한국어 단어 / Korean Word</th>
+                <th scope="col">IPA 音標 / IPA</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+</div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h4>설명 / Description</h4>
+          <p>이 오픈소스 프로젝트는 한국어를 IPA로 변환합니다.</p>
+        </div>
+
+        <div class="footer-col">
+          <h4>다른 언어 / Other Languages</h4>
+          <ul class="lang-list" id="lang-buttons-container">
+
+</ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>링크 / Links</h4>
+          <ul>
+            <li><a href="./ipa_list.html">IPA 데이터베이스</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>
+          <a href="https://github.com/lotusfa/IPA-Translator">GitHub</a>
+          &nbsp;|&nbsp;
+          Copyright © <a href="https://lotusfa.com/">LotusFa</a>
+        </p>
+      </div>
+    </footer>
+
+    <script src="../lib/jquery/jquery.min.js"></script>
+    <script src="../lib/datatables/datatables.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="../lib/datatables/datatables.min.css"/>
+
+    <script type="module">
+      import { initIPAListPage } from '../js/ui.js';
+
+      await initIPAListPage({
+        language: 'ko-KR',
+        tableJsonPath: '../json/ko.json',
+        tableId: 'DataTable',
+        enableTTS: true
+      });
+    </script>
+  </body>
+</html>

@@ -143,6 +143,54 @@
       "indexPath": "../odia/index.html",
       "ipaListPath": "../odia/ipa_list.html",
       "isActive": false
+    },
+    {
+      "code": "icelandic",
+      "name": "Íslenska (is)",
+      "nativeName": "Íslenska",
+      "indexPath": "../icelandic/index.html",
+      "ipaListPath": "../icelandic/ipa_list.html",
+      "isActive": false
+    },
+    {
+      "code": "khmer",
+      "name": "ភាសាខ្មែរ (km)",
+      "nativeName": "ភាសាខ្មែរ",
+      "indexPath": "../khmer/index.html",
+      "ipaListPath": "../khmer/ipa_list.html",
+      "isActive": false
+    },
+    {
+      "code": "korean",
+      "name": "한국어 (ko)",
+      "nativeName": "한국어",
+      "indexPath": "../korean/index.html",
+      "ipaListPath": "../korean/ipa_list.html",
+      "isActive": false
+    },
+    {
+      "code": "dutch",
+      "name": "Nederlands (nl)",
+      "nativeName": "Nederlands",
+      "indexPath": "../dutch/index.html",
+      "ipaListPath": "../dutch/ipa_list.html",
+      "isActive": false
+    },
+    {
+      "code": "portuguese",
+      "name": "Português (pt-BR)",
+      "nativeName": "Português",
+      "indexPath": "../portuguese/index.html",
+      "ipaListPath": "../portuguese/ipa_list.html",
+      "isActive": false
+    },
+    {
+      "code": "romanian",
+      "name": "Română (ro)",
+      "nativeName": "Română",
+      "indexPath": "../romanian/index.html",
+      "ipaListPath": "../romanian/ipa_list.html",
+      "isActive": false
     }
   ]
 }

@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="បញ្ជីពាក្យខ្មែរជាមួយការអាន (Khmer IPA word list with pronunciation.)" />
+    <title>ភាសាខ្មែរ - IPA List</title>
+    <link rel="icon" href="../favicon.svg" />
+    <link rel="stylesheet" href="../css/styles.css" />
+  </head>
+
+  <body>
+    <div class="header">
+      <div class="titles">
+        <h1>បញ្ជីពាក្យខ្មែរ / Khmer IPA List</h1>
+        <h2>ភាសាខ្មែរ (km)</h2>
+      </div>
+      <button id="dark-mode-toggle" class="btn-theme" aria-label="Toggle dark mode">
+        <span class="icon"></span>
+      </button>
+    </div>
+    <hr />
+
+    <div class="container">
+      <div class="row" style="margin-bottom: 15px;">
+        <div class="col" style="flex: 0 0 auto;">
+          <h5 style="margin: 0;"><a href="./index.html">← ត្រឡប់ / Back to Translator</a></h5>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <div class="table-responsive">
+          <table class="table table-striped display" id="DataTable">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">ពាក្យខ្មែរ / Khmer Word</th>
+                <th scope="col">IPA 音標 / IPA</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+</div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h4>ការពិពណ៌នា / Description</h4>
+          <p>គម្រោង open-source នេះបំលែងភាសាខ្មែរទៅជា IPA។</p>
+        </div>
+
+        <div class="footer-col">
+          <h4>ភាសាផ្សេងទៀត / Other Languages</h4>
+          <ul class="lang-list" id="lang-buttons-container">
+
+</ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>តំណភ្ជាប់ / Links</h4>
+          <ul>
+            <li><a href="./ipa_list.html">មូលដ្ឋានទិន្នន័យ IPA / IPA Database</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>
+          <a href="https://github.com/lotusfa/IPA-Translator">GitHub</a>
+          &nbsp;|&nbsp;
+          Copyright © <a href="https://lotusfa.com/">LotusFa</a>
+        </p>
+      </div>
+    </footer>
+
+    <script src="../lib/jquery/jquery.min.js"></script>
+    <script src="../lib/datatables/datatables.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="../lib/datatables/datatables.min.css"/>
+
+    <script type="module">
+      import { initIPAListPage } from '../js/ui.js';
+
+      await initIPAListPage({
+        language: 'km-KH',
+        tableJsonPath: '../json/km.json',
+        tableId: 'DataTable',
+        enableTTS: true
+      });
+    </script>
+  </body>
+</html>

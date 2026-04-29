@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="is">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>IPA Translator - Íslenska</title>
+    <link rel="icon" href="../favicon.svg" />
+    <link rel="stylesheet" href="../css/styles.css" />
+  </head>
+  <body>
+    <div class="header">
+      <div class="titles">
+        <h1>IPA Þýðari</h1>
+        <h2>Íslenska (is)</h2>
+      </div>
+      <button id="dark-mode-toggle" class="btn-theme" aria-label="Toggle dark mode">
+        <span class="icon"></span>
+      </button>
+    </div>
+    <hr />
+
+    <div class="row">
+      <div class="col">
+        <div class="form-group">
+          <label>Íslenskur texti</label>
+          <textarea id="cWords_tBox" rows="10" placeholder="Input some Icelandic text."></textarea>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="form-group">
+          <label>IPA</label>
+          <textarea id="IPA_tBox" rows="10" disabled></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="form-check-inline">
+          <input type="checkbox" id="wf_c_words" checked />
+          <label for="wf_c_words">Með íslenskum orðum / With Icelandic Words</label>
+        </div>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h4>Lýsing / Description</h4>
+          <p>Þetta er opið verkefni til að þýða íslensku yfir í IPA.</p>
+          <p>This is an open-source project to translate Icelandic to IPA.</p>
+        </div>
+
+        <div class="footer-col">
+          <h4>Aðrar tungumál / Other Languages</h4>
+          <ul class="lang-list" id="lang-buttons-container">
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Nýtar tenglar / Useful Links</h4>
+          <ul>
+            <li><a href="./ipa_list.html">IPA gagnagrunnur / IPA Database (Icelandic)</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>
+          <a href="https://github.com/lotusfa/IPA-Translator">GitHub</a>
+          &nbsp;|&nbsp;
+          Copyright © <a href="https://lotusfa.com/">LotusFa</a>
+        </p>
+      </div>
+    </footer>
+
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>

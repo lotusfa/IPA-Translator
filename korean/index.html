@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>IPA Translator - 한국어</title>
+    <link rel="icon" href="../favicon.svg" />
+    <link rel="stylesheet" href="../css/styles.css" />
+  </head>
+  <body>
+    <div class="header">
+      <div class="titles">
+        <h1>IPA 번역기</h1>
+        <h2>한국어 (ko)</h2>
+      </div>
+      <button id="dark-mode-toggle" class="btn-theme" aria-label="Toggle dark mode">
+        <span class="icon"></span>
+      </button>
+    </div>
+    <hr />
+
+    <div class="row">
+      <div class="col">
+        <div class="form-group">
+          <label>한국어 텍스트</label>
+          <textarea id="cWords_tBox" rows="10" placeholder="한국어 텍스트를 입력하세요."></textarea>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="form-group">
+          <label>IPA</label>
+          <textarea id="IPA_tBox" rows="10" disabled></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="form-check-inline">
+          <input type="checkbox" id="wf_c_words" checked />
+          <label for="wf_c_words">한국어 단어 포함 / With Korean Words</label>
+        </div>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h4>설명 / Description</h4>
+          <p>이는 한국어를 IPA로 번역하는 오픈소스 프로젝트입니다.</p>
+        </div>
+
+        <div class="footer-col">
+          <h4>다른 언어 / Other Languages</h4>
+          <ul class="lang-list" id="lang-buttons-container">
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>유용한 링크 / Useful Links</h4>
+          <ul>
+            <li><a href="./ipa_list.html">IPA 데이터베이스 (한국어)</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>
+          <a href="https://github.com/lotusfa/IPA-Translator">GitHub</a>
+          &nbsp;|&nbsp;
+          Copyright © <a href="https://lotusfa.com/">LotusFa</a>
+        </p>
+      </div>
+    </footer>
+
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>
