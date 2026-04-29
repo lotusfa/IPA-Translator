@@ -1,3 +1,5 @@
+import { svgDarkMode, svgLightMode } from '../svg.js';
+
 /**
  * Set up dark mode toggle
  * @param {string} toggleId - ID of the theme toggle button element
@@ -6,15 +8,15 @@ export function initDarkMode(toggleId) {
   const toggle = document.getElementById(toggleId);
   if (!toggle) return;
 
-  const iconImg = toggle.querySelector(".icon");
+  const iconSpan = toggle.querySelector(".icon");
   const savedTheme = localStorage.getItem("theme");
 
   // Set initial state
   if (savedTheme === "dark") {
     document.body.classList.add("dark-mode");
-    if (iconImg) iconImg.src = "../img/dark-mode.svg";
+    if (iconSpan) iconSpan.innerHTML = svgDarkMode;
   } else {
-    if (iconImg) iconImg.src = "../img/light-mode.svg";
+    if (iconSpan) iconSpan.innerHTML = svgLightMode;
   }
 
   // Add click handler
@@ -23,8 +25,8 @@ export function initDarkMode(toggleId) {
     document.body.classList.toggle("dark-mode");
     const isDark = document.body.classList.contains("dark-mode");
 
-    if (iconImg) {
-      iconImg.src = isDark ? "../img/dark-mode.svg" : "../img/light-mode.svg";
+    if (iconSpan) {
+      iconSpan.innerHTML = isDark ? svgDarkMode : svgLightMode;
     }
 
     localStorage.setItem("theme", isDark ? "dark" : "light");

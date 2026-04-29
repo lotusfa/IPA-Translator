@@ -208,7 +208,7 @@ body.dark-mode .btn-theme:hover {
 }
 
 body.dark-mode .btn-theme .icon {
-  filter: invert(1);
+  color: #fff;
 }
 
 /* Header with titles and dark mode toggle */
@@ -269,6 +269,7 @@ body.dark-mode .btn-theme .icon {
   width: 24px;
   height: 24px;
   display: block;
+  color: #000;
 }
 
 /* Icon button (for TTS speaker) */
