@@ -889,21 +889,90 @@ div.table-responsive > div.dataTables_wrapper > div.row > .col-sm-12 {
   background: var(--color-btn-hover);
 }
 
+/* Action row — inline circle buttons (Share, Export CSV, etc.) */
+.share-action-row {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+}
+
+.share-circle-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  transition: background-color var(--transition-normal);
+}
+
+.share-circle-btn:hover {
+  background: var(--color-btn-bg);
+}
+
+.share-circle-btn svg {
+  width: 28px;
+  height: 28px;
+}
+
+.share-circle-btn span {
+  font-size: var(--font-xs);
+}
+
+/* URL input with copy button attached inside, like YouTube share */
+.share-url-input {
+  position: relative;
+  margin-bottom: var(--spacing-sm);
+}
+
 .share-url-field {
   width: 100%;
-  padding: 8px 10px;
+  padding: 8px 32px 8px 10px;
   font-size: var(--font-xs);
   font-family: inherit;
   border: 1px solid var(--color-input-border);
   border-radius: var(--radius-sm);
   background: var(--color-input-bg);
   color: var(--color-text);
-  margin-bottom: var(--spacing-sm);
 }
 
 .share-url-field:focus {
   outline: none;
   border-color: var(--color-primary);
+}
+
+.share-url-input .copy-link-btn {
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  padding: 3px;
+  font-size: 16px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  line-height: 1;
+}
+
+.share-url-input .copy-link-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.share-url-input .copy-link-btn:hover {
+  color: var(--color-text);
+  background: var(--color-btn-bg);
 }
 
 body.dark-mode .share-modal-close:hover {

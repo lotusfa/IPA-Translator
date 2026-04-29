@@ -3,7 +3,7 @@
  * Used by: game/game.js, js/ui.js (translation pages)
  */
 
-import { svgShare } from './svg.js';
+import { svgShare, svgCopy, svgTick } from './svg.js';
 
 // ============================================
 // Encoding / Decoding
@@ -113,18 +113,19 @@ function buildShareModal() {
   const overlay = document.createElement('div');
   overlay.className = 'share-modal-overlay';
   overlay.innerHTML = `
-    <div class="share-modal" role="dialog" aria-modal="true" aria-labelledby="share-modal-title">
+    <div class="share-modal" role="dialog" aria-modal="true">
       <button class="share-modal-close btn-icon" aria-label="Close">&times;</button>
-      <h3 id="share-modal-title">Share</h3>
-      <button class="share-native-btn" style="display:none;">Share</button>
-      <input class="share-url-field" type="text" readonly />
-      <button class="copy-link-btn">Copy Link</button>
+      <div class="share-action-row"></div>
+      <div class="share-url-input">
+        <input class="share-url-field" type="text" readonly />
+        <button class="copy-link-btn btn-icon" aria-label="Copy">${svgCopy}</button>
+      </div>
     </div>`;
 
   document.body.appendChild(overlay);
 
   const closeBtn = overlay.querySelector('.share-modal-close');
-  const nativeBtn = overlay.querySelector('.share-native-btn');
+  const actionRow = overlay.querySelector('.share-action-row');
   const copyBtn = overlay.querySelector('.copy-link-btn');
   const urlField = overlay.querySelector('.share-url-field');
 
@@ -142,17 +143,25 @@ function buildShareModal() {
     if (e.key === 'Escape' && overlay.style.display !== 'none') close();
   });
 
-  nativeBtn.addEventListener('click', async () => {
-    try {
-      await navigator.share({ url: currentUrl });
-    } catch { /* user cancelled */ }
-  });
-
   copyBtn.addEventListener('click', async () => {
     await copyToClipboard(currentUrl);
-    copyBtn.textContent = 'Copied!';
-    setTimeout(() => { copyBtn.textContent = 'Copy Link'; }, 2000);
+    copyBtn.innerHTML = svgTick;
+    setTimeout(() => { copyBtn.innerHTML = svgCopy; }, 2000);
   });
+
+  // Create native share circle button if supported (or on localhost for dev testing)
+  const isLocalhost = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+  let nativeShareBtn = null;
+  if (typeof navigator.share === 'function' || isLocalhost) {
+    nativeShareBtn = document.createElement('button');
+    nativeShareBtn.className = 'share-circle-btn';
+    nativeShareBtn.innerHTML = `${svgShare}<span>Share</span>`;
+    nativeShareBtn.addEventListener('click', async () => {
+      try {
+        await navigator.share({ url: currentUrl });
+      } catch { /* user cancelled */ }
+    });
+  }
 
   const show = async (getShareData) => {
     const data = await Promise.resolve(getShareData());
@@ -163,16 +172,18 @@ function buildShareModal() {
     currentUrl = url.toString();
     urlField.value = currentUrl;
 
-    if (typeof navigator.share === 'function') {
-      nativeBtn.style.display = '';
-    } else {
-      nativeBtn.style.display = 'none';
+    // Clear previous action buttons
+    actionRow.innerHTML = '';
+
+    // Add native share button if available
+    if (nativeShareBtn) {
+      actionRow.appendChild(nativeShareBtn);
     }
 
     overlay.style.display = 'flex';
   };
 
-  return { overlay, show, close };
+  return { overlay, show, close, actionRow };
 }
 
 /**
