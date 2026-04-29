@@ -260,45 +260,52 @@ export function processTextLongestMatch(options) {
  * @returns {string|object} Processed result
  */
 export function processKhmerText(options) {
-  const {
-    input,
-    lookupTable,
-    withWords = false,
-    pairsOnly = false
-  } = options;
+  const { input, lookupTable, withWords = false, pairsOnly = false } = options;
 
-  // 1. Initialize the Segmenter for Khmer
-  // 'granularity: word' uses ICU rules to find Khmer word boundaries
+  // 1. Clean hidden characters
+  const sanitizedInput = input.replace(/[\u200B-\u200D\uFEFF]/g, '');
+  
+  // 2. Use Segmenter for word-level boundaries
   const segmenter = new Intl.Segmenter('km', { granularity: 'word' });
-  const segments = segmenter.segment(input);
+  const segments = segmenter.segment(sanitizedInput);
 
   let result = "";
   let pairs = [];
 
-  for (const { segment, isWordLike } of segments) {
-    // Clean the segment for matching (removes hidden marks if necessary)
+  for (const { segment } of segments) {
     const cleanSegment = segment.trim();
-    
-    if (cleanSegment === "") {
-        if (!pairsOnly) result += " ";
-        continue;
+    if (!cleanSegment) {
+      if (!pairsOnly) result += " ";
+      continue;
     }
 
-    // Check lookup table for the word/syllable
-    // We try the segment as is, then a preprocessed version
-    let matchedIPA = lookupTable[cleanSegment] || lookupTable[preprocessText(cleanSegment)];
+    // Try whole word first (e.g., "ភាសា" or "សួស្តី")
+    let matchedIPA = lookupTable[cleanSegment];
 
     if (matchedIPA) {
       result += withWords ? `( ${cleanSegment} ${matchedIPA} ) ` : `${matchedIPA} `;
       if (pairsOnly) pairs.push([cleanSegment, matchedIPA]);
     } else {
-      // If no match found, keep the original Khmer text
-      result += cleanSegment + " ";
-      if (pairsOnly) pairs.push([cleanSegment, null]);
+      /* 3. Fallback: Break word into phonetic clusters
+         This regex captures: Base Consonant + Subscripts + Vowels + Diacritics
+      */
+      const clusters = cleanSegment.match(/[\u1780-\u17AF]([\u17D2][\u1780-\u17AF])*[\u17B6-\u17D3\u17D7]*/g) || [cleanSegment];
+      
+      for (const cluster of clusters) {
+        const clusterIPA = lookupTable[cluster];
+        if (clusterIPA) {
+          result += withWords ? `( ${cluster} ${clusterIPA} ) ` : `${clusterIPA} `;
+          if (pairsOnly) pairs.push([cluster, clusterIPA]);
+        } else {
+          // If cluster not in DB, keep original text
+          result += cluster; 
+          if (pairsOnly) pairs.push([cluster, null]);
+        }
+      }
+      result += " ";
     }
   }
 
   if (pairsOnly) return { result: result.trim(), pairs };
-  return result.trim();
+  return result.trim().replace(/\s+/g, ' '); // Clean up spacing
 }
-
