@@ -102,7 +102,7 @@ export async function copyToClipboard(text) {
 
 let shareModalInstance = null;
 
-function getShareModal() {
+export function getShareModal() {
   if (!shareModalInstance) {
     shareModalInstance = buildShareModal();
   }

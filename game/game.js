@@ -21,8 +21,8 @@
 // - formattedPairs: [[word, formattedOutput], ...] (or same as pairs if no format)
 
 import { shuffle } from './game-types/utils.js';
-import { compressAndEncode, copyToClipboard, parseShareFromUrl, clearShareParams } from '../js/share.js';
-import { svgShare, svgTick } from '../js/svg.js';
+import { compressAndEncode, parseShareFromUrl, clearShareParams, getShareModal } from '../js/share.js';
+import { svgShare } from '../js/svg.js';
 import * as wordToIpa from './game-types/wordToIpa.js';
 import * as ipaToWord from './game-types/ipaToWord.js';
 import * as syllableFill from './game-types/syllableFill.js';
@@ -52,22 +52,6 @@ function loadGameData() {
 // Share — encode game data into URL / decode from URL
 // ============================================
 
-async function createShareUrl() {
-  const data = loadGameData();
-  if (!data) return null;
-  const b64 = await compressAndEncode({
-    page: 'game',
-    lang: data.language || '',
-    text: data.text || '',
-    pairs: data.pairs || [],
-    formattedPairs: data.formattedPairs || [],
-    format: data.format || '',
-  });
-  const url = new URL(window.location.href);
-  url.searchParams.set('d', b64);
-  return url.toString();
-}
-
 async function createTranslatorUrl() {
   const data = loadGameData();
   if (!data) return `../${data?.language || 'cantonese'}/index.html`;
@@ -81,12 +65,6 @@ async function createTranslatorUrl() {
   const url = new URL(`../${data.language}/index.html`, window.location.href);
   url.searchParams.set('d', b64);
   return url.toString();
-}
-
-async function copyShareUrl() {
-  const url = await createShareUrl();
-  if (!url) return;
-  await copyToClipboard(url);
 }
 
 // Import data from URL if present (runs before startScreen)
@@ -187,11 +165,8 @@ function startScreen() {
       launchGame(selectedLength);
     });
 
-    app.querySelector('#share-btn').addEventListener('click', async () => {
-      const btn = app.querySelector('#share-btn');
-      await copyShareUrl();
-      btn.innerHTML = svgTick;
-      setTimeout(() => { btn.innerHTML = svgShare; }, 2000);
+    app.querySelector('#share-btn').addEventListener('click', () => {
+      getShareModal().show(() => loadGameData());
     });
 
     app.querySelector('.game-link-btn').addEventListener('click', async () => {
@@ -346,11 +321,8 @@ function congratsScreen() {
     launchGame(questionQueue.length);
   });
 
-  app.querySelector('#share-btn').addEventListener('click', async () => {
-    const btn = app.querySelector('#share-btn');
-    await copyShareUrl();
-    btn.innerHTML = svgTick;
-    setTimeout(() => { btn.innerHTML = svgShare; }, 2000);
+  app.querySelector('#share-btn').addEventListener('click', () => {
+    getShareModal().show(() => loadGameData());
   });
 
   app.querySelector('.game-back-translator-btn').addEventListener('click', async () => {
