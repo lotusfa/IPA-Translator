@@ -19,6 +19,9 @@ export const INITIAL_PATTERNS = ['tɕʰ', 'tʂʰ', 'ʈʂʰ', 'tɕ', 'tʂ', 'ʈʂ
 // Pinyin initials for syllable-fill game distractor generation
 export const MANDARIN_INITIALS = ['b', 'p', 'm', 'f', 'd', 't', 'n', 'l', 'g', 'k', 'h', 'j', 'q', 'x', 'zh', 'ch', 'sh', 'r', 'z', 'c', 's', 'y', 'w'];
 
+// Zhuyin initials for syllable-fill game distractor generation
+export const ZHUYIN_INITIALS = ['ㄅ', 'ㄆ', 'ㄇ', 'ㄈ', 'ㄉ', 'ㄊ', 'ㄋ', 'ㄌ', 'ㄍ', 'ㄎ', 'ㄏ', 'ㄐ', 'ㄑ', 'ㄒ', 'ㄓ', 'ㄔ', 'ㄕ', 'ㄖ', 'ㄗ', 'ㄘ', 'ㄙ'];
+
 // Tone marker unicode characters
 const TONE = {
   FIVE: '˥', FOUR: '˦', THREE: '˧', TWO: '˨', ONE: '˩'

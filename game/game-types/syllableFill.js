@@ -10,7 +10,7 @@ import { decomposeSyllable, getInitialsForLanguage, supportsDecomposition } from
 import { decomposeToJyutping, decomposeToGuangzhou, decomposeToAcademy, decomposeToYale, decomposeToLiu,
          JYUTPING_INITIALS, GUANGZHOU_INITIALS, ACADEMY_INITIALS, YALE_INITIALS, LIU_INITIALS,
          formatIPA_num as yueFormatIPANum } from '../../js/format/yue.format.js';
-import { decomposeToPinyin, decomposeToZhuyin, MANDARIN_INITIALS } from '../../js/format/zh.format.js';
+import { decomposeToPinyin, decomposeToZhuyin, MANDARIN_INITIALS, ZHUYIN_INITIALS } from '../../js/format/zh.format.js';
 import { shuffle } from './utils.js';
 
 export const id = 'syllable-fill';
@@ -50,7 +50,7 @@ const decomposeByFormat = {
 const initialsByFormat = {
   Pinyin: MANDARIN_INITIALS,
   'Pinyin_num': MANDARIN_INITIALS,
-  Zhuyin: ['ㄅ', 'ㄆ', 'ㄇ', 'ㄈ', 'ㄉ', 'ㄊ', 'ㄋ', 'ㄌ', 'ㄍ', 'ㄎ', 'ㄏ', 'ㄐ', 'ㄑ', 'ㄒ', 'ㄓ', 'ㄔ', 'ㄕ', 'ㄖ', 'ㄗ', 'ㄘ', 'ㄙ'],
+  Zhuyin: ZHUYIN_INITIALS,
   Jyutping: JYUTPING_INITIALS,
   Guangzhou: GUANGZHOU_INITIALS,
   Academy: ACADEMY_INITIALS,
