@@ -7,10 +7,9 @@ import { svgGamepad } from './svg.js';
  * @param {string} options.inputId - ID of the input textarea
  * @param {string} options.outputId - ID of the output textarea
  * @param {Function} options.process - The processor function
- * @param {Object} options.IPA_DB - The IPA lookup table (set externally)
+ * @param {Function} options.getIpaDataBase - Returns the current IPA lookup table
  * @param {string} options.gameLabel - Language folder name for game
- * @param {Function} options.getCurrentFormat - Returns current format string
- * @param {Function} options.getProcessorOptions - Returns { withWords, allowWordSearch }
+ * @param {Function} options.getFormatter - Returns { formatter, formatId } or null
  * @param {number} options.maxWordLength - Max word match length
  * @param {number} options.maxPhraseLength - Max phrase match length
  * @param {string|null} options.ttsLanguage - TTS language code
@@ -22,9 +21,9 @@ export function createGameButton(options) {
     inputId,
     outputId,
     process,
-    IPA_DB,
+    getIpaDataBase,
     gameLabel,
-    getCurrentFormat,
+    getFormatter,
     getProcessorOptions,
     maxWordLength,
     maxPhraseLength,
@@ -56,7 +55,7 @@ export function createGameButton(options) {
     // Get raw pairs for syllable-fill game type (needs unformatted IPA)
     const { pairs } = process({
       input,
-      lookupTable: IPA_DB,
+      lookupTable: getIpaDataBase(),
       withWords,
       allowWordSearch,
       maxWordLength,
@@ -66,8 +65,7 @@ export function createGameButton(options) {
 
     if (pairs.length < 2) return;
 
-    const currentFormat = getCurrentFormat();
-    const formatter = currentFormat ? window[currentFormat] : null;
+    const { formatter, formatId } = getFormatter();
     const formattedIpa = pairs.map(([w, ipa]) => {
       if (!formatter) return [w, ipa];
       const formatted = formatter(ipa);
@@ -80,7 +78,7 @@ export function createGameButton(options) {
       pairs,
       formattedPairs: formattedIpa,
       language: gameLabel || '',
-      format: currentFormat || '',
+      format: formatId || '',
       ttsLanguage: ttsLanguage || (getLanguage ? getLanguage() : '')
     }));
 

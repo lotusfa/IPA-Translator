@@ -5,7 +5,7 @@
 
 import { loadIPADatabase, normalizeIPAData, isElementChecked, setElementValue, setElementValueAnimated } from './utils.js';
 import { initSpeakButton } from './tts.js';
-import { svgGamepad } from './svg.js';
+import { createGameButton } from './game-entry.js';
 import { createShareButton, parseShareFromUrl, clearShareParams } from './share.js';
 import { initDarkMode, initLanguageButtons, initResponsiveTextareaRows } from './page-shared.js';
 
@@ -196,60 +196,24 @@ export function initIPAIndexPage(options) {
 
   // Game button
   if (enableGameButton) {
-    const outputEl = document.getElementById(outputId);
-    if (outputEl) {
-      const outputLabel = outputEl.closest('.form-group')?.querySelector('label');
-      if (outputLabel) {
-        const gameBtn = document.createElement('button');
-        gameBtn.id = 'game-btn';
-        gameBtn.className = 'btn-icon';
-        gameBtn.setAttribute('aria-label', 'Start IPA Game');
-        gameBtn.style.display = 'none';
-        gameBtn.innerHTML = svgGamepad;
-        outputLabel.appendChild(gameBtn);
-
-        gameBtn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          const input = document.getElementById(inputId)?.value || '';
-          if (!input.trim()) return;
-
-          const effectiveWithWordsId = withWordsCheckboxId || withWordsId;
-          const withWords = effectiveWithWordsId ? isElementChecked(effectiveWithWordsId) : false;
-          const allowWordSearch = allowWordSearchId ? isElementChecked(allowWordSearchId) : false;
-
-          const { pairs } = process({
-            input,
-            lookupTable: IPA_DB,
-            withWords,
-            allowWordSearch,
-            maxWordLength,
-            maxPhraseLength,
-            pairsOnly: true
-          });
-
-          if (pairs.length < 2) return;
-
-          const formatter = getFormatter();
-          const formattedIpa = pairs.map(([w, ipa]) => {
-            if (!formatter) return [w, ipa];
-            const formatted = formatter(ipa);
-            const match = formatted.match(/\/(.+?)\//);
-            return [w, match ? match[1] : formatted];
-          });
-
-          localStorage.setItem('ipa_game_data', JSON.stringify({
-            text: input,
-            pairs,
-            formattedPairs: formattedIpa,
-            language: gameLabel || '',
-            format: currentFormat || '',
-            ttsLanguage: ttsLanguage || (getLanguage ? getLanguage() : '')
-          }));
-
-          window.location.href = '../game/index.html';
-        });
-      }
-    }
+    createGameButton({
+      inputId,
+      outputId,
+      process,
+      getIpaDataBase: () => IPA_DB,
+      gameLabel,
+      getFormatter: () => ({ formatter: getFormatter(), formatId: currentFormat }),
+      getProcessorOptions: () => {
+        const effectiveWithWordsId = withWordsCheckboxId || withWordsId;
+        const withWords = effectiveWithWordsId ? isElementChecked(effectiveWithWordsId) : false;
+        const allowWordSearch = allowWordSearchId ? isElementChecked(allowWordSearchId) : false;
+        return { withWords, allowWordSearch };
+      },
+      maxWordLength,
+      maxPhraseLength,
+      ttsLanguage: ttsLanguage || (getLanguage ? getLanguage() : ''),
+      getLanguage
+    });
   }
 
   // Share button
