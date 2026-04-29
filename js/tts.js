@@ -2,15 +2,9 @@
  * Text-to-Speech (TTS) Module (Lean Edition)
  */
 
-import { svgVoice, svgPause } from './svg.js';
+import { svgVoice, svgPause, pathVoice, pathPause } from './svg.js';
 
 export { svgVoice, svgPause };
-
-// Path data for dynamic icon toggling (re-export for backward compatibility)
-export const ICONS = {
-  PLAY: 'M11 5L6 9H2v6h4l5 4V5z M15.54 8.46a5 5 0 0 1 0 7.07 M19.07 4.93a10 10 0 0 1 0 14.14',
-  PAUSE: 'M6 4h4v16H6z M14 4h4v16h-4z'
-};
 
 const VOICE_PRIORITY = {
   // --- English ---
@@ -135,7 +129,7 @@ export function initSpeakButton({ buttonId = 'speak-btn', inputId = 'cWords_tBox
 
   const setIcon = (showPause) => {
     if (showPause) {
-      pathEl.setAttribute('d', ICONS.PAUSE);
+      pathEl.setAttribute('d', pathPause);
     } else {
       pathEl.setAttribute('d', playPath);
     }
