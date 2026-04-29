@@ -814,3 +814,98 @@ body.dark-mode .dataTables_filter input {
 div.table-responsive > div.dataTables_wrapper > div.row > .col-sm-12 {
   margin: auto;
 }
+
+/* ============================================
+ * Share Modal
+ * ============================================ */
+
+.share-modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.4);
+  align-items: center;
+  justify-content: center;
+}
+
+.share-modal {
+  background: var(--color-bg);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-lg);
+  padding-top: 36px;
+  max-width: 420px;
+  width: calc(100% - 40px);
+  box-shadow: var(--shadow-md);
+  position: relative;
+}
+
+.share-modal-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-size: 20px;
+  color: var(--color-text-muted);
+  padding: 4px 8px;
+}
+
+.share-modal-close:hover {
+  color: var(--color-text);
+}
+
+.share-modal h3 {
+  margin: 0 0 var(--spacing-md) 0;
+  font-size: var(--font-xl);
+  text-align: center;
+}
+
+.share-native-btn,
+.copy-link-btn {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  margin-bottom: var(--spacing-sm);
+  font-size: var(--font-md);
+  font-weight: 500;
+  border: 1px solid var(--color-btn-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-primary);
+  color: #fff;
+  cursor: pointer;
+  transition: background-color var(--transition-normal);
+}
+
+.share-native-btn:hover,
+.copy-link-btn:hover {
+  background: var(--color-primary-dark);
+}
+
+.copy-link-btn {
+  background: var(--color-btn-bg);
+  color: var(--color-text);
+}
+
+.copy-link-btn:hover {
+  background: var(--color-btn-hover);
+}
+
+.share-url-field {
+  width: 100%;
+  padding: 8px 10px;
+  font-size: var(--font-xs);
+  font-family: inherit;
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-input-bg);
+  color: var(--color-text);
+  margin-bottom: var(--spacing-sm);
+}
+
+.share-url-field:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+body.dark-mode .share-modal-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
