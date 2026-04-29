@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-IPA-Translator is a static HTML/JavaScript web application that translates text from various languages to International Phonetic Alphabet (IPA). It supports 18+ languages with separate folders for each. No build step or server required — pure ES modules in the browser.
+IPA-Translator is a static HTML/JavaScript web application that translates text from various languages to International Phonetic Alphabet (IPA). It supports 24 languages with separate folders for each. No build step or server required — pure ES modules in the browser.
 
 ## Architecture
 
