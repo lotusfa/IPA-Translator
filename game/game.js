@@ -51,7 +51,11 @@ function loadGameData() {
   const raw = localStorage.getItem(STORAGE_KEY);
   if (!raw) return null;
   try {
-    return JSON.parse(raw);
+    const data = JSON.parse(raw);
+    // Filter out entries with null IPA (unmatched database entries)
+    if (data.pairs) data.pairs = data.pairs.filter(([, ipa]) => ipa != null);
+    if (data.formattedPairs) data.formattedPairs = data.formattedPairs.filter(([, ipa]) => ipa != null);
+    return data;
   } catch {
     return null;
   }

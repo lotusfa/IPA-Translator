@@ -63,10 +63,12 @@ export function createGameButton(options) {
       pairsOnly: true
     });
 
-    if (pairs.length < 2) return;
+    // Filter out entries where the IPA value is null (unmatched database entries)
+    const validPairs = pairs.filter(([, ipa]) => ipa != null);
+    if (validPairs.length < 2) return;
 
     const { formatter, formatId } = getFormatter();
-    const formattedIpa = pairs.map(([w, ipa]) => {
+    const formattedIpa = validPairs.map(([w, ipa]) => {
       if (!formatter) return [w, ipa];
       const formatted = formatter(ipa);
       const match = formatted.match(/\/(.+?)\//);
@@ -75,7 +77,7 @@ export function createGameButton(options) {
 
     localStorage.setItem('ipa_game_data', JSON.stringify({
       text: input,
-      pairs,
+      pairs: validPairs,
       formattedPairs: formattedIpa,
       language: gameLabel || '',
       format: formatId || '',
