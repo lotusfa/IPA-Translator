@@ -15,5 +15,5 @@
 export { initIPAIndexPage } from './page/ipa-index-page.js';
 export { initIPATable, initIPAListPage } from './page/ipa-list-page.js';
 export { initDarkMode, generateLanguageButtons, initLanguageButtons, initResponsiveTextareaRows } from './page/page-shared.js';
-export { processTextCharBased, processTextLongestMatch } from './ipa.js';
+export { processTextCharBased, processTextLongestMatch, processKhmerText } from './ipa.js';
 export { createGameButton } from './page/game-entry.js';

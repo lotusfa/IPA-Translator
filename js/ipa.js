@@ -249,4 +249,56 @@ export function processTextLongestMatch(options) {
   return result.trim();
 }
 
+/**
+ * Process Khmer text using Intl.Segmenter for smart word breaking
+ * This handles the "no-space" nature of Khmer and keeps clusters together.
+ * * @param {object} options - Options:
+ * @param {string} options.input - Input Khmer text
+ * @param {object} options.lookupTable - IPA lookup table (km.json)
+ * @param {boolean} [options.withWords] - Show word:ipa format
+ * @param {boolean} [options.pairsOnly] - Return array of [word, ipa]
+ * @returns {string|object} Processed result
+ */
+export function processKhmerText(options) {
+  const {
+    input,
+    lookupTable,
+    withWords = false,
+    pairsOnly = false
+  } = options;
+
+  // 1. Initialize the Segmenter for Khmer
+  // 'granularity: word' uses ICU rules to find Khmer word boundaries
+  const segmenter = new Intl.Segmenter('km', { granularity: 'word' });
+  const segments = segmenter.segment(input);
+
+  let result = "";
+  let pairs = [];
+
+  for (const { segment, isWordLike } of segments) {
+    // Clean the segment for matching (removes hidden marks if necessary)
+    const cleanSegment = segment.trim();
+    
+    if (cleanSegment === "") {
+        if (!pairsOnly) result += " ";
+        continue;
+    }
+
+    // Check lookup table for the word/syllable
+    // We try the segment as is, then a preprocessed version
+    let matchedIPA = lookupTable[cleanSegment] || lookupTable[preprocessText(cleanSegment)];
+
+    if (matchedIPA) {
+      result += withWords ? `( ${cleanSegment} ${matchedIPA} ) ` : `${matchedIPA} `;
+      if (pairsOnly) pairs.push([cleanSegment, matchedIPA]);
+    } else {
+      // If no match found, keep the original Khmer text
+      result += cleanSegment + " ";
+      if (pairsOnly) pairs.push([cleanSegment, null]);
+    }
+  }
+
+  if (pairsOnly) return { result: result.trim(), pairs };
+  return result.trim();
+}
 
