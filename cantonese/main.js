@@ -33,9 +33,9 @@ initIPAIndexPage({
   languageSelectorId: 'lang-selector-btn',
   footerToolsContainerId: 'footer-tools',
   toolsConfig: [
-    { id: 'share-btn', icon: 'share', label: '分享 (Share)', type: 'share', visible: 'after-translate' },
+    { id: 'share-btn', icon: 'share', label: '分享', type: 'share', visible: 'after-translate' },
     { id: 'ipa-list', icon: 'globe', label: 'IPA 資料庫', type: 'link', href: './ipa_list.html' },
-    { id: 'game-btn', icon: 'gamepad', label: 'Quiz Game', type: 'game', visible: 'after-translate' },
-    { id: 'lang-btn', icon: 'lang', label: '其他語言 (Languages)', type: 'lang' },
+    { id: 'game-btn', icon: 'gamepad', label: '測驗小遊戲', type: 'game', visible: 'after-translate' },
+    { id: 'lang-btn', icon: 'lang', label: '其他語言', type: 'lang' },
   ]
 });
