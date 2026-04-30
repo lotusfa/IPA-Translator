@@ -1,32 +1,82 @@
 import { initIPAIndexPage, processTextCharBased } from '../js/ui.js';
 
-// Example of a post-lookup rule for Nasalization (p + n -> m + n) 입니
+/**
+ * Applies Korean phonological rules to an array of [word, ipa] pairs.
+ * Rules handled: Nasalization, Tensing (Fortition), and L-Assimilation.
+ */
 function applyKoreanPhonology(ipaArray) {
-  console.log(ipaArray)
   for (let i = 0; i < ipaArray.length - 1; i++) {
-    let current = ipaArray[i];
-    let next = ipaArray[i+1];
-    
-    // console.log('current',current)
-    // console.log('next',next)
-    // If current ends in [p̚] and next starts with [n]
-    if (current[1].endsWith('p̚/') && next[1].startsWith('/n')) {
-      console.log('(p + n -> m + n)')
-      ipaArray[i][1] = current[1].replace('p̚/', 'm/'); // Change [p̚] to [m]
+    let current = ipaArray[i]; // [word, ipa]
+    let next = ipaArray[i + 1]; // [word, ipa]
+
+    const curIPA = current[1];
+    const nxtIPA = next[1];
+
+
+    // --- 1. NASAL ASSIMILATION ---
+    // Rules: p̚, k̚, t̚ + n → m, ŋ, n + n
+    if (nxtIPA.startsWith('/n')) {
+      if (curIPA.endsWith('p̚/')) {
+        ipaArray[i][1] = curIPA.replace('p̚/', 'm/');
+      } else if (curIPA.endsWith('k̚/')) {
+        ipaArray[i][1] = curIPA.replace('k̚/', 'ŋ/');
+      } else if (curIPA.endsWith('t̚/')) {
+        ipaArray[i][1] = curIPA.replace('t̚/', 'n/');
+      }
     }
-    // ... add more rules for tensing, l-assimilation, etc.
+
+    // Add this inside your applyKoreanPhonology loop
+    // Rule: k + h -> kʰ (Aspiration)
+    if (curIPA.endsWith('k̚/') && nxtIPA.startsWith('/h')) {
+      ipaArray[i][1] = curIPA.replace('k̚/', '/'); // Remove the k stop
+      ipaArray[i+1][1] = nxtIPA.replace('/h', '/kʰ'); // Turn h into aspirated k
+    }
+
+    // --- 2. TENSING (FORTITION) ---
+    // Rules: After a stop (p̚, k̚, t̚), plain consonants become tense
+    const isStop = curIPA.endsWith('p̚/') || curIPA.endsWith('k̚/') || curIPA.endsWith('t̚/');
+    if (isStop) {
+      const tenseMap = {
+        '/k': '/k͈',
+        '/t': '/t͈',
+        '/p': '/p͈',
+        '/s': '/s͈',
+        '/t͡ɕ': '/t͡ɕ͈'
+      };
+      
+      for (const [plain, tense] of Object.entries(tenseMap)) {
+        if (nxtIPA.startsWith(plain) && !nxtIPA.startsWith(tense)) {
+          ipaArray[i + 1][1] = nxtIPA.replace(plain, tense);
+          break; 
+        }
+      }
+    }
+
+    // --- 3. L-ASSIMILATION (LATERALIZATION) ---
+    // Rule: n + l -> l + l
+    if (curIPA.endsWith('n/') && nxtIPA.startsWith('/l')) {
+      ipaArray[i][1] = curIPA.replace('n/', 'l/');
+    }
+    // Rule: l + n -> l + l
+    if (curIPA.endsWith('l/') && nxtIPA.startsWith('/n')) {
+      ipaArray[i + 1][1] = nxtIPA.replace('/n', '/l');
+    }
   }
   return ipaArray;
 }
 
+/**
+ * Wrapper for Korean text processing that leverages character-based lookup
+ * and applies post-processing phonology rules.[cite: 1]
+ */
 function processKorean(options) {
   const { input, withWords = false, pairsOnly = false } = options;
 
-  // Step 1: get all matched [word, ipa] pairs from the base processor
-  const { pairs: rawPairs } = processTextCharBased({ ...options, pairsOnly: true, withWords: true });
+  // Step 1: get all matched [word, ipa] pairs from the base processor[cite: 1]
+  const { pairs: rawPairs } = processTextCharBased({ ...options, pairsOnly: true });
   const matchedPairs = rawPairs.filter(p => p[1] != null);
 
-  // Step 2: find each word's actual position in input (handles unmatched chars)
+  // Step 2: find each word's actual position in input
   let searchFrom = 0;
   const matches = matchedPairs.map(([word, ipa]) => {
     const start = input.indexOf(word, searchFrom);
@@ -51,12 +101,13 @@ function processKorean(options) {
       i += m.word.length - 1;
       mi++;
     } else {
-      result += String(input[i]) + " ";
+      // Keep spaces and punctuation as is
+      result += input[i] === " " ? "  " : String(input[i]) + " ";
     }
   }
 
   if (pairsOnly) return { result: result.trim(), pairs: matchesWithUpdated.map(m => [m.word, m.ipa]) };
-  return result.trim();
+  return result.trim().replace(/\s+/g, ' ');
 }
 
 initIPAIndexPage({
