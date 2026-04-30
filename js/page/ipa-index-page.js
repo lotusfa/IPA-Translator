@@ -425,25 +425,6 @@ export function initIPAIndexPage(options) {
 
     const opts = { getShareData: () => shareData, showExport: true };
 
-    if (enableGameButton) {
-      opts.gameOnClick = () => {
-        const validPairs = pairs.filter(([, ipa]) => ipa != null);
-        if (validPairs.length < 2) return;
-
-        localStorage.setItem('ipa_game_data', JSON.stringify({
-          text: input,
-          pairs: validPairs,
-          formattedPairs,
-          language: gameLabel || '',
-          format: currentFormat || '',
-          ttsLanguage: ttsLanguage || (getLanguage ? getLanguage() : ''),
-        }));
-
-        getShareModal().close();
-        window.location.href = '../game/index.html';
-      };
-    }
-
     getShareModal().show(opts);
   };
 

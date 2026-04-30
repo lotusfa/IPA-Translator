@@ -3,7 +3,7 @@
  * Used by: game/game.js, js/ui.js (translation pages)
  */
 
-import { svgShare, svgCopy, svgTick, svgDownload, svgGamepad } from './svg.js';
+import { svgShare, svgCopy, svgTick, svgDownload } from './svg.js';
 
 // ============================================
 // Encoding / Decoding
@@ -184,11 +184,11 @@ function buildShareModal() {
   }
 
   const show = async (getShareDataOrOpts) => {
-    // Accept either a function (backward compat for game) or { getShareData, showExport, gameOnClick }
+    // Accept either a function (backward compat for game) or { getShareData, showExport }
     const opts = typeof getShareDataOrOpts === 'function'
       ? { getShareData: getShareDataOrOpts }
       : getShareDataOrOpts;
-    const { getShareData, showExport, gameOnClick } = opts;
+    const { getShareData, showExport } = opts;
 
     const data = await Promise.resolve(getShareData());
     if (!data) return;
@@ -233,15 +233,6 @@ function buildShareModal() {
         downloadFile(rows.map(r => r.join(',')).join('\n'), 'ipa-data.csv', 'text/csv');
       });
       actionRow.appendChild(csvBtn);
-    }
-
-    // Game button (translator only)
-    if (gameOnClick) {
-      const gameBtn = document.createElement('button');
-      gameBtn.className = 'share-circle-btn';
-      gameBtn.innerHTML = `${svgGamepad}<span>Game</span>`;
-      gameBtn.addEventListener('click', gameOnClick);
-      actionRow.appendChild(gameBtn);
     }
 
     overlay.style.display = 'flex';
