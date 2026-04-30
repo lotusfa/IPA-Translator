@@ -69,6 +69,13 @@ body.dark-mode {
   color: #fff;
 }
 
+/* Don't highlight the answer button when hovering its speak icon */
+.game-option-btn:has(.game-option-speak-btn:hover) {
+  border-color: var(--color-btn-border);
+  background: var(--color-btn-bg);
+  color: var(--color-text);
+}
+
 .game-btn:disabled {
   cursor: default;
   opacity: 0.7;
