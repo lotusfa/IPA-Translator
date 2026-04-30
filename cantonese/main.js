@@ -31,5 +31,5 @@ initIPAIndexPage({
   ttsLanguage: 'zh-HK',
   gameLabel: 'cantonese',
   languageSelectorId: 'lang-selector-btn',
-  footerGameButtonId: 'footer-game-btn',
+  footerToolsContainerId: 'footer-tools',
 });

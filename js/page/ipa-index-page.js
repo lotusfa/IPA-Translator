@@ -6,7 +6,7 @@
 import { loadIPADatabase, normalizeIPAData, isElementChecked, setElementValue, setElementValueAnimated } from '../utils.js';
 import { initSpeakButton } from '../tts.js';
 import { getShareModal, parseShareFromUrl, clearShareParams } from '../share.js';
-import { svgShare } from '../svg.js';
+import { svgShare, svgGlobe, svgGamepad } from '../svg.js';
 import { initDarkMode, initLanguageButtons, generateLanguageButtons, initResponsiveTextareaRows } from './page-shared.js';
 
 export function initIPAIndexPage(options) {
@@ -39,7 +39,8 @@ export function initIPAIndexPage(options) {
     enableGameButton = true,
     enableShareButton = true,
     languageSelectorId = null,
-    footerGameButtonId = null,
+    footerToolsContainerId = null,
+    footerToolsConfigPath = '../config/tools.json',
   } = options;
 
   if (!databasePath) throw new Error('initIPAIndexPage: "databasePath" is required');
@@ -77,6 +78,35 @@ export function initIPAIndexPage(options) {
     }
     return outputFormatter;
   };
+
+  const iconMap = { share: svgShare, globe: svgGlobe, gamepad: svgGamepad };
+
+  function buildPairsData() {
+    const input = document.getElementById(inputId)?.value || '';
+    const effectiveWithWordsId = withWordsCheckboxId || withWordsId;
+    const withWords = effectiveWithWordsId ? isElementChecked(effectiveWithWordsId) : false;
+    const allowWordSearch = allowWordSearchId ? isElementChecked(allowWordSearchId) : false;
+
+    const { pairs } = process({
+      input,
+      lookupTable: IPA_DB,
+      withWords,
+      allowWordSearch,
+      maxWordLength,
+      maxPhraseLength,
+      pairsOnly: true
+    });
+
+    const formatter = getFormatter();
+    const formattedPairs = pairs.map(([w, ipa]) => {
+      if (!formatter) return [w, ipa];
+      const formatted = formatter(ipa);
+      const match = formatted.match(/\/(.+?)\//);
+      return [w, match ? match[1] : formatted];
+    });
+
+    return { pairs, formattedPairs };
+  }
 
   const translate = () => {
     const inputEl = document.getElementById(inputId);
@@ -116,9 +146,13 @@ export function initIPAIndexPage(options) {
         if (shareBtn) shareBtn.style.display = 'inline-flex';
       }
 
-      if (footerGameButtonId) {
-        const gameBtn = document.getElementById(footerGameButtonId);
-        if (gameBtn) gameBtn.style.display = 'flex';
+      if (footerToolsContainerId) {
+        const container = document.getElementById(footerToolsContainerId);
+        if (container) {
+          container.querySelectorAll('[data-visible="after-translate"]').forEach(el => {
+            el.style.display = 'flex';
+          });
+        }
       }
     }, 10);
   };
@@ -243,116 +277,27 @@ export function initIPAIndexPage(options) {
   }
 
   // Share button (opens modal with share, export, and game options)
-  if (enableShareButton) {
-    const outputEl = document.getElementById(outputId);
-    if (outputEl) {
-      const outputLabel = outputEl.closest('.form-group')?.querySelector('label');
-      if (outputLabel) {
-        const shareBtn = document.createElement('button');
-        shareBtn.id = 'share-btn';
-        shareBtn.className = 'btn-icon';
-        shareBtn.setAttribute('aria-label', 'Share');
-        shareBtn.innerHTML = svgShare;
-        shareBtn.style.display = 'none';
-        outputLabel.appendChild(shareBtn);
+  // Shared click handler for share button (output label or footer tools)
+  const shareButtonClick = (e) => {
+    if (e) e.stopPropagation();
+    const input = document.getElementById(inputId)?.value || '';
+    if (!input.trim()) return;
 
-        shareBtn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          const input = document.getElementById(inputId)?.value || '';
-          if (!input.trim()) return;
+    const { pairs, formattedPairs } = buildPairsData();
 
-          const effectiveWithWordsId = withWordsCheckboxId || withWordsId;
-          const withWords = effectiveWithWordsId ? isElementChecked(effectiveWithWordsId) : false;
-          const allowWordSearch = allowWordSearchId ? isElementChecked(allowWordSearchId) : false;
+    const shareData = {
+      page: 'translator',
+      lang: gameLabel || '',
+      text: input,
+      format: currentFormat || '',
+      pairs,
+      formattedPairs,
+    };
 
-          const { pairs } = process({
-            input,
-            lookupTable: IPA_DB,
-            withWords,
-            allowWordSearch,
-            maxWordLength,
-            maxPhraseLength,
-            pairsOnly: true
-          });
+    const opts = { getShareData: () => shareData, showExport: true };
 
-          const formatter = getFormatter();
-          const formattedPairs = pairs.map(([w, ipa]) => {
-            if (!formatter) return [w, ipa];
-            const formatted = formatter(ipa);
-            const match = formatted.match(/\/(.+?)\//);
-            return [w, match ? match[1] : formatted];
-          });
-
-          const shareData = {
-            page: 'translator',
-            lang: gameLabel || '',
-            text: input,
-            format: currentFormat || '',
-            pairs,
-            formattedPairs,
-          };
-
-          const opts = {
-            getShareData: () => shareData,
-            showExport: true,
-          };
-
-          // Game button in modal
-          if (enableGameButton) {
-            opts.gameOnClick = () => {
-              const validPairs = pairs.filter(([, ipa]) => ipa != null);
-              if (validPairs.length < 2) return;
-
-              localStorage.setItem('ipa_game_data', JSON.stringify({
-                text: input,
-                pairs: validPairs,
-                formattedPairs,
-                language: gameLabel || '',
-                format: currentFormat || '',
-                ttsLanguage: ttsLanguage || (getLanguage ? getLanguage() : ''),
-              }));
-
-              getShareModal().close();
-              window.location.href = '../game/index.html';
-            };
-          }
-
-          getShareModal().show(opts);
-        });
-      }
-    }
-  }
-
-  // Footer game button (visible after first translation)
-  if (footerGameButtonId && gameLabel) {
-    const gameBtn = document.getElementById(footerGameButtonId);
-    if (gameBtn) {
-      gameBtn.addEventListener('click', () => {
-        const input = document.getElementById(inputId)?.value || '';
-        if (!input.trim()) return;
-
-        const effectiveWithWordsId = withWordsCheckboxId || withWordsId;
-        const withWords = effectiveWithWordsId ? isElementChecked(effectiveWithWordsId) : false;
-        const allowWordSearch = allowWordSearchId ? isElementChecked(allowWordSearchId) : false;
-
-        const { pairs } = process({
-          input,
-          lookupTable: IPA_DB,
-          withWords,
-          allowWordSearch,
-          maxWordLength,
-          maxPhraseLength,
-          pairsOnly: true
-        });
-
-        const formatter = getFormatter();
-        const formattedPairs = pairs.map(([w, ipa]) => {
-          if (!formatter) return [w, ipa];
-          const formatted = formatter(ipa);
-          const match = formatted.match(/\/(.+?)\//);
-          return [w, match ? match[1] : formatted];
-        });
-
+    if (enableGameButton) {
+      opts.gameOnClick = () => {
         const validPairs = pairs.filter(([, ipa]) => ipa != null);
         if (validPairs.length < 2) return;
 
@@ -365,8 +310,83 @@ export function initIPAIndexPage(options) {
           ttsLanguage: ttsLanguage || (getLanguage ? getLanguage() : ''),
         }));
 
+        getShareModal().close();
         window.location.href = '../game/index.html';
-      });
+      };
+    }
+
+    getShareModal().show(opts);
+  };
+
+  const gameButtonClick = () => {
+    const input = document.getElementById(inputId)?.value || '';
+    if (!input.trim()) return;
+
+    const { pairs, formattedPairs } = buildPairsData();
+    const validPairs = pairs.filter(([, ipa]) => ipa != null);
+    if (validPairs.length < 2) return;
+
+    localStorage.setItem('ipa_game_data', JSON.stringify({
+      text: input,
+      pairs: validPairs,
+      formattedPairs,
+      language: gameLabel || '',
+      format: currentFormat || '',
+      ttsLanguage: ttsLanguage || (getLanguage ? getLanguage() : ''),
+    }));
+
+    window.location.href = '../game/index.html';
+  };
+
+  // Footer tools — config-driven button renderer
+  if (footerToolsContainerId) {
+    const container = document.getElementById(footerToolsContainerId);
+    if (container) {
+      fetch(footerToolsConfigPath).then(res => res.json()).then(config => {
+        const tools = config.tools || [];
+        let html = '';
+
+        tools.forEach(tool => {
+          const icon = iconMap[tool.icon] || '';
+          const visible = tool.visible === 'after-translate';
+          const hiddenStyle = visible ? 'style="display:none"' : '';
+
+          if (tool.type === 'link') {
+            html += `<a href="${tool.href}" id="${tool.id}" class="share-circle-btn" ${hiddenStyle}>${icon}<span>${tool.label}</span></a>`;
+          } else if (tool.type === 'share' && enableShareButton) {
+            html += `<button id="${tool.id}" class="share-circle-btn" data-visible="${tool.visible}" ${hiddenStyle}>${icon}<span>${tool.label}</span></button>`;
+          } else if (tool.type === 'game' && enableGameButton) {
+            html += `<button id="${tool.id}" class="share-circle-btn" data-visible="${tool.visible}" ${hiddenStyle}>${icon}<span>${tool.label}</span></button>`;
+          }
+        });
+
+        container.innerHTML = html;
+
+        // Wire up handlers
+        const shareBtn = document.getElementById('share-btn');
+        if (shareBtn) shareBtn.addEventListener('click', shareButtonClick);
+
+        const gameBtn = document.getElementById('game-btn');
+        if (gameBtn) gameBtn.addEventListener('click', gameButtonClick);
+      }).catch(err => console.error('Failed to load tools config:', err));
+    }
+  }
+
+  // Share button on output label (legacy — only if no footer tools and share is enabled)
+  if (enableShareButton && !footerToolsContainerId) {
+    const outputEl = document.getElementById(outputId);
+    if (outputEl) {
+      const outputLabel = outputEl.closest('.form-group')?.querySelector('label');
+      if (outputLabel) {
+        const shareBtn = document.createElement('button');
+        shareBtn.id = 'share-btn';
+        shareBtn.className = 'btn-icon';
+        shareBtn.setAttribute('aria-label', 'Share');
+        shareBtn.innerHTML = svgShare;
+        shareBtn.style.display = 'none';
+        outputLabel.appendChild(shareBtn);
+        shareBtn.addEventListener('click', shareButtonClick);
+      }
     }
   }
 
