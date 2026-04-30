@@ -7,7 +7,7 @@ import { loadIPADatabase, normalizeIPAData, isElementChecked, setElementValue, s
 import { initSpeakButton } from '../tts.js';
 import { getShareModal, parseShareFromUrl, clearShareParams } from '../share.js';
 import { svgShare } from '../svg.js';
-import { initDarkMode, initLanguageButtons, initResponsiveTextareaRows } from './page-shared.js';
+import { initDarkMode, initLanguageButtons, generateLanguageButtons, initResponsiveTextareaRows } from './page-shared.js';
 
 export function initIPAIndexPage(options) {
   const {
@@ -38,6 +38,8 @@ export function initIPAIndexPage(options) {
     gameLabel = null,
     enableGameButton = true,
     enableShareButton = true,
+    languageSelectorId = null,
+    footerGameButtonId = null,
   } = options;
 
   if (!databasePath) throw new Error('initIPAIndexPage: "databasePath" is required');
@@ -113,6 +115,11 @@ export function initIPAIndexPage(options) {
         const shareBtn = document.getElementById('share-btn');
         if (shareBtn) shareBtn.style.display = 'inline-flex';
       }
+
+      if (footerGameButtonId) {
+        const gameBtn = document.getElementById(footerGameButtonId);
+        if (gameBtn) gameBtn.style.display = 'flex';
+      }
     }, 10);
   };
 
@@ -173,8 +180,54 @@ export function initIPAIndexPage(options) {
   // Initialize shared UI components
   initDarkMode(darkModeToggleId);
 
-  if (enableLanguageButtons) {
+  if (enableLanguageButtons && !languageSelectorId) {
     initLanguageButtons({ containerId: langButtonsContainerId, configPath: '../config/languages.json' });
+  }
+
+  // Language selector modal (alternative to footer language buttons)
+  if (languageSelectorId) {
+    const selectorBtn = document.getElementById(languageSelectorId);
+    if (selectorBtn) {
+      let langModal = null;
+
+      const getLangModal = () => {
+        if (!langModal) {
+          const overlay = document.createElement('div');
+          overlay.className = 'lang-modal-overlay';
+          overlay.innerHTML = `
+            <div class="lang-modal" role="dialog" aria-modal="true">
+              <button class="lang-modal-close" aria-label="Close">&times;</button>
+              <h3>選擇語言 / Select Language</h3>
+              <ul class="lang-modal-list" id="lang-modal-list"></ul>
+            </div>`;
+          document.body.appendChild(overlay);
+
+          const closeBtn = overlay.querySelector('.lang-modal-close');
+          const close = () => { overlay.style.display = 'none'; };
+
+          closeBtn.addEventListener('click', close);
+          overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) close();
+          });
+          document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && overlay.style.display !== 'none') close();
+          });
+
+          langModal = { overlay, close };
+        }
+        return langModal;
+      };
+
+      selectorBtn.addEventListener('click', () => {
+        const modal = getLangModal();
+        generateLanguageButtons({
+          containerId: 'lang-modal-list',
+          configPath: '../config/languages.json',
+          wrapperTag: 'div'
+        });
+        modal.overlay.style.display = 'flex';
+      });
+    }
   }
 
   if (enableResponsiveTextarea) {
@@ -267,6 +320,53 @@ export function initIPAIndexPage(options) {
           getShareModal().show(opts);
         });
       }
+    }
+  }
+
+  // Footer game button (visible after first translation)
+  if (footerGameButtonId && gameLabel) {
+    const gameBtn = document.getElementById(footerGameButtonId);
+    if (gameBtn) {
+      gameBtn.addEventListener('click', () => {
+        const input = document.getElementById(inputId)?.value || '';
+        if (!input.trim()) return;
+
+        const effectiveWithWordsId = withWordsCheckboxId || withWordsId;
+        const withWords = effectiveWithWordsId ? isElementChecked(effectiveWithWordsId) : false;
+        const allowWordSearch = allowWordSearchId ? isElementChecked(allowWordSearchId) : false;
+
+        const { pairs } = process({
+          input,
+          lookupTable: IPA_DB,
+          withWords,
+          allowWordSearch,
+          maxWordLength,
+          maxPhraseLength,
+          pairsOnly: true
+        });
+
+        const formatter = getFormatter();
+        const formattedPairs = pairs.map(([w, ipa]) => {
+          if (!formatter) return [w, ipa];
+          const formatted = formatter(ipa);
+          const match = formatted.match(/\/(.+?)\//);
+          return [w, match ? match[1] : formatted];
+        });
+
+        const validPairs = pairs.filter(([, ipa]) => ipa != null);
+        if (validPairs.length < 2) return;
+
+        localStorage.setItem('ipa_game_data', JSON.stringify({
+          text: input,
+          pairs: validPairs,
+          formattedPairs,
+          language: gameLabel || '',
+          format: currentFormat || '',
+          ttsLanguage: ttsLanguage || (getLanguage ? getLanguage() : ''),
+        }));
+
+        window.location.href = '../game/index.html';
+      });
     }
   }
 

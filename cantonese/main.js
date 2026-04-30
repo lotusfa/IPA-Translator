@@ -29,5 +29,7 @@ initIPAIndexPage({
   },
   maxWordLength: 6,
   ttsLanguage: 'zh-HK',
-  gameLabel: 'cantonese'
+  gameLabel: 'cantonese',
+  languageSelectorId: 'lang-selector-btn',
+  footerGameButtonId: 'footer-game-btn',
 });

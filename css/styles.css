@@ -23,6 +23,9 @@
   --color-input-border: #ccc;
   --color-input-placeholder: #999;
   
+  /* Accent */
+  --accent-color: #0066cc;
+
   /* Links and Buttons */
   --color-link: #666;
   --color-link-hover: #555;
@@ -977,6 +980,99 @@ div.table-responsive > div.dataTables_wrapper > div.row > .col-sm-12 {
 
 body.dark-mode .share-modal-close:hover {
   background: rgba(255, 255, 255, 0.1);
+}
+
+/* ============================================
+ * Language Selector Modal
+ * ============================================ */
+
+.lang-modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.4);
+  align-items: center;
+  justify-content: center;
+}
+
+.lang-modal {
+  background: var(--color-bg);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-lg);
+  padding-top: 36px;
+  max-width: 320px;
+  width: calc(100% - 40px);
+  box-shadow: var(--shadow-md);
+  position: relative;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.lang-modal-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-size: 20px;
+  color: var(--color-text-muted);
+  padding: 4px 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.lang-modal-close:hover {
+  color: var(--color-text);
+}
+
+body.dark-mode .lang-modal-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.lang-modal h3 {
+  margin: 0 0 var(--spacing-md) 0;
+  font-size: var(--font-lg);
+  text-align: center;
+}
+
+.lang-modal-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.lang-modal-list > div {
+  border-bottom: 1px solid var(--color-border, #eee);
+}
+
+.lang-modal-list > div:last-child {
+  border-bottom: none;
+}
+
+.lang-modal-list a {
+  display: block;
+  padding: 10px 12px;
+  font-size: var(--font-md);
+  color: var(--color-text);
+  text-decoration: none;
+  transition: background-color 0.2s;
+  border-radius: var(--radius-sm);
+}
+
+.lang-modal-list a:hover {
+  background: var(--color-btn-bg);
+}
+
+.lang-modal-list a[style] {
+  font-weight: bold;
+  color: var(--accent-color);
+}
+
+/* Footer actions — centered icon buttons */
+.footer-actions {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
 }
 
 /* ============================================
