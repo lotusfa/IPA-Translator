@@ -4,7 +4,7 @@
  * User fills each blank one at a time with multiple choice buttons.
  */
 
-function stripSlash(ipa) { return stripSlash(ipa); }
+function stripSlash(ipa) { return ipa.replace(/^\/*|\/*$/g, ''); }
 
 import { decomposeSyllable, getInitialsForLanguage, supportsDecomposition } from '../../js/syllable-decompose.js';
 import { decomposeToJyutping, decomposeToGuangzhou, decomposeToAcademy, decomposeToYale, decomposeToLiu,
