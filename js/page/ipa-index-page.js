@@ -6,7 +6,7 @@
 import { loadIPADatabase, normalizeIPAData, isElementChecked, setElementValue, setElementValueAnimated } from '../utils.js';
 import { initSpeakButton } from '../tts.js';
 import { getShareModal, parseShareFromUrl, clearShareParams } from '../share.js';
-import { svgShare, svgGlobe, svgGamepad } from '../svg.js';
+import { svgShare, svgGlobe, svgGamepad, svgCopy, svgTick, svgDownArrow } from '../svg.js';
 import { initDarkMode, initLanguageButtons, generateLanguageButtons, initResponsiveTextareaRows } from './page-shared.js';
 
 export function initIPAIndexPage(options) {
@@ -40,7 +40,7 @@ export function initIPAIndexPage(options) {
     enableShareButton = true,
     languageSelectorId = null,
     footerToolsContainerId = null,
-    footerToolsConfigPath = '../config/tools.json',
+    toolsConfig = null,
   } = options;
 
   if (!databasePath) throw new Error('initIPAIndexPage: "databasePath" is required');
@@ -50,6 +50,7 @@ export function initIPAIndexPage(options) {
   let currentFormat = null;
   let debounceTimer = null;
   let dbGeneration = 0;
+  let displayFormat = '';
 
   const getVariant = () => {
     if (!variantRadioSelector) return null;
@@ -140,6 +141,22 @@ export function initIPAIndexPage(options) {
       if (formatter) result = formatter(result);
 
       setElementValueAnimated(outputId, result);
+
+      // Handle display format overrides
+      if (displayFormat === 'ipa') {
+        const ipas = (result.match(/\/[^/]+/g) || []).map(s => s.slice(1, -1));
+        if (ipas.length) setElementValueAnimated(outputId, ipas.join(' '));
+      } else if (displayFormat === 'json') {
+        const { pairs, formattedPairs } = buildPairsData();
+        setElementValueAnimated(outputId, JSON.stringify(pairs, null, 2));
+      } else if (displayFormat === 'csv') {
+        const { pairs, formattedPairs } = buildPairsData();
+        const csv = ['"word","ipa","formatted"'];
+        pairs.forEach(([w, ipa], i) => {
+          csv.push(`"${w}","${ipa || ''}","${(formattedPairs[i] || [])[1] || ''}"`);
+        });
+        setElementValueAnimated(outputId, csv.join('\n'));
+      }
 
       if (enableShareButton) {
         const shareBtn = document.getElementById('share-btn');
@@ -276,6 +293,83 @@ export function initIPAIndexPage(options) {
     });
   }
 
+  // Output controls — copy button and display format dropdown
+  const outputControls = document.getElementById('output-controls');
+  if (outputControls) {
+    const copyBtn = document.getElementById('copy-output-btn');
+    if (copyBtn) {
+      copyBtn.innerHTML = svgCopy;
+      copyBtn.addEventListener('click', () => {
+        const output = document.getElementById(outputId)?.value || '';
+        navigator.clipboard.writeText(output).then(() => {
+          copyBtn.innerHTML = svgTick;
+          setTimeout(() => { copyBtn.innerHTML = svgCopy; }, 1500);
+        });
+      });
+    }
+
+    const formatBtn = document.getElementById('display-format-btn');
+    if (formatBtn) {
+      const formatLabels = { '': '(文字 /ipa/)', ipa: '只有 /ipa/', json: 'JSON', csv: 'CSV' };
+
+      const dropdown = {
+        el: null,
+        open: false,
+        show() {
+          if (!this.el) {
+            this.el = document.createElement('div');
+            this.el.className = 'format-dropdown';
+            this.el.style.display = 'none';
+            this.el.innerHTML = Object.entries(formatLabels).map(([val, label]) =>
+              `<button class="format-dropdown-menu-item" value="${val}">${label}</button>`
+            ).join('');
+            this.el.querySelectorAll('.format-dropdown-menu-item').forEach(item => {
+              item.addEventListener('click', () => {
+                displayFormat = item.value;
+                formatBtn.innerHTML = `${formatLabels[item.value]} ${svgDownArrow}`;
+                this.open = false;
+                this.el.style.display = 'none';
+                translate();
+              });
+            });
+            outputControls.appendChild(this.el);
+          }
+          this.open = true;
+          formatBtn.setAttribute('aria-expanded', 'true');
+          this.el.style.display = 'block';
+        },
+        hide() {
+          this.open = false;
+          formatBtn.removeAttribute('aria-expanded');
+          if (this.el) this.el.style.display = 'none';
+        }
+      };
+
+      formatBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        dropdown.open ? dropdown.hide() : dropdown.show();
+      });
+
+      document.addEventListener('click', (e) => {
+        if (dropdown.open && !formatBtn.contains(e.target) && !dropdown.el?.contains(e.target)) {
+          dropdown.hide();
+        }
+      });
+    }
+
+  }
+
+  // Language selector button — inject SVG arrow
+  if (languageSelectorId) {
+    const selBtn = document.getElementById(languageSelectorId);
+    if (selBtn) {
+      const text = selBtn.textContent.trim();
+      if (text.includes('▾')) {
+        selBtn.innerHTML = text.replace('▾', '') + svgDownArrow;
+      }
+    }
+  }
+
   // Share button (opens modal with share, export, and game options)
   // Shared click handler for share button (output label or footer tools)
   const shareButtonClick = (e) => {
@@ -338,37 +432,34 @@ export function initIPAIndexPage(options) {
     window.location.href = '../game/index.html';
   };
 
-  // Footer tools — config-driven button renderer
-  if (footerToolsContainerId) {
+  // Footer tools — per-language config from main.js
+  if (footerToolsContainerId && toolsConfig) {
     const container = document.getElementById(footerToolsContainerId);
     if (container) {
-      fetch(footerToolsConfigPath).then(res => res.json()).then(config => {
-        const tools = config.tools || [];
-        let html = '';
+      let html = '';
 
-        tools.forEach(tool => {
-          const icon = iconMap[tool.icon] || '';
-          const visible = tool.visible === 'after-translate';
-          const hiddenStyle = visible ? 'style="display:none"' : '';
+      toolsConfig.forEach(tool => {
+        const icon = iconMap[tool.icon] || '';
+        const visible = tool.visible === 'after-translate';
+        const hiddenStyle = visible ? 'style="display:none"' : '';
 
-          if (tool.type === 'link') {
-            html += `<a href="${tool.href}" id="${tool.id}" class="share-circle-btn" ${hiddenStyle}>${icon}<span>${tool.label}</span></a>`;
-          } else if (tool.type === 'share' && enableShareButton) {
-            html += `<button id="${tool.id}" class="share-circle-btn" data-visible="${tool.visible}" ${hiddenStyle}>${icon}<span>${tool.label}</span></button>`;
-          } else if (tool.type === 'game' && enableGameButton) {
-            html += `<button id="${tool.id}" class="share-circle-btn" data-visible="${tool.visible}" ${hiddenStyle}>${icon}<span>${tool.label}</span></button>`;
-          }
-        });
+        if (tool.type === 'link') {
+          html += `<a href="${tool.href}" id="${tool.id}" class="share-circle-btn" ${hiddenStyle}>${icon}<span>${tool.label}</span></a>`;
+        } else if (tool.type === 'share' && enableShareButton) {
+          html += `<button id="${tool.id}" class="share-circle-btn" data-visible="${tool.visible}" ${hiddenStyle}>${icon}<span>${tool.label}</span></button>`;
+        } else if (tool.type === 'game' && enableGameButton) {
+          html += `<button id="${tool.id}" class="share-circle-btn" data-visible="${tool.visible}" ${hiddenStyle}>${icon}<span>${tool.label}</span></button>`;
+        }
+      });
 
-        container.innerHTML = html;
+      container.innerHTML = html;
 
-        // Wire up handlers
-        const shareBtn = document.getElementById('share-btn');
-        if (shareBtn) shareBtn.addEventListener('click', shareButtonClick);
+      // Wire up handlers by ID
+      const shareBtn = document.getElementById('share-btn');
+      if (shareBtn) shareBtn.addEventListener('click', shareButtonClick);
 
-        const gameBtn = document.getElementById('game-btn');
-        if (gameBtn) gameBtn.addEventListener('click', gameButtonClick);
-      }).catch(err => console.error('Failed to load tools config:', err));
+      const gameBtn = document.getElementById('game-btn');
+      if (gameBtn) gameBtn.addEventListener('click', gameButtonClick);
     }
   }
 
