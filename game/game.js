@@ -282,6 +282,7 @@ function quizScreen() {
   // --- ipa-to-word: single-step ---
   } else if (gameType.id === 'ipa-to-word') {
     showScreen(gameType.renderIpaToWord(pair, allPairs, progress));
+    ipaToWord.attachSpeakButtons(gameData.ttsLanguage || '');
     attachSingleStepHandler('.game-option-btn', 'word', pair[0]);
 
   // --- word-to-ipa: single-step (default) ---

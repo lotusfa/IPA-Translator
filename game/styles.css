@@ -133,6 +133,41 @@ body.dark-mode {
   opacity: 1;
 }
 
+/* Option row — word button + speak button side by side */
+.game-option-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.game-option-row .game-option-btn {
+  flex: 1;
+}
+
+.game-option-speak-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  font-size: 1rem;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: var(--color-text);
+  opacity: 0.7;
+  transition: opacity 0.2s;
+  border-radius: 4px;
+}
+
+.game-option-speak-btn svg {
+  width: 1em;
+  height: 1em;
+}
+
+.game-option-speak-btn:hover {
+  opacity: 1;
+}
+
 /* Summary block on start screen */
 .game-summary {
   margin: var(--spacing-sm) 0;
