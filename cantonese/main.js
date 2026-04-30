@@ -32,4 +32,9 @@ initIPAIndexPage({
   gameLabel: 'cantonese',
   languageSelectorId: 'lang-selector-btn',
   footerToolsContainerId: 'footer-tools',
+  toolsConfig: [
+    { id: 'ipa-list', icon: 'globe', label: 'IPA 資料庫', type: 'link', href: './ipa_list.html' },
+    { id: 'share-btn', icon: 'share', label: '分享 (Share)', type: 'share', visible: 'after-translate' },
+    { id: 'game-btn', icon: 'gamepad', label: 'Quiz Game', type: 'game', visible: 'after-translate' },
+  ]
 });
