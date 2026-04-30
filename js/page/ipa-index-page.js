@@ -82,11 +82,21 @@ export function initIPAIndexPage(options) {
 
   const iconMap = { share: svgShare, globe: svgGlobe, gamepad: svgGamepad, lang: svgLang };
 
+  const getWithWords = () => {
+    const effectiveId = withWordsCheckboxId || withWordsId;
+    if (!effectiveId) return true;
+    const el = document.getElementById(effectiveId);
+    return el ? el.checked : true; // default true when checkbox doesn't exist
+  };
+
+  const getAllowWordSearch = () => {
+    return allowWordSearchId ? isElementChecked(allowWordSearchId) : false;
+  };
+
   function buildPairsData() {
     const input = document.getElementById(inputId)?.value || '';
-    const effectiveWithWordsId = withWordsCheckboxId || withWordsId;
-    const withWords = effectiveWithWordsId ? isElementChecked(effectiveWithWordsId) : true;
-    const allowWordSearch = allowWordSearchId ? isElementChecked(allowWordSearchId) : false;
+    const withWords = getWithWords();
+    const allowWordSearch = getAllowWordSearch();
 
     const { pairs } = process({
       input,
@@ -124,9 +134,8 @@ export function initIPAIndexPage(options) {
 
     setTimeout(() => {
       if (gen !== dbGeneration) return;
-      const effectiveWithWordsId = withWordsCheckboxId || withWordsId;
-      const withWords = effectiveWithWordsId ? isElementChecked(effectiveWithWordsId) : true;
-      const allowWordSearch = allowWordSearchId ? isElementChecked(allowWordSearchId) : false;
+      const withWords = getWithWords();
+      const allowWordSearch = getAllowWordSearch();
 
       const formatter = getFormatter();
 
