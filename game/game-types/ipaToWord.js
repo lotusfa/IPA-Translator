@@ -35,12 +35,12 @@ export function renderIpaToWord(pair, allPairs, progress) {
       <p>Select the correct word:</p>
       <div class="game-btn-grid">
         ${options.map(opt => `
-          <div class="game-option-row">
-            <button data-word="${opt}" class="game-btn game-option-btn">${opt}</button>
-            <button class="game-option-speak-btn" data-word="${opt}" aria-label="Speak">
+          <button data-word="${opt}" class="game-btn game-option-btn">
+            ${opt}
+            <span class="game-option-speak-btn" data-word="${opt}" aria-label="Speak">
               ${svgVoice}
-            </button>
-          </div>
+            </span>
+          </button>
         `).join('')}
       </div>
     </div>
