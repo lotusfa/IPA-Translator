@@ -978,3 +978,44 @@ div.table-responsive > div.dataTables_wrapper > div.row > .col-sm-12 {
 body.dark-mode .share-modal-close:hover {
   background: rgba(255, 255, 255, 0.1);
 }
+
+/* ============================================
+ * Home Page - Language Grid
+ * ============================================ */
+
+.intro-text {
+  font-size: var(--font-md);
+  color: var(--color-text-muted);
+  line-height: 1.6;
+  margin-top: 10px;
+}
+
+.lang-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.lang-grid a {
+  display: block;
+  text-align: center;
+  padding: 8px 12px;
+  border-radius: var(--radius-lg);
+  background-color: var(--color-btn-bg);
+  color: var(--color-text-muted);
+  text-decoration: none;
+  font-size: var(--font-sm);
+  transition: background-color var(--transition-normal);
+}
+
+.lang-grid a:hover {
+  background-color: var(--color-btn-hover);
+  text-decoration: none;
+}
+
+@media (max-width: 768px) {
+  .lang-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
