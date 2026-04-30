@@ -229,11 +229,36 @@ export function initIPAIndexPage(options) {
           getShareData: () => {
             const input = document.getElementById(inputId)?.value || '';
             if (!input.trim()) return null;
+
+            const effectiveWithWordsId = withWordsCheckboxId || withWordsId;
+            const withWords = effectiveWithWordsId ? isElementChecked(effectiveWithWordsId) : false;
+            const allowWordSearch = allowWordSearchId ? isElementChecked(allowWordSearchId) : false;
+
+            const { pairs } = process({
+              input,
+              lookupTable: IPA_DB,
+              withWords,
+              allowWordSearch,
+              maxWordLength,
+              maxPhraseLength,
+              pairsOnly: true
+            });
+
+            const formatter = getFormatter();
+            const formattedPairs = pairs.map(([w, ipa]) => {
+              if (!formatter) return [w, ipa];
+              const formatted = formatter(ipa);
+              const match = formatted.match(/\/(.+?)\//);
+              return [w, match ? match[1] : formatted];
+            });
+
             return {
               page: 'translator',
               lang: gameLabel || '',
               text: input,
               format: currentFormat || '',
+              pairs,
+              formattedPairs,
             };
           }
         });

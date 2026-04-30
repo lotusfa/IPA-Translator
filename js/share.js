@@ -3,7 +3,7 @@
  * Used by: game/game.js, js/ui.js (translation pages)
  */
 
-import { svgShare, svgCopy, svgTick } from './svg.js';
+import { svgShare, svgCopy, svgTick, svgDownload } from './svg.js';
 
 // ============================================
 // Encoding / Decoding
@@ -102,6 +102,26 @@ export async function copyToClipboard(text) {
 
 let shareModalInstance = null;
 
+function downloadFile(content, filename, mimeType) {
+  const blob = new Blob([content], { type: mimeType });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function csvEscape(val) {
+  const str = String(val ?? '');
+  if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+    return '"' + str.replace(/"/g, '""') + '"';
+  }
+  return str;
+}
+
 export function getShareModal() {
   if (!shareModalInstance) {
     shareModalInstance = buildShareModal();
@@ -163,7 +183,13 @@ function buildShareModal() {
     });
   }
 
-  const show = async (getShareData) => {
+  const show = async (getShareDataOrOpts) => {
+    // Accept either a function (backward compat for game) or { getShareData, showExport }
+    const opts = typeof getShareDataOrOpts === 'function'
+      ? { getShareData: getShareDataOrOpts }
+      : getShareDataOrOpts;
+    const { getShareData, showExport } = opts;
+
     const data = await Promise.resolve(getShareData());
     if (!data) return;
     const b64 = await compressAndEncode(data);
@@ -178,6 +204,35 @@ function buildShareModal() {
     // Add native share button if available
     if (nativeShareBtn) {
       actionRow.appendChild(nativeShareBtn);
+    }
+
+    // Export buttons (translator only)
+    if (showExport) {
+      const jsonBtn = document.createElement('button');
+      jsonBtn.className = 'share-circle-btn';
+      jsonBtn.innerHTML = `${svgDownload}<span>JSON</span>`;
+      jsonBtn.addEventListener('click', () => {
+        downloadFile(JSON.stringify(data, null, 2), 'ipa-data.json', 'application/json');
+      });
+      actionRow.appendChild(jsonBtn);
+
+      const csvBtn = document.createElement('button');
+      csvBtn.className = 'share-circle-btn';
+      csvBtn.innerHTML = `${svgDownload}<span>CSV</span>`;
+      csvBtn.addEventListener('click', () => {
+        const pairs = data.pairs || [];
+        const formatted = data.formattedPairs || [];
+        const rows = [['word', 'ipa', 'formatted_ipa']];
+        for (let i = 0; i < pairs.length; i++) {
+          rows.push([
+            csvEscape(pairs[i][0]),
+            csvEscape(pairs[i][1]),
+            csvEscape(formatted[i] ? formatted[i][1] : pairs[i][1])
+          ]);
+        }
+        downloadFile(rows.map(r => r.join(',')).join('\n'), 'ipa-data.csv', 'text/csv');
+      });
+      actionRow.appendChild(csvBtn);
     }
 
     overlay.style.display = 'flex';
@@ -212,7 +267,7 @@ export function createShareButton(options) {
 
   btn.addEventListener('click', (e) => {
     e.stopPropagation();
-    getShareModal().show(getShareData);
+    getShareModal().show({ getShareData, showExport: true });
   });
 
   if (parentEl) parentEl.appendChild(btn);
