@@ -5,8 +5,8 @@
 
 import { loadIPADatabase, normalizeIPAData, isElementChecked, setElementValue, setElementValueAnimated } from '../utils.js';
 import { initSpeakButton } from '../tts.js';
-import { createGameButton } from './game-entry.js';
-import { createShareButton, parseShareFromUrl, clearShareParams } from '../share.js';
+import { getShareModal, parseShareFromUrl, clearShareParams } from '../share.js';
+import { svgShare } from '../svg.js';
 import { initDarkMode, initLanguageButtons, initResponsiveTextareaRows } from './page-shared.js';
 
 export function initIPAIndexPage(options) {
@@ -109,11 +109,6 @@ export function initIPAIndexPage(options) {
 
       setElementValueAnimated(outputId, result);
 
-      if (enableGameButton) {
-        const gameBtn = document.getElementById('game-btn');
-        if (gameBtn) gameBtn.style.display = 'inline-flex';
-      }
-
       if (enableShareButton) {
         const shareBtn = document.getElementById('share-btn');
         if (shareBtn) shareBtn.style.display = 'inline-flex';
@@ -194,75 +189,83 @@ export function initIPAIndexPage(options) {
     });
   }
 
-  // Game button
-  if (enableGameButton) {
-    createGameButton({
-      inputId,
-      outputId,
-      process,
-      getIpaDataBase: () => IPA_DB,
-      gameLabel,
-      getFormatter: () => ({ formatter: getFormatter(), formatId: currentFormat }),
-      getProcessorOptions: () => {
-        const effectiveWithWordsId = withWordsCheckboxId || withWordsId;
-        const withWords = effectiveWithWordsId ? isElementChecked(effectiveWithWordsId) : false;
-        const allowWordSearch = allowWordSearchId ? isElementChecked(allowWordSearchId) : false;
-        return { withWords, allowWordSearch };
-      },
-      maxWordLength,
-      maxPhraseLength,
-      ttsLanguage: ttsLanguage || (getLanguage ? getLanguage() : ''),
-      getLanguage
-    });
-  }
-
-  // Share button
+  // Share button (opens modal with share, export, and game options)
   if (enableShareButton) {
     const outputEl = document.getElementById(outputId);
     if (outputEl) {
       const outputLabel = outputEl.closest('.form-group')?.querySelector('label');
       if (outputLabel) {
-        const shareBtn = createShareButton({
-          buttonId: 'share-btn',
-          className: 'btn-icon',
-          parentEl: outputLabel,
-          getShareData: () => {
-            const input = document.getElementById(inputId)?.value || '';
-            if (!input.trim()) return null;
+        const shareBtn = document.createElement('button');
+        shareBtn.id = 'share-btn';
+        shareBtn.className = 'btn-icon';
+        shareBtn.setAttribute('aria-label', 'Share');
+        shareBtn.innerHTML = svgShare;
+        shareBtn.style.display = 'none';
+        outputLabel.appendChild(shareBtn);
 
-            const effectiveWithWordsId = withWordsCheckboxId || withWordsId;
-            const withWords = effectiveWithWordsId ? isElementChecked(effectiveWithWordsId) : false;
-            const allowWordSearch = allowWordSearchId ? isElementChecked(allowWordSearchId) : false;
+        shareBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const input = document.getElementById(inputId)?.value || '';
+          if (!input.trim()) return;
 
-            const { pairs } = process({
-              input,
-              lookupTable: IPA_DB,
-              withWords,
-              allowWordSearch,
-              maxWordLength,
-              maxPhraseLength,
-              pairsOnly: true
-            });
+          const effectiveWithWordsId = withWordsCheckboxId || withWordsId;
+          const withWords = effectiveWithWordsId ? isElementChecked(effectiveWithWordsId) : false;
+          const allowWordSearch = allowWordSearchId ? isElementChecked(allowWordSearchId) : false;
 
-            const formatter = getFormatter();
-            const formattedPairs = pairs.map(([w, ipa]) => {
-              if (!formatter) return [w, ipa];
-              const formatted = formatter(ipa);
-              const match = formatted.match(/\/(.+?)\//);
-              return [w, match ? match[1] : formatted];
-            });
+          const { pairs } = process({
+            input,
+            lookupTable: IPA_DB,
+            withWords,
+            allowWordSearch,
+            maxWordLength,
+            maxPhraseLength,
+            pairsOnly: true
+          });
 
-            return {
-              page: 'translator',
-              lang: gameLabel || '',
-              text: input,
-              format: currentFormat || '',
-              pairs,
-              formattedPairs,
+          const formatter = getFormatter();
+          const formattedPairs = pairs.map(([w, ipa]) => {
+            if (!formatter) return [w, ipa];
+            const formatted = formatter(ipa);
+            const match = formatted.match(/\/(.+?)\//);
+            return [w, match ? match[1] : formatted];
+          });
+
+          const shareData = {
+            page: 'translator',
+            lang: gameLabel || '',
+            text: input,
+            format: currentFormat || '',
+            pairs,
+            formattedPairs,
+          };
+
+          const opts = {
+            getShareData: () => shareData,
+            showExport: true,
+          };
+
+          // Game button in modal
+          if (enableGameButton) {
+            opts.gameOnClick = () => {
+              const validPairs = pairs.filter(([, ipa]) => ipa != null);
+              if (validPairs.length < 2) return;
+
+              localStorage.setItem('ipa_game_data', JSON.stringify({
+                text: input,
+                pairs: validPairs,
+                formattedPairs,
+                language: gameLabel || '',
+                format: currentFormat || '',
+                ttsLanguage: ttsLanguage || (getLanguage ? getLanguage() : ''),
+              }));
+
+              getShareModal().close();
+              window.location.href = '../game/index.html';
             };
           }
+
+          getShareModal().show(opts);
         });
-        shareBtn.style.display = 'none';
       }
     }
   }
