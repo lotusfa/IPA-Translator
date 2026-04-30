@@ -1118,11 +1118,23 @@ body.dark-mode .lang-modal-close:hover {
  * Output Controls (copy button, display format)
  * ============================================ */
 
+.label-with-controls {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 5px;
+}
+
+.label-with-controls > label {
+  display: inline;
+  margin-bottom: 0;
+}
+
 .output-controls {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  margin-left: 10px;
+  margin-left: 5px;
   position: relative;
 }
 

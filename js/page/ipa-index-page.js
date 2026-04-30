@@ -6,7 +6,7 @@
 import { loadIPADatabase, normalizeIPAData, isElementChecked, setElementValue, setElementValueAnimated } from '../utils.js';
 import { initSpeakButton } from '../tts.js';
 import { getShareModal, parseShareFromUrl, clearShareParams } from '../share.js';
-import { svgShare, svgGlobe, svgGamepad, svgCopy, svgTick, svgDownArrow } from '../svg.js';
+import { svgShare, svgGlobe, svgGamepad, svgCopy, svgTick, svgDownArrow, svgLang } from '../svg.js';
 import { initDarkMode, initLanguageButtons, generateLanguageButtons, initResponsiveTextareaRows } from './page-shared.js';
 
 export function initIPAIndexPage(options) {
@@ -80,12 +80,12 @@ export function initIPAIndexPage(options) {
     return outputFormatter;
   };
 
-  const iconMap = { share: svgShare, globe: svgGlobe, gamepad: svgGamepad };
+  const iconMap = { share: svgShare, globe: svgGlobe, gamepad: svgGamepad, lang: svgLang };
 
   function buildPairsData() {
     const input = document.getElementById(inputId)?.value || '';
     const effectiveWithWordsId = withWordsCheckboxId || withWordsId;
-    const withWords = effectiveWithWordsId ? isElementChecked(effectiveWithWordsId) : false;
+    const withWords = effectiveWithWordsId ? isElementChecked(effectiveWithWordsId) : true;
     const allowWordSearch = allowWordSearchId ? isElementChecked(allowWordSearchId) : false;
 
     const { pairs } = process({
@@ -101,7 +101,7 @@ export function initIPAIndexPage(options) {
     const formatter = getFormatter();
     const formattedPairs = pairs.map(([w, ipa]) => {
       if (!formatter) return [w, ipa];
-      const formatted = formatter(ipa);
+      const formatted = formatter('/' + ipa + '/');
       const match = formatted.match(/\/(.+?)\//);
       return [w, match ? match[1] : formatted];
     });
@@ -125,30 +125,32 @@ export function initIPAIndexPage(options) {
     setTimeout(() => {
       if (gen !== dbGeneration) return;
       const effectiveWithWordsId = withWordsCheckboxId || withWordsId;
-      const withWords = effectiveWithWordsId ? isElementChecked(effectiveWithWordsId) : false;
+      const withWords = effectiveWithWordsId ? isElementChecked(effectiveWithWordsId) : true;
       const allowWordSearch = allowWordSearchId ? isElementChecked(allowWordSearchId) : false;
 
-      let result = process({
-        input,
-        lookupTable: IPA_DB,
-        withWords,
-        allowWordSearch,
-        maxWordLength,
-        maxPhraseLength
-      });
-
       const formatter = getFormatter();
-      if (formatter) result = formatter(result);
-
-      setElementValueAnimated(outputId, result);
 
       // Handle display format overrides
       if (displayFormat === 'ipa') {
-        const ipas = (result.match(/\/[^/]+/g) || []).map(s => s.slice(1, -1));
-        if (ipas.length) setElementValueAnimated(outputId, ipas.join(' '));
+        // Pure IPA output only (no Chinese characters), regardless of withWords checkbox
+        let ipaResult = process({
+          input,
+          lookupTable: IPA_DB,
+          withWords: false,
+          allowWordSearch,
+          maxWordLength,
+          maxPhraseLength
+        });
+        if (formatter) ipaResult = formatter(ipaResult);
+        setElementValueAnimated(outputId, ipaResult);
       } else if (displayFormat === 'json') {
         const { pairs, formattedPairs } = buildPairsData();
-        setElementValueAnimated(outputId, JSON.stringify(pairs, null, 2));
+        const output = pairs.map(([w, ipa], i) => ({
+          word: w,
+          ipa: ipa || '',
+          formatted: (formattedPairs[i] || [])[1] || ''
+        }));
+        setElementValueAnimated(outputId, JSON.stringify(output, null, 2));
       } else if (displayFormat === 'csv') {
         const { pairs, formattedPairs } = buildPairsData();
         const csv = ['"word","ipa","formatted"'];
@@ -156,6 +158,18 @@ export function initIPAIndexPage(options) {
           csv.push(`"${w}","${ipa || ''}","${(formattedPairs[i] || [])[1] || ''}"`);
         });
         setElementValueAnimated(outputId, csv.join('\n'));
+      } else {
+        // Normal display (current format/withWords settings)
+        let result = process({
+          input,
+          lookupTable: IPA_DB,
+          withWords,
+          allowWordSearch,
+          maxWordLength,
+          maxPhraseLength
+        });
+        if (formatter) result = formatter(result);
+        setElementValueAnimated(outputId, result);
       }
 
       if (enableShareButton) {
@@ -235,49 +249,51 @@ export function initIPAIndexPage(options) {
     initLanguageButtons({ containerId: langButtonsContainerId, configPath: '../config/languages.json' });
   }
 
-  // Language selector modal (alternative to footer language buttons)
+  // Language selector modal (shared by header button and footer tools)
+  let langModal = null;
+
+  const getLangModal = () => {
+    if (!langModal) {
+      const overlay = document.createElement('div');
+      overlay.className = 'lang-modal-overlay';
+      overlay.innerHTML = `
+        <div class="lang-modal" role="dialog" aria-modal="true">
+          <button class="lang-modal-close" aria-label="Close">&times;</button>
+          <h3>選擇語言 / Select Language</h3>
+          <ul class="lang-modal-list" id="lang-modal-list"></ul>
+        </div>`;
+      document.body.appendChild(overlay);
+
+      const closeBtn = overlay.querySelector('.lang-modal-close');
+      const close = () => { overlay.style.display = 'none'; };
+
+      closeBtn.addEventListener('click', close);
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) close();
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && overlay.style.display !== 'none') close();
+      });
+
+      langModal = { overlay, close };
+    }
+    return langModal;
+  };
+
+  const openLangModal = () => {
+    const modal = getLangModal();
+    generateLanguageButtons({
+      containerId: 'lang-modal-list',
+      configPath: '../config/languages.json',
+      wrapperTag: 'div'
+    });
+    modal.overlay.style.display = 'flex';
+  };
+
   if (languageSelectorId) {
     const selectorBtn = document.getElementById(languageSelectorId);
     if (selectorBtn) {
-      let langModal = null;
-
-      const getLangModal = () => {
-        if (!langModal) {
-          const overlay = document.createElement('div');
-          overlay.className = 'lang-modal-overlay';
-          overlay.innerHTML = `
-            <div class="lang-modal" role="dialog" aria-modal="true">
-              <button class="lang-modal-close" aria-label="Close">&times;</button>
-              <h3>選擇語言 / Select Language</h3>
-              <ul class="lang-modal-list" id="lang-modal-list"></ul>
-            </div>`;
-          document.body.appendChild(overlay);
-
-          const closeBtn = overlay.querySelector('.lang-modal-close');
-          const close = () => { overlay.style.display = 'none'; };
-
-          closeBtn.addEventListener('click', close);
-          overlay.addEventListener('click', (e) => {
-            if (e.target === overlay) close();
-          });
-          document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && overlay.style.display !== 'none') close();
-          });
-
-          langModal = { overlay, close };
-        }
-        return langModal;
-      };
-
-      selectorBtn.addEventListener('click', () => {
-        const modal = getLangModal();
-        generateLanguageButtons({
-          containerId: 'lang-modal-list',
-          configPath: '../config/languages.json',
-          wrapperTag: 'div'
-        });
-        modal.overlay.style.display = 'flex';
-      });
+      selectorBtn.addEventListener('click', openLangModal);
     }
   }
 
@@ -327,8 +343,7 @@ export function initIPAIndexPage(options) {
               item.addEventListener('click', () => {
                 displayFormat = item.value;
                 formatBtn.innerHTML = `${formatLabels[item.value]} ${svgDownArrow}`;
-                this.open = false;
-                this.el.style.display = 'none';
+                dropdown.hide();
                 translate();
               });
             });
@@ -366,6 +381,17 @@ export function initIPAIndexPage(options) {
       const text = selBtn.textContent.trim();
       if (text.includes('▾')) {
         selBtn.innerHTML = text.replace('▾', '') + svgDownArrow;
+      }
+    }
+  }
+
+  // Display format button — inject SVG arrow
+  {
+    const fmtBtn = document.getElementById('display-format-btn');
+    if (fmtBtn) {
+      const text = fmtBtn.textContent.trim();
+      if (text.includes('▾')) {
+        fmtBtn.innerHTML = text.replace('▾', '').trim() + svgDownArrow;
       }
     }
   }
@@ -449,6 +475,8 @@ export function initIPAIndexPage(options) {
           html += `<button id="${tool.id}" class="share-circle-btn" data-visible="${tool.visible}" ${hiddenStyle}>${icon}<span>${tool.label}</span></button>`;
         } else if (tool.type === 'game' && enableGameButton) {
           html += `<button id="${tool.id}" class="share-circle-btn" data-visible="${tool.visible}" ${hiddenStyle}>${icon}<span>${tool.label}</span></button>`;
+        } else if (tool.type === 'lang') {
+          html += `<button id="${tool.id}" class="share-circle-btn">${icon}<span>${tool.label}</span></button>`;
         }
       });
 
@@ -460,6 +488,9 @@ export function initIPAIndexPage(options) {
 
       const gameBtn = document.getElementById('game-btn');
       if (gameBtn) gameBtn.addEventListener('click', gameButtonClick);
+
+      const langBtn = document.getElementById('lang-btn');
+      if (langBtn) langBtn.addEventListener('click', openLangModal);
     }
   }
 

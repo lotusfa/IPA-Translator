@@ -35,11 +35,13 @@
 
       <div class="col">
         <div class="form-group">
-          <label>標音（IPA）</label>
-          <div class="output-controls" id="output-controls">
+          <div class="label-with-controls">
+            <label>標音（IPA）</label>
+            <div class="output-controls" id="output-controls">
             <button id="copy-output-btn" class="btn-icon" aria-label="Copy">📋</button>
             <span class="output-sep">•</span>
             <button id="display-format-btn" class="btn-icon format-toggle-btn">(文字 /ipa/) ▾</button>
+          </div>
           </div>
           <textarea id="IPA_tBox" rows="10" disabled></textarea>
         </div>
@@ -79,10 +81,6 @@
         </div>
       </div>
       <div class="col-md-6">
-        <div class="form-check-inline">
-          <input type="checkbox" id="wf_c_words" checked />
-          <label for="wf_c_words">保留中文字</label>
-        </div>
         <div class="form-check-inline">
           <input type="checkbox" id="allow_words_search" checked />
           <label for="allow_words_search">以詞組匹配</label>
