@@ -1,85 +1,9 @@
 /**
- * IPA Core - Shared utility module for IPA Translator
- * Provides common functions for all language implementations
+ * IPA Core - Text processing functions
  *
- * Usage: Import specific functions in each language's main.js
- * Example: import { loadIPADatabase, processText } from './ipa-core.js';
+ * Language-specific formatters should be imported directly from js/format/[lang].format.js
+ * to avoid loading unused modules.
  */
-
-// ============================================
-// Re-export Cantonese format functions from yue.format.js
-// ============================================
-
-export {
-  formatIPA_org as formatCantoneseIPA_org,
-  formatIPA_num as formatCantoneseIPA_num,
-  formatJyutpingCantonese,
-  formatJyutping,
-  formatJyutping_num,
-  formatYueJyutping,
-  formatYueGuangzhou,
-  formatYueAcademy,
-  formatYueYale,
-  formatYueLiu,
-  formatYueOutput
-} from './format/yue.format.js';
-
-// ============================================
-// Re-export Mandarin format functions from zh.format.js
-// ============================================
-
-export {
-  formatIPA_num as formatMandarinIPA_num,
-  formatIPA_org as formatMandarinIPA_org,
-  formatJyutpingMandarin,
-  formatMandarinOutput,
-  convertIPATextToPinyin,
-  convertIPATextToPinyinWithMarks,
-  convertIPATextToZhuyin
-} from './format/zh.format.js';
-
-// ============================================
-// Re-export formatJyutpingMandarinNum from yue.format.js
-// (defined there for historical reasons)
-// ============================================
-
-export {
-  formatJyutpingMandarinNum
-} from './format/yue.format.js';
-
-// ============================================
-// Re-export Vietnamese format functions from vi.format.js
-// ============================================
-
-export {
-  formatVietnamese,
-  formatVietnameseOutput,
-  formatVietnameseStandard,
-  formatIPANumbers
-} from './format/vi.format.js';
-
-// ============================================
-// Re-export TTS functions from tts.js
-// ============================================
-
-export {
-  initSpeakButton
-} from './tts.js';
-// ============================================
-// Re-export shared utilities from utils.js
-// ============================================
-
-export {
-  loadIPADatabase,
-  normalizeIPAData,
-  getElementValue,
-  setElementValue,
-  setElementValueAnimated,
-  isElementChecked,
-  onTextInputChange,
-  onMultipleChange
-} from './utils.js';
-
 
 // ============================================
 // Text Processing

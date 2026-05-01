@@ -30,7 +30,7 @@ IPA-Translator is a static HTML/JavaScript web application that translates text 
 │   │   ├── ipa-list-page.js   # initIPATable, initIPAListPage (IPA reference pages)
 │   │   ├── page-shared.js     # initDarkMode, language nav, responsive textarea
 │   │   └── game-entry.js      # createGameButton
-│   ├── ipa.js            # Core: processTextCharBased, processTextLongestMatch + format re-exports
+│   ├── ipa.js            # Core: processTextCharBased, processTextLongestMatch, processKhmerText
 │   ├── ui.js             # Barrel re-export of page/ modules (external-facing entry point)
 │   ├── utils.js          # Utilities: loadIPADatabase, normalizeIPAData, DOM helpers
 │   ├── tts.js            # TTS: speak(), selectBestVoice(), initSpeakButton, createSpeakButton
@@ -58,10 +58,10 @@ Language `main.js` files are thin wrappers. The real logic lives in `js/`:
 
 **Import pattern for language main.js files:**
 - Import `initIPAIndexPage` from `../js/ui.js` (barrel re-export → page/ipa-index-page.js, also re-exports `processText*` from ipa.js)
-- Import formatters via `../js/ipa.js` re-exports (source: format/[lang].format.js)
-- **Do NOT import from `js/page/` or `js/format/` directly in language files** — use `js/ui.js` and `js/ipa.js` as the stable external entry points
+- Import formatters directly from `../js/format/[lang].format.js` (e.g., `yue.format.js`, `zh.format.js`) — this avoids loading unused format modules
+- Import `processText*` from `../js/ui.js` (re-exported from ipa.js) or directly from `../js/ipa.js`
 
-**Dependency chain:** utils.js ← ipa.js. page/ imports from utils.js, tts.js, share.js, svg.js. ui.js is a thin barrel re-export of page/. ipa.js re-exports format/ and tts/utils functions. No circular deps.
+**Dependency chain:** utils.js ← ipa.js. page/ imports from utils.js, tts.js, share.js, svg.js. ui.js is a thin barrel re-export of page/. No circular deps.
 
 ### Data Flow
 
@@ -101,7 +101,7 @@ initIPAIndexPage({
 
 ### Modifying Output Format
 
-Add a formatter function in `js/format/[lang].format.js`, export it, re-export through `js/ipa.js`, and add to `formatMapping` in the language's `main.js`:
+Add a formatter function in `js/format/[lang].format.js`, export it, and add to `formatMapping` in the language's `main.js`:
 
 ```javascript
 formatMapping: {

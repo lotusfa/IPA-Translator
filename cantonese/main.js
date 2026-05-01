@@ -4,14 +4,14 @@
 
 import { initIPAIndexPage, processTextCharBased } from '../js/ui.js';
 import {
-  formatCantoneseIPA_org,
-  formatCantoneseIPA_num,
+  formatIPA_org,
+  formatIPA_num,
   formatYueJyutping,
   formatYueGuangzhou,
   formatYueAcademy,
   formatYueYale,
   formatYueLiu
-} from '../js/ipa.js';
+} from '../js/format/yue.format.js';
 
 // Initialize with char-based processing and Cantonese formatters
 initIPAIndexPage({
@@ -19,8 +19,8 @@ initIPAIndexPage({
   process: processTextCharBased,
   formatRadioSelector: 'input[name="format"]',
   formatMapping: {
-    IPA_org: formatCantoneseIPA_org,
-    IPA_num: formatCantoneseIPA_num,
+    IPA_org: formatIPA_org,
+    IPA_num: formatIPA_num,
     Jyutping: formatYueJyutping,
     Guangzhou: formatYueGuangzhou,
     Academy: formatYueAcademy,

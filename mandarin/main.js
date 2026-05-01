@@ -4,12 +4,12 @@
 
 import { initIPAIndexPage, processTextCharBased } from '../js/ui.js';
 import {
-  formatMandarinIPA_org,
-  formatMandarinIPA_num,
+  formatIPA_org,
+  formatIPA_num,
   convertIPATextToPinyin,
   convertIPATextToPinyinWithMarks,
   convertIPATextToZhuyin
-} from '../js/ipa.js';
+} from '../js/format/zh.format.js';
 
 // Initialize with char-based processing and Mandarin formatters
 initIPAIndexPage({
@@ -19,8 +19,8 @@ initIPAIndexPage({
   process: processTextCharBased,
   formatRadioSelector: 'input[name="format"]',
   formatMapping: {
-    IPA_org: formatMandarinIPA_org,
-    IPA_num: formatMandarinIPA_num,
+    IPA_org: formatIPA_org,
+    IPA_num: formatIPA_num,
     Pinyin_num: convertIPATextToPinyin,
     Pinyin: convertIPATextToPinyinWithMarks,
     Zhuyin: convertIPATextToZhuyin
