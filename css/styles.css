@@ -372,16 +372,25 @@ select.form-control {
   height: 36px;
 }
 
-/* Footer - 3 column responsive layout */
-.footer {
+/* Tools row — centered buttons above footer */
+.tools-row {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
   margin-top: 20px;
+  padding: 10px 0;
+}
+
+/* Footer - 2 column responsive layout (description + links) */
+.footer {
+  margin-top: 0;
   padding: 30px 0;
   border-top: 1px solid #e1e1e8;
 }
 
 .footer-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 2fr 1fr;
   gap: 30px;
   margin-bottom: 20px;
 }
@@ -459,6 +468,10 @@ select.form-control {
 
 /* Mobile responsive - footer columns stack vertically */
 @media (max-width: 768px) {
+  .tools-row {
+    gap: 15px;
+  }
+
   .footer-grid {
     grid-template-columns: 1fr;
     gap: 20px;
