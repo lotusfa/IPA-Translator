@@ -24,7 +24,9 @@ initIPAIndexPage({
   footerToolsContainerId: 'footer-tools',
   toolsConfig: [
     { id: 'share-btn', icon: 'share', label: 'Chia sẻ', type: 'share', visible: 'after-translate' },
-    { id: 'ipa-list', icon: 'globe', label: 'Cơ sở dữ liệu IPA', type: 'link', href: './ipa_list_c.html' },
+    { id: 'ipa-list-c', icon: 'globe', label: 'IPA Trung', type: 'link', href: './ipa_list_c.html' },
+    { id: 'ipa-list-n', icon: 'globe', label: 'IPA Bắc', type: 'link', href: './ipa_list_n.html' },
+    { id: 'ipa-list-s', icon: 'globe', label: 'IPA Nam', type: 'link', href: './ipa_list_s.html' },
     { id: 'game-btn', icon: 'gamepad', label: 'Trò chơi câu đố', type: 'game', visible: 'after-translate' },
     { id: 'lang-btn', icon: 'lang', label: 'Ngôn ngữ khác', type: 'lang' },
   ]

@@ -19,7 +19,8 @@ initIPAIndexPage({
   footerToolsContainerId: 'footer-tools',
   toolsConfig: [
     { id: 'share-btn', icon: 'share', label: 'Partager', type: 'share', visible: 'after-translate' },
-    { id: 'ipa-list', icon: 'globe', label: 'Base de données IPA', type: 'link', href: './ipa_list.html' },
+    { id: 'ipa-list-fr', icon: 'globe', label: 'IPA France', type: 'link', href: './ipa_list_fr.html' },
+    { id: 'ipa-list-qc', icon: 'globe', label: 'IPA Québec', type: 'link', href: './ipa_list_qc.html' },
     { id: 'game-btn', icon: 'gamepad', label: 'Jeu quiz', type: 'game', visible: 'after-translate' },
     { id: 'lang-btn', icon: 'lang', label: 'Autres langues', type: 'lang' },
   ]
