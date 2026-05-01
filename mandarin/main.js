@@ -27,5 +27,14 @@ initIPAIndexPage({
   },
   maxWordLength: 9,
   ttsLanguage: 'zh-CN',
-  gameLabel: 'mandarin'
+  gameLabel: 'mandarin',
+  languageSelectorId: 'lang-selector-btn',
+  footerToolsContainerId: 'footer-tools',
+  toolsConfig: [
+    { id: 'share-btn', icon: 'share', label: '分享', type: 'share', visible: 'after-translate' },
+    { id: 'ipa-list-hant', icon: 'globe', label: 'IPA 資料庫 (繁)', type: 'link', href: './ipa_list_zh_hant.html' },
+    { id: 'ipa-list-hans', icon: 'globe', label: 'IPA 資料庫 (簡)', type: 'link', href: './ipa_list_zh_hans.html' },
+    { id: 'game-btn', icon: 'gamepad', label: '測驗小遊戲', type: 'game', visible: 'after-translate' },
+    { id: 'lang-btn', icon: 'lang', label: '其他語言', type: 'lang' },
+  ]
 });
