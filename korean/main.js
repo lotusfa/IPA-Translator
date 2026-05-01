@@ -113,6 +113,7 @@ function processKorean(options) {
 initIPAIndexPage({
   databasePath: '../json/ko.json',
   process: processKorean,
+  locale: { textAndIpa: '(문자 /ipa/)', onlyIpa: '/ipa/ 만' },
   maxWordLength: 6,
   ttsLanguage: 'ko-KR',
   gameLabel: 'korean',

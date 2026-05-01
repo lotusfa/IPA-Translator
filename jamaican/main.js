@@ -5,6 +5,7 @@ initIPAIndexPage({
   databasePath: '../json/jam.json',
   process: processTextLongestMatch,
   ttsLanguage: 'en-US',
+  locale: { textAndIpa: '(Text /ipa/)', onlyIpa: 'Only /ipa/' },
   gameLabel: 'jamaican',
   languageSelectorId: 'lang-selector-btn',
   footerToolsContainerId: 'footer-tools',

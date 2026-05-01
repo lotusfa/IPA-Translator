@@ -6,6 +6,7 @@ initIPAIndexPage({
   variantRadioSelector: 'input[name="inlineRadioOptions"]',
   variantMapping: { IPA_Spain: 'ES', IPA_Mexico: 'MX' },
   process: processTextLongestMatch,
+  locale: { textAndIpa: '(Texto /ipa/)', onlyIpa: 'Solo /ipa/' },
   getLanguage: () => {
     const variant = document.querySelector('input[name="inlineRadioOptions"]:checked')?.id;
     return variant === 'IPA_Spain' ? 'es-ES' : 'es-MX';

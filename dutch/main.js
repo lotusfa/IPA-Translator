@@ -8,6 +8,7 @@ initIPAIndexPage({
   databasePath: '../json/nl.json',
   process: processTextLongestMatch,
   ttsLanguage: 'nl-NL',
+  locale: { textAndIpa: '(Tekst /ipa/)', onlyIpa: 'Alleen /ipa/' },
   gameLabel: 'dutch',
   languageSelectorId: 'lang-selector-btn',
   footerToolsContainerId: 'footer-tools',

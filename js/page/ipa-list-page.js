@@ -32,6 +32,7 @@ export function initIPATable(options) {
     enableSpeakButtons = true,
     paging = true,
     pageLength = 10,
+    speakWordLabel = 'Read word aloud',
   } = options;
 
   return new Promise((resolve, reject) => {
@@ -67,7 +68,7 @@ export function initIPATable(options) {
             targets: [1],
             createdCell: function(td, cellData, rowData) {
               if (enableSpeakButtons && languageCode) {
-                const btn = createSpeakButton(rowData.word, languageCode);
+                const btn = createSpeakButton(rowData.word, languageCode, speakWordLabel);
                 if (btn) $(td).prepend(btn);
               }
             }
@@ -108,7 +109,8 @@ export async function initIPAListPage(options = {}) {
     enableTTS = true,
     enableLanguageButtons = true,
     paging = true,
-    pageLength = 10
+    pageLength = 10,
+    speakWordLabel = 'Read word aloud'
   } = options;
 
   // Initialize dark mode (uses existing initDarkMode from ipa-core.js)
@@ -135,7 +137,8 @@ export async function initIPAListPage(options = {}) {
       languageCode: enableTTS ? language : null,
       enableSpeakButtons: enableTTS,
       paging,
-      pageLength
+      pageLength,
+      speakWordLabel
     });
   }
 }

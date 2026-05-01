@@ -10,6 +10,7 @@ initIPAIndexPage({
   variantRadioSelector: 'input[name="inlineRadioOptions"]',
   variantMapping: { IPA_US: 'US', IPA_UK: 'UK' },
   process: processTextLongestMatch,
+  locale: { textAndIpa: '(Text /ipa/)', onlyIpa: 'Only /ipa/' },
   getLanguage: () => {
     const variant = document.querySelector('input[name="inlineRadioOptions"]:checked')?.id;
     return variant === 'IPA_US' ? 'en-US' : 'en-GB';

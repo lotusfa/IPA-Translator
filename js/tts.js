@@ -186,7 +186,7 @@ export async function preloadVoiceSupport(lang) {
  */
 const speakBtnState = { isPlaying: false };
 
-export function createSpeakButton(text, lang = 'en-US') {
+export function createSpeakButton(text, lang = 'en-US', ariaLabel = 'Read word aloud') {
   // Check global voice support flag
   if (!hasVoiceSupport) {
     return null;
@@ -194,7 +194,7 @@ export function createSpeakButton(text, lang = 'en-US') {
 
   const btn = document.createElement('button');
   btn.className = 'btn-icon speak-word-btn';
-  btn.setAttribute('aria-label', '朗讀單字');
+  btn.setAttribute('aria-label', ariaLabel);
   btn.innerHTML = svgVoice;
 
   const setIcon = (html) => { btn.innerHTML = html; };

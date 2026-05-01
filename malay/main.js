@@ -5,6 +5,7 @@ initIPAIndexPage({
   databasePath: '../json/ma.json',
   process: processTextLongestMatch,
   ttsLanguage: 'ms-MY',
+  locale: { textAndIpa: '(Teks /ipa/)', onlyIpa: 'Hanya /ipa/' },
   gameLabel: 'malay',
   languageSelectorId: 'lang-selector-btn',
   footerToolsContainerId: 'footer-tools',

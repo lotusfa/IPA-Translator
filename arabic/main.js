@@ -8,6 +8,7 @@ import { initIPAIndexPage, processTextLongestMatch } from '../js/ui.js';
 initIPAIndexPage({
   databasePath: '../json/ar.json',
   process: processTextLongestMatch,
+  locale: { textAndIpa: '(نص /ipa/)', onlyIpa: '/ipa/ فقط' },
   maxWordLength: 5,
   ttsLanguage: 'ar',
   gameLabel: 'arabic',

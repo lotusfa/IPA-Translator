@@ -5,6 +5,7 @@ initIPAIndexPage({
   databasePath: '../json/sv.json',
   process: processTextLongestMatch,
   ttsLanguage: 'sv-SE',
+  locale: { textAndIpa: '(Text /ipa/)', onlyIpa: 'Endast /ipa/' },
   gameLabel: 'swedish',
   languageSelectorId: 'lang-selector-btn',
   footerToolsContainerId: 'footer-tools',

@@ -41,7 +41,11 @@ export function initIPAIndexPage(options) {
     languageSelectorId = null,
     footerToolsContainerId = null,
     toolsConfig = null,
+    locale = null,
   } = options;
+
+  const defaultLocale = { textAndIpa: '(Text /ipa/)', onlyIpa: 'Only /ipa/' };
+  const L = locale ? { ...defaultLocale, ...locale } : defaultLocale;
 
   if (!databasePath) throw new Error('initIPAIndexPage: "databasePath" is required');
   if (!process) throw new Error('initIPAIndexPage: "process" is required');
@@ -335,7 +339,8 @@ export function initIPAIndexPage(options) {
 
     const formatBtn = document.getElementById('display-format-btn');
     if (formatBtn) {
-      const formatLabels = { '': '(文字 /ipa/)', ipa: '只有 /ipa/', json: 'JSON', csv: 'CSV' };
+      const formatLabels = { '': L.textAndIpa, ipa: L.onlyIpa, json: 'JSON', csv: 'CSV' };
+      formatBtn.innerHTML = `${L.textAndIpa} ${svgDownArrow}`;
 
       const dropdown = {
         el: null,

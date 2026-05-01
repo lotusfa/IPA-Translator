@@ -17,6 +17,7 @@ initIPAIndexPage({
     IPA_num: formatIPANumbers,
     tone_simple: formatVietnameseOutput
   },
+  locale: { textAndIpa: '(Chữ /ipa/)', onlyIpa: 'Chỉ /ipa/' },
   maxWordLength: 6,
   ttsLanguage: 'vi-VN',
   gameLabel: 'vietnamese',

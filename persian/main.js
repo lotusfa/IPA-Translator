@@ -5,6 +5,7 @@ initIPAIndexPage({
   databasePath: '../json/fa.json',
   process: processTextLongestMatch,
   ttsLanguage: 'fa',
+  locale: { textAndIpa: '(متن /ipa/)', onlyIpa: 'فقط /ipa/' },
   gameLabel: 'persian',
   languageSelectorId: 'lang-selector-btn',
   footerToolsContainerId: 'footer-tools',

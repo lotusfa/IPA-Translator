@@ -5,6 +5,7 @@ initIPAIndexPage({
   databasePath: '../json/sw.json',
   process: processTextLongestMatch,
   ttsLanguage: 'sw',
+  locale: { textAndIpa: '(Neno /ipa/)', onlyIpa: '/ipa/ tu' },
   gameLabel: 'swahili',
   languageSelectorId: 'lang-selector-btn',
   footerToolsContainerId: 'footer-tools',

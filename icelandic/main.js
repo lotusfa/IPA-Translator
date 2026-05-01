@@ -4,6 +4,7 @@ initIPAIndexPage({
   databasePath: '../json/is.json',
   process: processTextLongestMatch,
   ttsLanguage: 'is-IS',
+  locale: { textAndIpa: '(Texti /ipa/)', onlyIpa: 'Aðeins /ipa/' },
   gameLabel: 'icelandic',
   languageSelectorId: 'lang-selector-btn',
   footerToolsContainerId: 'footer-tools',
