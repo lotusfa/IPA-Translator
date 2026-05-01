@@ -1,13 +1,17 @@
-/**
- * Odia IPA Translator - Simplified using initIPAIndexPage
- */
-
+/** Odia IPA Translator */
 import { initIPAIndexPage, processTextLongestMatch } from '../js/ui.js';
 
 initIPAIndexPage({
   databasePath: '../json/or.json',
   process: processTextLongestMatch,
-  withWordsCheckboxId: 'wf_c_words',
   enableSpeakButton: false,
-  gameLabel: 'odia'
+  gameLabel: 'odia',
+  languageSelectorId: 'lang-selector-btn',
+  footerToolsContainerId: 'footer-tools',
+  toolsConfig: [
+    { id: 'share-btn', icon: 'share', label: 'ସେୟାର୍', type: 'share', visible: 'after-translate' },
+    { id: 'ipa-list', icon: 'globe', label: 'IPA ଡାଟାବେସ୍', type: 'link', href: './ipa_list.html' },
+    { id: 'game-btn', icon: 'gamepad', label: 'କୁଇଜ୍ ଖେଳ', type: 'game', visible: 'after-translate' },
+    { id: 'lang-btn', icon: 'lang', label: 'ଅନ୍ୟ ଭାଷା', type: 'lang' },
+  ]
 });

@@ -2,8 +2,7 @@
  * English IPA Translator - Simplified using initIPAIndexPage
  */
 
-import { initIPAIndexPage } from '../js/ui.js';
-import { processTextLongestMatch } from '../js/ipa.js';
+import { initIPAIndexPage, processTextLongestMatch } from '../js/ui.js';
 
 // Initialize with variant support (en_US/en_UK)
 initIPAIndexPage({
@@ -15,5 +14,13 @@ initIPAIndexPage({
     const variant = document.querySelector('input[name="inlineRadioOptions"]:checked')?.id;
     return variant === 'IPA_US' ? 'en-US' : 'en-GB';
   },
-  gameLabel: 'english'
+  gameLabel: 'english',
+  languageSelectorId: 'lang-selector-btn',
+  footerToolsContainerId: 'footer-tools',
+  toolsConfig: [
+    { id: 'share-btn', icon: 'share', label: 'Share', type: 'share', visible: 'after-translate' },
+    { id: 'ipa-list', icon: 'globe', label: 'IPA Database', type: 'link', href: './ipa_list_us.html' },
+    { id: 'game-btn', icon: 'gamepad', label: 'Quiz Game', type: 'game', visible: 'after-translate' },
+    { id: 'lang-btn', icon: 'lang', label: 'Other Languages', type: 'lang' },
+  ]
 });

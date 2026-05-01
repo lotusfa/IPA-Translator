@@ -25,6 +25,7 @@
         <div class="form-group">
           <label>
             Văn bản tiếng Việt / Vietnamese text
+            <button id="lang-selector-btn" class="btn-icon" aria-label="Select language">Tiếng Việt (vi) ▾</button>
             <button id="speak-btn" class="btn-icon" aria-label="Read aloud">
             </button>
           </label>
@@ -36,7 +37,14 @@ Bảng phiên âm quốc tế (IPA), trước đây được gọi là Bảng ph
 
       <div class="col">
         <div class="form-group">
-          <label>Phiên âm IPA (IPA)</label>
+          <div class="label-with-controls">
+            <label>Phiên âm IPA (IPA)</label>
+            <div class="output-controls" id="output-controls">
+            <button id="copy-output-btn" class="btn-icon" aria-label="Copy">📋</button>
+            <span class="output-sep">•</span>
+            <button id="display-format-btn" class="btn-icon format-toggle-btn">(文字 /ipa/) ▾</button>
+          </div>
+          </div>
           <textarea id="IPA_tBox" rows="10" disabled></textarea>
         </div>
       </div>
@@ -69,15 +77,13 @@ Bảng phiên âm quốc tế (IPA), trước đây được gọi là Bảng ph
       </div>
       <div class="col-md-6">
         <div class="form-check-inline">
-          <input type="checkbox" id="wf_c_words" checked />
-          <label for="wf_c_words">Hiển thị văn bản gốc / Show Original</label>
-        </div>
-        <div class="form-check-inline">
           <input type="checkbox" id="allow_words_search" checked />
           <label for="allow_words_search">Ghép theo từ / Word Match</label>
         </div>
       </div>
     </div>
+
+    <div class="tools-row" id="footer-tools"></div>
 
     <footer class="footer">
       <div class="footer-grid">

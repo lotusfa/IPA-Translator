@@ -2,8 +2,7 @@
  * French IPA Translator - Simplified using initIPAIndexPage
  */
 
-import { initIPAIndexPage } from '../js/ui.js';
-import { processTextLongestMatch } from '../js/ipa.js';
+import { initIPAIndexPage, processTextLongestMatch } from '../js/ui.js';
 
 // Initialize with variant support (fr_FR/fr_QC)
 initIPAIndexPage({
@@ -15,5 +14,13 @@ initIPAIndexPage({
     const variant = document.querySelector('input[name="inlineRadioOptions"]:checked')?.id;
     return variant === 'IPA_fr_FR' ? 'fr-FR' : 'fr-CA';
   },
-  gameLabel: 'french'
+  gameLabel: 'french',
+  languageSelectorId: 'lang-selector-btn',
+  footerToolsContainerId: 'footer-tools',
+  toolsConfig: [
+    { id: 'share-btn', icon: 'share', label: 'Partager', type: 'share', visible: 'after-translate' },
+    { id: 'ipa-list', icon: 'globe', label: 'Base de données IPA', type: 'link', href: './ipa_list.html' },
+    { id: 'game-btn', icon: 'gamepad', label: 'Jeu quiz', type: 'game', visible: 'after-translate' },
+    { id: 'lang-btn', icon: 'lang', label: 'Autres langues', type: 'lang' },
+  ]
 });

@@ -10,5 +10,13 @@ initIPAIndexPage({
   process: processTextLongestMatch,
   maxWordLength: 5,
   ttsLanguage: 'eo',
-  gameLabel: 'esperanto'
+  gameLabel: 'esperanto',
+  languageSelectorId: 'lang-selector-btn',
+  footerToolsContainerId: 'footer-tools',
+  toolsConfig: [
+    { id: 'share-btn', icon: 'share', label: 'Dividi', type: 'share', visible: 'after-translate' },
+    { id: 'ipa-list', icon: 'globe', label: 'IPA-datumobazo', type: 'link', href: './ipa_list.html' },
+    { id: 'game-btn', icon: 'gamepad', label: 'Kvizo', type: 'game', visible: 'after-translate' },
+    { id: 'lang-btn', icon: 'lang', label: 'Aliaj lingvoj', type: 'lang' },
+  ]
 });

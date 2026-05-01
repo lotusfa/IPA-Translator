@@ -25,6 +25,7 @@
         <div class="form-group">
           <label>
             Norsk tekst / Norwegian text
+            <button id="lang-selector-btn" class="btn-icon" aria-label="Select language">Norsk (no) ▾</button>
             <button id="speak-btn" class="btn-icon" aria-label="Read aloud">
             </button>
           </label>
@@ -34,20 +35,20 @@
 
       <div class="col">
         <div class="form-group">
-          <label>IPA-tegnsystem / IPA</label>
+          <div class="label-with-controls">
+            <label>IPA-tegnsystem / IPA</label>
+            <div class="output-controls" id="output-controls">
+            <button id="copy-output-btn" class="btn-icon" aria-label="Copy">📋</button>
+            <span class="output-sep">•</span>
+            <button id="display-format-btn" class="btn-icon format-toggle-btn">(文字 /ipa/) ▾</button>
+          </div>
+          </div>
           <textarea id="IPA_tBox" rows="10" disabled></textarea>
         </div>
       </div>
     </div>
 
-    <div class="row">
-      <div class="col-md-6">
-        <div class="form-check-inline">
-          <input type="checkbox" id="wf_c_words" checked />
-          <label for="wf_c_words">With Norwegian Words / Med norske ord</label>
-        </div>
-      </div>
-    </div>
+    <div class="tools-row" id="footer-tools"></div>
 
     <footer class="footer">
       <div class="footer-grid">

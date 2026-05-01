@@ -115,5 +115,13 @@ initIPAIndexPage({
   process: processKorean,
   maxWordLength: 6,
   ttsLanguage: 'ko-KR',
-  gameLabel: 'korean'
+  gameLabel: 'korean',
+  languageSelectorId: 'lang-selector-btn',
+  footerToolsContainerId: 'footer-tools',
+  toolsConfig: [
+    { id: 'share-btn', icon: 'share', label: '공유', type: 'share', visible: 'after-translate' },
+    { id: 'ipa-list', icon: 'globe', label: 'IPA 데이터베이스', type: 'link', href: './ipa_list.html' },
+    { id: 'game-btn', icon: 'gamepad', label: '퀴즈 게임', type: 'game', visible: 'after-translate' },
+    { id: 'lang-btn', icon: 'lang', label: '다른 언어', type: 'lang' },
+  ]
 });

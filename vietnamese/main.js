@@ -19,5 +19,13 @@ initIPAIndexPage({
   },
   maxWordLength: 6,
   ttsLanguage: 'vi-VN',
-  gameLabel: 'vietnamese'
+  gameLabel: 'vietnamese',
+  languageSelectorId: 'lang-selector-btn',
+  footerToolsContainerId: 'footer-tools',
+  toolsConfig: [
+    { id: 'share-btn', icon: 'share', label: 'Chia sẻ', type: 'share', visible: 'after-translate' },
+    { id: 'ipa-list', icon: 'globe', label: 'Cơ sở dữ liệu IPA', type: 'link', href: './ipa_list_c.html' },
+    { id: 'game-btn', icon: 'gamepad', label: 'Trò chơi câu đố', type: 'game', visible: 'after-translate' },
+    { id: 'lang-btn', icon: 'lang', label: 'Ngôn ngữ khác', type: 'lang' },
+  ]
 });

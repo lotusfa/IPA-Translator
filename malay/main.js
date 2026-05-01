@@ -5,6 +5,13 @@ initIPAIndexPage({
   databasePath: '../json/ma.json',
   process: processTextLongestMatch,
   ttsLanguage: 'ms-MY',
-  withWordsCheckboxId: 'wf_c_words',
-  gameLabel: 'malay'
+  gameLabel: 'malay',
+  languageSelectorId: 'lang-selector-btn',
+  footerToolsContainerId: 'footer-tools',
+  toolsConfig: [
+    { id: 'share-btn', icon: 'share', label: 'Kongsi', type: 'share', visible: 'after-translate' },
+    { id: 'ipa-list', icon: 'globe', label: 'Pangkalan Data IPA', type: 'link', href: './ipa_list.html' },
+    { id: 'game-btn', icon: 'gamepad', label: 'Kuiz', type: 'game', visible: 'after-translate' },
+    { id: 'lang-btn', icon: 'lang', label: 'Bahasa Lain', type: 'lang' },
+  ]
 });
