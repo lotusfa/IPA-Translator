@@ -217,6 +217,21 @@ body.dark-mode {
   background: var(--color-btn-bg);
 }
 
+/* Source text preview on start screen */
+.game-start-preview {
+  font-style: italic;
+  color: var(--color-text-muted, #888);
+  margin: var(--spacing-sm) 0;
+  font-size: 1rem;
+  max-width: 90%;
+}
+
+/* Intro message on start screen */
+.game-start-intro {
+  margin: var(--spacing-sm) 0 var(--spacing-lg);
+  font-size: 1.15rem;
+}
+
 /* Summary block on start screen */
 .game-summary {
   margin: var(--spacing-sm) 0;

@@ -150,10 +150,19 @@ function startScreen() {
 
   let selectedLength = Math.min(10, totalPairs);
 
+  // Truncate source text for preview
+  const previewText = gameData.text
+    ? gameData.text.length > 60
+      ? gameData.text.slice(0, 60) + '…'
+      : gameData.text
+    : null;
+
   function render() {
     showScreen(`
       <div class="game-screen active">
         <h1>IPA Game</h1>
+        ${previewText ? `<p class="game-start-preview">${previewText}</p>` : ''}
+        <p class="game-start-intro">Practice with <strong>${totalPairs}</strong> word${totalPairs > 1 ? 's' : ''} from your translation.</p>
         <div class="game-summary">
           <p><strong>${totalPairs}</strong> words &middot; ${formatLabel}${langLabel ? ' &middot; ' + langLabel : ''}</p>
         </div>
