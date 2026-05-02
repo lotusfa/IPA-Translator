@@ -20,12 +20,14 @@
 // - pairs: [[word, rawIPA], ...]
 // - formattedPairs: [[word, formattedOutput], ...] (or same as pairs if no format)
 
-import { shuffle } from './game-types/utils.js';
+import { shuffle, resetVoiceCache } from './game-types/utils.js';
 import { compressAndEncode, parseShareFromUrl, clearShareParams, getShareModal } from '../js/share.js';
 import { svgShare } from '../js/svg.js';
 import * as wordToIpa from './game-types/wordToIpa.js';
 import * as ipaToWord from './game-types/ipaToWord.js';
 import * as syllableFill from './game-types/syllableFill.js';
+
+const ANSWER_DELAY = 800;
 
 // Registered game types — add new types here
 const gameTypes = [wordToIpa, ipaToWord, syllableFill];
@@ -103,6 +105,8 @@ const app = document.getElementById('game-app');
 
 function showScreen(html) {
   app.innerHTML = html;
+  // Move focus to first button for keyboard/screen reader users
+  setTimeout(() => { const firstBtn = app.querySelector('button'); firstBtn?.focus(); }, 50);
 }
 
 // ============================================
@@ -200,7 +204,7 @@ function attachSingleStepHandler(selector, dataAttr, correctAnswer) {
         app.querySelectorAll(selector).forEach(b => { if (b.dataset[dataAttr] === correctAnswer) b.classList.add('correct'); });
       }
       app.querySelectorAll(selector).forEach(b => (b.disabled = true));
-      setTimeout(() => { index++; quizScreen(); }, 800);
+      setTimeout(() => { index++; quizScreen(); }, ANSWER_DELAY);
     });
   });
 }
@@ -216,7 +220,7 @@ function quizScreen() {
   }
 
   const { pair, type: gameType } = questionQueue[index];
-  const progress = (index / questionQueue.length * 100).toFixed(0);
+  const progress = ((index + 1) / questionQueue.length * 100).toFixed(0);
 
   const allPairs = getAllPairs(questionQueue, gameType.id, gameData);
 
@@ -275,7 +279,7 @@ function quizScreen() {
           } else {
             quizScreen(); // re-render next sub-step
           }
-        }, 800);
+        }, ANSWER_DELAY);
       });
     });
 
@@ -292,9 +296,39 @@ function quizScreen() {
     attachSingleStepHandler('.game-option-btn', 'ipa', pair[1]);
   }
 
-  app.querySelector('.game-back-btn').addEventListener('click', async () => {
-    if (confirm('Quit this game?')) window.location.href = await createTranslatorUrl();
+  app.querySelector('.game-back-btn').addEventListener('click', () => {
+    showQuitConfirm(async () => {
+      window.location.href = await createTranslatorUrl();
+    });
   });
+}
+
+// ============================================
+// Quit Confirmation Modal
+// ============================================
+
+function showQuitConfirm(onQuit) {
+  const overlay = document.createElement('div');
+  overlay.className = 'game-quit-overlay';
+  overlay.innerHTML = `
+    <div class="game-quit-modal">
+      <p>Quit this game?</p>
+      <div class="game-quit-actions">
+        <button class="game-btn game-cancel-quit-btn">Stay</button>
+        <button class="game-btn game-confirm-quit-btn">Quit</button>
+      </div>
+    </div>
+  `;
+  app.appendChild(overlay);
+
+  overlay.querySelector('.game-cancel-quit-btn').addEventListener('click', () => {
+    overlay.remove();
+  });
+  overlay.querySelector('.game-confirm-quit-btn').addEventListener('click', () => {
+    overlay.remove();
+    onQuit();
+  });
+  overlay.querySelector('.game-confirm-quit-btn').focus();
 }
 
 // ============================================
@@ -333,6 +367,7 @@ function congratsScreen() {
 // ============================================
 
 function launchGame(length) {
+  resetVoiceCache();
   const pairs = (gameData.format && gameData.formattedPairs) ? gameData.formattedPairs : gameData.pairs;
   const rawPairs = gameData.pairs; // syllable-fill needs raw IPA
   const shuffled = shuffle(pairs).slice(0, length);

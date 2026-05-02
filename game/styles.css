@@ -93,6 +93,50 @@ body.dark-mode {
   color: var(--color-wrong-text);
 }
 
+/* Visual indicators for correct/wrong (not color-only) */
+.game-option-btn.correct::after {
+  content: ' ✓';
+}
+
+.game-option-btn.wrong::after {
+  content: ' ✗';
+}
+
+/* Quit confirmation modal */
+.game-quit-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.game-quit-modal {
+  background: var(--color-bg, #fff);
+  color: var(--color-text, #000);
+  padding: 24px 32px;
+  border-radius: var(--radius-sm);
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.game-quit-modal p {
+  margin: 0 0 16px;
+  font-size: 1.1rem;
+}
+
+.game-quit-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.game-quit-actions .game-btn {
+  min-width: 80px;
+}
+
 /* Progress bar */
 .game-progress {
   width: 100%;

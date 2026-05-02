@@ -1,19 +1,10 @@
 // Game type: show word, user picks IPA from 4 options
 
-import { generateOptions } from './utils.js';
-import { speak, selectBestVoice } from '../../js/tts.js';
+import { generateOptions, checkVoice, detectLang } from './utils.js';
+import { speak } from '../../js/tts.js';
 import { svgVoice, svgPause } from '../../js/svg.js';
 
 export const id = 'word-to-ipa';
-
-// Cache voice support check
-let hasVoice = null;
-
-async function checkVoice(lang) {
-  if (hasVoice !== null) return hasVoice;
-  hasVoice = (await selectBestVoice(lang)) !== null;
-  return hasVoice;
-}
 
 export function renderWordToIpa(pair, allPairs, progress) {
   const [word, ipa] = pair;
@@ -35,14 +26,6 @@ export function renderWordToIpa(pair, allPairs, progress) {
       </div>
     </div>
   `;
-}
-
-// Detect TTS language from word text (fallback when lang is unknown)
-function detectLang(word) {
-  if (/\p{Script=Han}/u.test(word)) return 'zh-CN';
-  if (/\p{Script=Hiragana}/u.test(word) || /\p{Script=Katakana}/u.test(word)) return 'ja-JP';
-  if (/\p{Script=Hangul}/u.test(word)) return 'ko-KR';
-  return 'en-US';
 }
 
 // Call after render to wire up the speak button
