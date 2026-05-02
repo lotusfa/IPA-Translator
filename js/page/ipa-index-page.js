@@ -454,7 +454,7 @@ export function initIPAIndexPage(options) {
         const hiddenStyle = visible ? 'style="display:none"' : '';
 
         if (tool.type === 'link') {
-          html += `<a href="${tool.href}" id="${tool.id}" class="share-circle-btn" ${hiddenStyle}>${icon}<span>${tool.label}</span></a>`;
+          html += `<button id="${tool.id}" class="share-circle-btn" data-href="${tool.href}" ${hiddenStyle}>${icon}<span>${tool.label}</span></button>`;
         } else if (tool.type === 'share' && enableShareButton) {
           html += `<button id="${tool.id}" class="share-circle-btn" data-visible="${tool.visible}" ${hiddenStyle}>${icon}<span>${tool.label}</span></button>`;
         } else if (tool.type === 'game' && enableGameButton) {
@@ -465,6 +465,15 @@ export function initIPAIndexPage(options) {
       });
 
       container.innerHTML = html;
+
+      // Handle link-type buttons (data-href)
+      container.addEventListener('click', (e) => {
+        const btn = e.target.closest('[data-href]');
+        if (btn) {
+          e.preventDefault();
+          window.location.href = btn.dataset.href;
+        }
+      });
 
       // Wire up handlers by ID
       const shareBtn = document.getElementById('share-btn');
