@@ -5,6 +5,19 @@
 
 import { svgShare, svgCopy, svgTick, svgDownload } from './svg.js';
 
+async function readStreamChunks(reader) {
+  const chunks = [];
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    chunks.push(value);
+  }
+  const out = new Uint8Array(chunks.reduce((a, c) => a + c.length, 0));
+  let off = 0;
+  for (const c of chunks) { out.set(c, off); off += c.length; }
+  return out;
+}
+
 // ============================================
 // Encoding / Decoding
 // ============================================
@@ -14,22 +27,9 @@ export async function compressAndEncode(data) {
   if ('CompressionStream' in globalThis) {
     const stream = new CompressionStream('deflate');
     const writer = stream.writable.getWriter();
-    const encoder = new TextEncoder();
-    writer.write(encoder.encode(json));
+    writer.write(new TextEncoder().encode(json));
     writer.close();
-    const chunks = [];
-    const reader = stream.readable.getReader();
-    for (;;) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      chunks.push(value);
-    }
-    const bytes = new Uint8Array(chunks.reduce((acc, c) => acc + c.length, 0));
-    let offset = 0;
-    for (const c of chunks) {
-      bytes.set(c, offset);
-      offset += c.length;
-    }
+    const bytes = await readStreamChunks(stream.readable.getReader());
     return btoa(String.fromCharCode(...bytes));
   }
   return btoa(unescape(encodeURIComponent(json)));
@@ -44,17 +44,8 @@ export async function decodeAndDecompress(b64) {
       const writer = stream.writable.getWriter();
       writer.write(bytes);
       writer.close();
-      const chunks = [];
-      const reader = stream.readable.getReader();
-      for (;;) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        chunks.push(value);
-      }
-      const concatenated = new Uint8Array(chunks.reduce((a, c) => a + c.length, 0));
-      let off = 0;
-      for (const c of chunks) { concatenated.set(c, off); off += c.length; }
-      return JSON.parse(new TextDecoder().decode(concatenated));
+      const decompressed = await readStreamChunks(stream.readable.getReader());
+      return JSON.parse(new TextDecoder().decode(decompressed));
     }
     return JSON.parse(decodeURIComponent(escape(json)));
   } catch {
