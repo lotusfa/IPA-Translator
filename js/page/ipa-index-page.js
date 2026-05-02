@@ -399,17 +399,6 @@ export function initIPAIndexPage(options) {
     }
   }
 
-  // Display format button — inject SVG arrow
-  {
-    const fmtBtn = document.getElementById('display-format-btn');
-    if (fmtBtn) {
-      const text = fmtBtn.textContent.trim();
-      if (text.includes('▾')) {
-        fmtBtn.innerHTML = text.replace('▾', '').trim() + svgDownArrow;
-      }
-    }
-  }
-
   // Share button (opens modal with share, export, and game options)
   // Shared click handler for share button (output label or footer tools)
   const shareButtonClick = (e) => {
