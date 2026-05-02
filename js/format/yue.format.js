@@ -420,10 +420,6 @@ export function formatYueLiu(text) {
   return processSegments(text, 'liu');
 }
 
-// ============================================
-// Legacy Functions (for backward compatibility)
-// ============================================
-
 export function formatIPA_num(text) {
   return text
     .replace(new RegExp(TONE_5, 'g'), '5')
@@ -434,95 +430,4 @@ export function formatIPA_num(text) {
 
 export function formatIPA_org(text) {
   return text;
-}
-
-export function formatJyutpingCantonese(text) {
-  // Convert tone marks to numbers - order matters: handle compound tones first
-  return text
-    .replace(new RegExp(TONE_5 + TONE_3, 'g'), '1')  // 陰平 53
-    .replace(new RegExp(TONE_5 + TONE_5, 'g'), '1')  // 陰平 55
-    .replace(new RegExp(TONE_3 + TONE_5, 'g'), '2')  // 陰上 35
-    .replace(new RegExp(TONE_1 + TONE_3, 'g'), '5')  // 陽上 13 - moved before single tones
-    .replace(new RegExp(TONE_2 + TONE_3, 'g'), '5')  // 陽上 13 - alternative
-    .replace(new RegExp(TONE_3 + TONE_3, 'g'), '3')  // 陰去 33
-    .replace(new RegExp(TONE_3, 'g'), '3')           // 陰去 33 (fallback)
-    .replace(new RegExp(TONE_2 + TONE_1, 'g'), '4')  // 陽平 21
-    .replace(new RegExp(TONE_1 + TONE_1, 'g'), '4')  // 陽平 11
-    .replace(new RegExp(TONE_2 + TONE_2, 'g'), '6')  // 陽去 22
-    .replace(new RegExp(TONE_2, 'g'), '6')           // 陽去 22 (fallback)
-    .replace(new RegExp(TONE_5, 'g'), '1')           // 陰平 5 (fallback)
-    .replace(new RegExp(TONE_1, 'g'), '4');          // 陽平 4 (fallback)
-}
-
-export function formatJyutpingMandarin(text) {
-  return text;
-}
-
-export const formatJyutping = formatJyutpingCantonese;
-
-export function formatJyutping_num(text) {
-  return formatJyutpingCantonese(text)
-    .replace(/ˉ/g, '1').replace(/ˊ/g, '2').replace(/ˇ/g, '3')
-    .replace(/ˋ/g, '4').replace(/˙/g, '5');
-}
-
-export function formatJyutpingMandarinNum(text) {
-  return formatJyutpingMandarin(text)
-    .replace(/ˉ/g, '1').replace(/ˊ/g, '2').replace(/ˇ/g, '3')
-    .replace(/ˋ/g, '4');
-}
-
-export function formatVietnamese(text) {
-  return text;
-}
-
-// ============================================
-// DOM-based Output Functions
-// ============================================
-
-export function formatYueOutput(text, options = {}) {
-  if (typeof document !== 'undefined') {
-    const IPA_org = document.getElementById('IPA_org');
-    const IPA_num = document.getElementById('IPA_num');
-    const Jyutping = document.getElementById('Jyutping');
-    const Guangzhou = document.getElementById('Guangzhou');
-    const Academy = document.getElementById('Academy');
-    const Yale = document.getElementById('Yale');
-    const Liu = document.getElementById('Liu');
-
-    if (IPA_org && IPA_org.checked) return formatIPA_org(text);
-    if (IPA_num && IPA_num.checked) return formatIPA_num(text);
-    if (Jyutping && Jyutping.checked) return formatYueJyutping(text);
-    if (Guangzhou && Guangzhou.checked) return formatYueGuangzhou(text);
-    if (Academy && Academy.checked) return formatYueAcademy(text);
-    if (Yale && Yale.checked) return formatYueYale(text);
-    if (Liu && Liu.checked) return formatYueLiu(text);
-  }
-  return formatIPA_org(text);
-}
-
-export function formatMandarinOutput(text, options = {}) {
-  if (typeof document !== 'undefined') {
-    const IPA_num = document.getElementById('IPA_num');
-    const IPA_org = document.getElementById('IPA_org');
-    const Jyutping = document.getElementById('Jyutping');
-    const Jyutping_num = document.getElementById('Jyutping_num');
-
-    if (IPA_num && IPA_num.checked) return formatIPA_num(text);
-    if (IPA_org && IPA_org.checked) return formatIPA_org(text);
-    if (Jyutping_num && Jyutping_num.checked) return formatJyutpingMandarinNum(text);
-    if (Jyutping && Jyutping.checked) return formatJyutpingMandarin(text);
-  }
-  return formatIPA_org(text);
-}
-
-export function formatVietnameseOutput(text, options = {}) {
-  if (typeof document !== 'undefined') {
-    const IPA_num = document.getElementById('IPA_num');
-    const IPA_org = document.getElementById('IPA_org');
-
-    if (IPA_num && IPA_num.checked) return formatVietnamese(text);
-    if (IPA_org && IPA_org.checked) return formatIPA_org(text);
-  }
-  return formatIPA_org(text);
 }
