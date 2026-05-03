@@ -23,6 +23,7 @@
 import { shuffle, resetVoiceCache } from './game-types/utils.js';
 import { compressAndEncode, parseShareFromUrl, clearShareParams, getShareModal } from '../js/share.js';
 import { svgShare } from '../js/svg.js';
+import { initGameI18n, t } from './game-i18n.js';
 import * as wordToIpa from './game-types/wordToIpa.js';
 import * as ipaToWord from './game-types/ipaToWord.js';
 import * as syllableFill from './game-types/syllableFill.js';
@@ -128,9 +129,9 @@ function startScreen() {
   if (!gameData || !gameData.pairs || gameData.pairs.length < 2) {
     showScreen(`
       <div class="game-screen active">
-        <h1>IPA Game</h1>
-        <p>No game data found. Go back to the translator and click the gamepad button.</p>
-        <button class="game-btn game-back-translator-btn" style="display:inline-block; text-decoration:none;">Back to Translator</button>
+        <h1>${t('game_title')}</h1>
+        <p>${t('game_no_data_message')}</p>
+        <button class="game-btn game-back-translator-btn" style="display:inline-block; text-decoration:none;">${t('game_back_to_translator')}</button>
       </div>
     `);
   app.querySelector('.game-back-translator-btn').addEventListener('click', async () => {
@@ -160,22 +161,22 @@ function startScreen() {
   function render() {
     showScreen(`
       <div class="game-screen active">
-        <h1>IPA Game</h1>
+        <h1>${t('game_title')}</h1>
         ${previewText ? `<p class="game-start-preview">${previewText}</p>` : ''}
-        <p class="game-start-intro">Practice with <strong>${totalPairs}</strong> word${totalPairs > 1 ? 's' : ''} from your translation.</p>
+        <p class="game-start-intro">${t('game_intro_sentence', { count: totalPairs })}</p>
         <div class="game-summary">
-          <p><strong>${totalPairs}</strong> words &middot; ${formatLabel}${langLabel ? ' &middot; ' + langLabel : ''}</p>
+          <p><strong>${totalPairs}</strong> ${t('game_words')} &middot; ${formatLabel}${langLabel ? ' &middot; ' + langLabel : ''}</p>
         </div>
-        <p>How many questions?</p>
+        <p>${t('game_how_many_questions')}</p>
         <div class="game-length-picker">
           ${lengths.map(n =>
-            `<button data-length="${n}" class="game-btn game-length-btn ${n === selectedLength ? 'correct' : ''}">${n === totalPairs ? `All ${n}` : n}</button>`
+            `<button data-length="${n}" class="game-btn game-length-btn ${n === selectedLength ? 'correct' : ''}">${n === totalPairs ? t('game_all_n', { n }) : n}</button>`
           ).join('')}
         </div>
-        <button id="start-game-btn" class="game-btn game-start-btn">Start</button>
+        <button id="start-game-btn" class="game-btn game-start-btn">${t('game_start')}</button>
         <div style="display:flex; gap:10px; justify-content:center;">
           <button id="share-btn" class="game-btn">${svgShare}</button>
-          <button class="game-btn game-link-btn" style="display:inline-block; text-decoration:none;">Back to Translator</button>
+          <button class="game-btn game-link-btn" style="display:inline-block; text-decoration:none;">${t('game_back_to_translator')}</button>
         </div>
       </div>
     `);
@@ -321,10 +322,10 @@ function showQuitConfirm(onQuit) {
   overlay.className = 'game-quit-overlay';
   overlay.innerHTML = `
     <div class="game-quit-modal">
-      <p>Quit this game?</p>
+      <p>${t('game_quit_question')}</p>
       <div class="game-quit-actions">
-        <button class="game-btn game-cancel-quit-btn">Stay</button>
-        <button class="game-btn game-confirm-quit-btn">Quit</button>
+        <button class="game-btn game-cancel-quit-btn">${t('game_stay')}</button>
+        <button class="game-btn game-confirm-quit-btn">${t('game_quit')}</button>
       </div>
     </div>
   `;
@@ -347,13 +348,13 @@ function showQuitConfirm(onQuit) {
 function congratsScreen() {
   showScreen(`
     <div class="game-screen active">
-      <h1>Congrats!</h1>
-      <p>Score: ${score} / ${questionQueue.length}</p>
+      <h1>${t('game_congrats')}</h1>
+      <p>${t('game_score', { score, total: questionQueue.length })}</p>
       <p>${(score / questionQueue.length * 100).toFixed(0)}%</p>
       <div class="game-congrats-actions">
-        <button class="game-btn game-restart-btn">Play Again</button>
+        <button class="game-btn game-restart-btn">${t('game_play_again')}</button>
         <button id="share-btn" class="game-btn">${svgShare}</button>
-        <button class="game-btn game-back-translator-btn" style="text-decoration:none;">Back to Translator</button>
+        <button class="game-btn game-back-translator-btn" style="text-decoration:none;">${t('game_back_to_translator')}</button>
       </div>
     </div>
   `);
@@ -400,5 +401,8 @@ function launchGame(length) {
 
 (async () => {
   await importFromUrl();
+  const gd = loadGameData();
+  await initGameI18n(gd?.language || 'english');
+  document.title = t('game_title');
   startScreen();
 })();

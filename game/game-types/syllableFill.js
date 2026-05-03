@@ -12,14 +12,13 @@ import { decomposeToJyutping, decomposeToGuangzhou, decomposeToAcademy, decompos
          formatIPA_num as yueFormatIPANum } from '../../js/format/yue.format.js';
 import { decomposeToPinyin, decomposeToZhuyin, MANDARIN_INITIALS, ZHUYIN_INITIALS } from '../../js/format/zh.format.js';
 import { shuffle } from './utils.js';
+import { t } from '../game-i18n.js';
 
 export const id = 'syllable-fill';
 
 export function canUse(lang) {
   return supportsDecomposition(lang);
 }
-
-const partLabels = { onset: 'Initial', rhyme: 'Rhyme', tone: 'Tone' };
 
 function decomposeToIPA_num(ipa, language) {
   const parts = decomposeSyllable(ipa, language);
@@ -158,17 +157,17 @@ export function renderSyllableFill(pair, progress, subState, allPairs, language,
   const blanksHtml = positions.map(pos => {
     const val = formattedFilled[pos];
     const cls = val ? 'game-syllable-blank filled' : 'game-syllable-blank';
-    return `<div class="game-syllable-blank-wrap"><div class="${cls}">${val || '___'}</div><div class="game-syllable-part-label">${pos}</div></div>`;
+    return `<div class="game-syllable-blank-wrap"><div class="${cls}">${val || '___'}</div><div class="game-syllable-part-label">${t(`game_${pos}`)}</div></div>`;
   }).join('');
 
   const options = getStepOptions(subState, language, allPairs, format);
 
   return `
     <div class="game-screen active">
-      <button class="game-btn game-back-btn" style="position:static;">Back</button>
+      <button class="game-btn game-back-btn" style="position:static;">${t('game_back')}</button>
       <div class="game-progress"><div class="game-progress-bar" style="width:${progress}%"></div></div>
       <h2 class="game-word-row">${word}</h2>
-      <p class="game-syllable-step-label">Fill in the ${partLabels[partName]}</p>
+      <p class="game-syllable-step-label">${t('game_fill_in_the', { part: t(`game_${partName}`) })}</p>
       <div class="game-syllable-blanks">${blanksHtml}</div>
       <div class="game-btn-grid" id="syllable-options">
         ${options.map(opt => `<button data-value="${opt}" class="game-btn game-option-btn">${opt}</button>`).join('')}

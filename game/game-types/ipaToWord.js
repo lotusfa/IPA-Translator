@@ -3,6 +3,7 @@
 import { generateOptions, checkVoice, detectLang } from './utils.js';
 import { speak } from '../../js/tts.js';
 import { svgVoice, svgPause } from '../../js/svg.js';
+import { t } from '../game-i18n.js';
 
 export const id = 'ipa-to-word';
 
@@ -12,15 +13,15 @@ export function renderIpaToWord(pair, allPairs, progress) {
 
   return `
     <div class="game-screen active">
-      <button class="game-btn game-back-btn" style="position:static;">Back</button>
+      <button class="game-btn game-back-btn" style="position:static;">${t('game_back')}</button>
       <div class="game-progress"><div class="game-progress-bar" style="width:${progress}%"></div></div>
       <h2>${ipa}</h2>
-      <p>Select the correct word:</p>
+      <p>${t('game_select_correct_word')}</p>
       <div class="game-btn-grid">
         ${options.map(opt => `
           <button data-word="${opt}" class="game-btn game-option-btn">
             ${opt}
-            <span class="game-option-speak-btn" data-word="${opt}" aria-label="Speak">
+            <span class="game-option-speak-btn" data-word="${opt}" aria-label="${t('game_speak')}">
               ${svgVoice}
             </span>
           </button>

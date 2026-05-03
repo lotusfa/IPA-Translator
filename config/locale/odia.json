@@ -1,5 +1,29 @@
+
 {
   "textAndIpa": "(ଅକ୍ଷର /ipa/)",
   "onlyIpa": "କେବଳ /ipa/",
-  "speakWord": "ଶବ୍ଦ ପଢନ୍ତୁ"
+  "speakWord": "ଶବ୍ଦ ପଢନ୍ତୁ",
+  "game_title": "IPA ଖେଳ",
+  "game_no_data_message": "ଖେଳ ତଥ୍ୟ ମିଳିଲା ନାହିଁ। ଅନୁବାଦକକୁ ଫେରିଯାଆନ୍ତୁ ଏବଂ ଗେମ୍ପ୍ୟାଡ ବଟନ କ୍ଲିକ୍ କରନ୍ତୁ।",
+  "game_back_to_translator": "ଅନୁବାଦକକୁ ଫେରିଯାଆନ୍ତୁ",
+  "game_intro_sentence": "ଆପଣଙ୍କ ଅନୁବାଦରୁ {count} ଶବ୍ଦ ସହିତ ଅଭ୍ୟାସ କରନ୍ତୁ।",
+  "game_words": "ଶବ୍ଦ",
+  "game_how_many_questions": "କେତୋଟି ପ୍ରଶ୍ନ?",
+  "game_all_n": "ସମସ୍ତ {n}",
+  "game_start": "ଆରମ୍ଭ",
+  "game_quit_question": "ଏହି ଖେଳ ଛାଡିବେ?",
+  "game_stay": "ରହନ୍ତୁ",
+  "game_quit": "ଛାଡନ୍ତୁ",
+  "game_congrats": "ବିନୀତ ଅଭିନନ୍ଦନ!",
+  "game_score": "ସ୍କୋର: {score} / {total}",
+  "game_play_again": "ପୁନର୍ବାର ଖେଳନ୍ତୁ",
+  "game_back": "ପଛକୁ",
+  "game_select_correct_word": "ସଠିକ୍ ଶବ୍ଦ ବାଛନ୍ତୁ:",
+  "game_select_correct_transcript": "ସଠିକ୍ ଟ୍ରାନ୍ସକ୍ରିପ୍ଟ ବାଛନ୍ତୁ:",
+  "game_speak": "କହନ୍ତୁ",
+  "game_speak_word": "ଶବ୍ଦ କହନ୍ତୁ",
+  "game_fill_in_the": "{part} ପୂରଣ କରନ୍ତୁ",
+  "game_initial": "ପ୍ରାରମ୍ଭିକ",
+  "game_rhyme": "ଯମକ",
+  "game_tone": "ସ୍ୱର"
 }
