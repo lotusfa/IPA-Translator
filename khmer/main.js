@@ -1,5 +1,6 @@
 // Import the new function
-import { initIPAIndexPage, processKhmerText } from '../js/ui.js';
+import { initIPAIndexPage } from '../js/page/ipa-index-page.js';
+import { processKhmerText } from '../js/ipa.js';
 
 initIPAIndexPage({
   databasePath: '../json/km.json',

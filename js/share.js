@@ -1,6 +1,6 @@
 /**
  * Share Module — compress/encode data into shareable URLs and render share buttons.
- * Used by: game/game.js, js/ui.js (translation pages)
+ * Used by: game/game.js, js/page/ipa-index-page.js (translation pages)
  */
 
 import { svgShare, svgCopy, svgTick, svgDownload } from './svg.js';

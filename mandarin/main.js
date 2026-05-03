@@ -2,7 +2,8 @@
  * Mandarin IPA Translator - Simplified using initIPAIndexPage
  */
 
-import { initIPAIndexPage, processTextCharBased } from '../js/ui.js';
+import { initIPAIndexPage } from '../js/page/ipa-index-page.js';
+import { processTextCharBased } from '../js/ipa.js';
 import {
   formatIPA_org,
   formatIPA_num,

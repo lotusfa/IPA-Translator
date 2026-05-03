@@ -1,5 +1,6 @@
 /** Finnish IPA Translator */
-import { initIPAIndexPage, processTextLongestMatch } from '../js/ui.js';
+import { initIPAIndexPage } from '../js/page/ipa-index-page.js';
+import { processTextLongestMatch } from '../js/ipa.js';
 
 initIPAIndexPage({
   databasePath: '../json/fi.json',

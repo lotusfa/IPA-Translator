@@ -1,7 +1,5 @@
 /**
- * Core Utilities - Shared primitives used by both ipa-core.js and ui.js
- * Breaking circular dependency: ipa-core.js <-> ui.js
- *
+ * Core Utilities - Shared primitives used by ipa.js and page/ modules.
  * Contains DOM utilities, data loading, and event helpers.
  */
 

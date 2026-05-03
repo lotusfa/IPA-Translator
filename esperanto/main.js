@@ -2,7 +2,8 @@
  * Esperanto IPA Translator - Simplified using initIPAIndexPage
  */
 
-import { initIPAIndexPage, processTextLongestMatch } from '../js/ui.js';
+import { initIPAIndexPage } from '../js/page/ipa-index-page.js';
+import { processTextLongestMatch } from '../js/ipa.js';
 
 // Initialize with longest-match algorithm for phrase processing
 initIPAIndexPage({

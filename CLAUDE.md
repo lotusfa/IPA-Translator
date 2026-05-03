@@ -29,9 +29,7 @@ IPA-Translator is a static HTML/JavaScript web application that translates text 
 │   │   ├── ipa-index-page.js  # initIPAIndexPage (translation pages)
 │   │   ├── ipa-list-page.js   # initIPATable, initIPAListPage (IPA reference pages)
 │   │   ├── page-shared.js     # initDarkMode, language nav, responsive textarea
-│   │   └── game-entry.js      # createGameButton
 │   ├── ipa.js            # Core: processTextCharBased, processTextLongestMatch, processKhmerText
-│   ├── ui.js             # Barrel re-export of page/ modules (external-facing entry point)
 │   ├── utils.js          # Utilities: loadIPADatabase, normalizeIPAData, DOM helpers
 │   ├── tts.js            # TTS: speak(), selectBestVoice(), initSpeakButton, createSpeakButton
 │   ├── share.js          # Compress/encode data into shareable URLs, clipboard helpers
@@ -57,11 +55,12 @@ Language `main.js` files are thin wrappers. The real logic lives in `js/`:
 - **`normalizeIPAData(data)`** (utils.js) — Extracts first key from JSON, flattens to `{ word: ipa }` lookup map.
 
 **Import pattern for language main.js files:**
-- Import `initIPAIndexPage` from `../js/ui.js` (barrel re-export → page/ipa-index-page.js, also re-exports `processText*` from ipa.js)
-- Import formatters directly from `../js/format/[lang].format.js` (e.g., `yue.format.js`, `zh.format.js`) — this avoids loading unused format modules
-- Import `processText*` from `../js/ui.js` (re-exported from ipa.js) or directly from `../js/ipa.js`
+- Import `initIPAIndexPage` from `../js/page/ipa-index-page.js`
+- Import `processText*` from `../js/ipa.js`
+- Import formatters directly from `../js/format/[lang].format.js` (e.g., `yue.format.js`, `zh.format.js`)
+- Import `initIPAListPage` from `../js/page/ipa-list-page.js` (for IPA list pages)
 
-**Dependency chain:** utils.js ← ipa.js. page/ imports from utils.js, tts.js, share.js, svg.js. ui.js is a thin barrel re-export of page/. No circular deps.
+**Dependency chain:** utils.js ← ipa.js. page/ imports from utils.js, tts.js, share.js, svg.js. No circular deps.
 
 ### Data Flow
 
@@ -89,7 +88,8 @@ initIPAIndexPage({
 2. Create `index.html` — adapt labels, add format radios if needed
 3. Create `main.js`:
    ```javascript
-   import { initIPAIndexPage, processTextLongestMatch } from '../js/ui.js';
+   import { initIPAIndexPage } from '../js/page/ipa-index-page.js';
+   import { processTextLongestMatch } from '../js/ipa.js';
    initIPAIndexPage({
      databasePath: '../json/it.json',
      process: processTextLongestMatch, // or processTextCharBased for CJK
@@ -139,7 +139,7 @@ The game is a vanilla JS SPA (no heavy frameworks) for IPA learning. Users enter
 
 **`pairsOnly` option:** Both `processTextCharBased()` and `processTextLongestMatch()` accept `pairsOnly: true` — returns `[[word, rawIPA], ...]` array instead of a formatted string.
 
-**Adding game support to a language:** Add `gameLabel: 'foldername'` to the language's `main.js` `initIPAIndexPage()` call. The gamepad button is injected automatically by `ui.js`.
+**Adding game support to a language:** Add `gameLabel: 'foldername'` to the language's `main.js` `initIPAIndexPage()` call. The gamepad button is injected automatically by `ipa-index-page.js`.
 
 **Game design goals (from handwritten notes):**
 - No keyboard — on-screen buttons only (vocal game concept)

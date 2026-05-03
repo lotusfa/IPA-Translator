@@ -1,4 +1,5 @@
-import { initIPAIndexPage, processTextLongestMatch } from '../js/ui.js';
+import { initIPAIndexPage } from '../js/page/ipa-index-page.js';
+import { processTextLongestMatch } from '../js/ipa.js';
 
 // Initialize with variant support (es_ES/es_MX)
 initIPAIndexPage({

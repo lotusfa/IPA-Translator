@@ -1,4 +1,5 @@
-import { initIPAIndexPage, processTextCharBased } from '../js/ui.js';
+import { initIPAIndexPage } from '../js/page/ipa-index-page.js';
+import { processTextCharBased } from '../js/ipa.js';
 
 /**
  * Applies Korean phonological rules to an array of [word, ipa] pairs.

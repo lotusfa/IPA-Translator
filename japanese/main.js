@@ -2,7 +2,8 @@
  * Japanese IPA Translator - Simplified using initIPAIndexPage
  */
 
-import { initIPAIndexPage, processTextCharBased } from '../js/ui.js';
+import { initIPAIndexPage } from '../js/page/ipa-index-page.js';
+import { processTextCharBased } from '../js/ipa.js';
 
 // Initialize with char-based processing (no formatter needed)
 initIPAIndexPage({
