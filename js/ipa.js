@@ -233,3 +233,87 @@ export function processKhmerText(options) {
   if (pairsOnly) return { result: result.trim(), pairs };
   return result.trim().replace(/\s+/g, ' '); // Clean up spacing
 }
+
+/**
+ * Applies Korean phonological rules to an array of [word, ipa] pairs.
+ * Rules handled: Nasalization, Tensing (Fortition), L-Assimilation, Aspiration.
+ */
+function applyKoreanPhonology(ipaArray) {
+  for (let i = 0; i < ipaArray.length - 1; i++) {
+    let current = ipaArray[i];
+    let next = ipaArray[i + 1];
+    const curIPA = current[1];
+    const nxtIPA = next[1];
+
+    // Nasal assimilation: p̚, k̚, t̚ + n → m, ŋ, n + n
+    if (nxtIPA.startsWith('/n')) {
+      if (curIPA.endsWith('p̚/')) ipaArray[i][1] = curIPA.replace('p̚/', 'm/');
+      else if (curIPA.endsWith('k̚/')) ipaArray[i][1] = curIPA.replace('k̚/', 'ŋ/');
+      else if (curIPA.endsWith('t̚/')) ipaArray[i][1] = curIPA.replace('t̚/', 'n/');
+    }
+
+    // Aspiration: k + h → kʰ
+    if (curIPA.endsWith('k̚/') && nxtIPA.startsWith('/h')) {
+      ipaArray[i][1] = curIPA.replace('k̚/', '/');
+      ipaArray[i + 1][1] = nxtIPA.replace('/h', '/kʰ');
+    }
+
+    // Tensing (fortition): after a stop, plain consonants become tense
+    const isStop = curIPA.endsWith('p̚/') || curIPA.endsWith('k̚/') || curIPA.endsWith('t̚/');
+    if (isStop) {
+      const tenseMap = { '/k': '/k͈', '/t': '/t͈', '/p': '/p͈', '/s': '/s͈', '/t͡ɕ': '/t͡ɕ͈' };
+      for (const [plain, tense] of Object.entries(tenseMap)) {
+        if (nxtIPA.startsWith(plain) && !nxtIPA.startsWith(tense)) {
+          ipaArray[i + 1][1] = nxtIPA.replace(plain, tense);
+          break;
+        }
+      }
+    }
+
+    // L-assimilation (lateralization)
+    if (curIPA.endsWith('n/') && nxtIPA.startsWith('/l')) ipaArray[i][1] = curIPA.replace('n/', 'l/');
+    if (curIPA.endsWith('l/') && nxtIPA.startsWith('/n')) ipaArray[i + 1][1] = nxtIPA.replace('/n', '/l');
+  }
+  return ipaArray;
+}
+
+/**
+ * Process Korean text: character-based lookup with post-processing phonology rules.
+ * @param {object} options - Same as processTextCharBased plus pairsOnly
+ * @returns {string|object} Processed result or pairs
+ */
+export function processKorean(options) {
+  const { input, withWords = false, pairsOnly = false } = options;
+
+  const { pairs: rawPairs } = processTextCharBased({ ...options, pairsOnly: true });
+  const matchedPairs = rawPairs.filter(p => p[1] != null);
+
+  let searchFrom = 0;
+  const matches = matchedPairs.map(([word, ipa]) => {
+    const start = input.indexOf(word, searchFrom);
+    searchFrom = start + word.length;
+    return { start, end: start + word.length, word, ipa };
+  });
+
+  const phonologyInput = matchedPairs.map(([word, ipa]) => [word, ipa]);
+  applyKoreanPhonology(phonologyInput);
+  const updatedIPA = phonologyInput.map(([word, ipa]) => ipa);
+
+  const matchesWithUpdated = matches.map((m, i) => ({ ...m, ipa: updatedIPA[i] }));
+
+  let result = "";
+  let mi = 0;
+  for (let i = 0; i < input.length; i++) {
+    if (mi < matchesWithUpdated.length && i === matchesWithUpdated[mi].start) {
+      const m = matchesWithUpdated[mi];
+      result += withWords ? `( ${m.word} ${m.ipa} ) ` : m.ipa + " ";
+      i += m.word.length - 1;
+      mi++;
+    } else {
+      result += input[i] === " " ? "  " : String(input[i]) + " ";
+    }
+  }
+
+  if (pairsOnly) return { result: result.trim(), pairs: matchesWithUpdated.map(m => [m.word, m.ipa]) };
+  return result.trim().replace(/\s+/g, ' ');
+}

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IPA Translator — Agent Interface</title>
+  <style>
+    body { font-family: system-ui, -apple-system, sans-serif; margin: 2rem; background: #fff; color: #111; line-height: 1.6; }
+    pre { white-space: pre-wrap; word-break: break-word; font-family: 'Courier New', monospace; }
+    .error { color: #c00; }
+    /* Documentation mode */
+    .doc h1 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+    .doc h2 { font-size: 1.15rem; margin-top: 2rem; border-bottom: 1px solid #eee; padding-bottom: 0.3rem; }
+    .doc table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: 0.9rem; }
+    .doc th, .doc td { border: 1px solid #ddd; padding: 0.3rem 0.6rem; text-align: left; vertical-align: top; }
+    .doc th { background: #f8f8f8; font-weight: 600; }
+    .doc code { background: #f4f4f4; padding: 0.1rem 0.35rem; border-radius: 3px; font-size: 0.85em; }
+    .doc pre.code-block { background: #f4f4f4; padding: 1rem; border-radius: 4px; overflow-x: auto; }
+    .doc ul { padding-left: 1.5rem; }
+    .doc li { margin: 0.2rem 0; }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+  <script type="module">
+    import { LANGUAGES, resolveDatabasePath, getValidFormats, getValidVariants } from './js/agent-lang-config.js';
+    import { normalizeIPAData } from './js/utils.js';
+    import { processTextCharBased, processTextLongestMatch, processKhmerText, processKorean } from './js/ipa.js';
+
+    const app = document.getElementById('app');
+    const params = new URLSearchParams(window.location.search);
+    const language = params.get('language');
+    const input = params.get('input');
+
+    if (!language || input === null) {
+      showDocumentation();
+    } else {
+      app.innerHTML = '<pre id="output" class="loading">Loading...</pre>';
+      await runTranslation(language, input, params.get('format'), params.get('variant'));
+    }
+
+    // ============================================
+    // Translation Mode
+    // ============================================
+
+    async function runTranslation(langCode, inputText, formatKey, variantKey) {
+      const lang = LANGUAGES[langCode];
+      if (!lang) {
+        return showError(`Unknown language "${langCode}". Valid languages: ${Object.keys(LANGUAGES).join(', ')}`);
+      }
+
+      // Validate format
+      if (formatKey !== null) {
+        if (!lang.formats) {
+          return showError(`Language "${langCode}" does not support output formats.`);
+        }
+        if (!(formatKey in lang.formats)) {
+          return showError(`Unknown format "${formatKey}" for ${langCode}. Valid formats: ${Object.keys(lang.formats).join(', ')}`);
+        }
+      }
+
+      // Validate variant
+      if (variantKey !== null) {
+        if (!lang.variants) {
+          return showError(`Language "${langCode}" does not have variants.`);
+        }
+        if (!(variantKey in lang.variants)) {
+          return showError(`Unknown variant "${variantKey}" for ${langCode}. Valid variants: ${Object.keys(lang.variants).join(', ')}`);
+        }
+      }
+
+      // Input length check
+      if (inputText.length > 10000) {
+        return showError('Input too long (max 10,000 characters)');
+      }
+
+      // Empty input — return empty output
+      if (!inputText.trim()) {
+        document.getElementById('output').textContent = '';
+        return;
+      }
+
+      // Resolve database path
+      const dbPath = resolveDatabasePath(langCode, variantKey);
+      if (!dbPath) {
+        return showError(`Failed to resolve database path for ${langCode}.`);
+      }
+
+      // Fetch and normalize database
+      let jsonData;
+      try {
+        const resp = await fetch(dbPath);
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        jsonData = await resp.json();
+      } catch (e) {
+        return showError(`Failed to load IPA database for ${langCode}: ${e.message}`);
+      }
+
+      const lookupTable = normalizeIPAData(jsonData);
+
+      // Build processor options
+      const procOpts = {
+        input: inputText,
+        lookupTable,
+        allowWordSearch: lang.allowWordSearch || false,
+      };
+      if (lang.maxWordLength) procOpts.maxWordLength = lang.maxWordLength;
+
+      // Select processor
+      const processors = {
+        charBased: processTextCharBased,
+        longestMatch: processTextLongestMatch,
+        khmer: processKhmerText,
+        korean: processKorean,
+      };
+      const processor = processors[lang.processor];
+      if (!processor) {
+        return showError(`Unknown processor "${lang.processor}" for ${langCode}.`);
+      }
+
+      let result = processor(procOpts);
+
+      // Apply formatter if specified
+      if (formatKey && lang.formats && lang.formats[formatKey]) {
+        const formatRef = lang.formats[formatKey];
+        if (formatRef) {
+          const [moduleName, exportName] = formatRef.split(':');
+          try {
+            const mod = await import(`./js/format/${moduleName}`);
+            result = mod[exportName](result);
+          } catch (e) {
+            return showError(`Failed to load formatter: ${e.message}`);
+          }
+        }
+      }
+
+      // Extract text content from formatted result (remove HTML tags if any)
+      const cleanResult = result.replace(/<[^>]+>/g, '');
+      document.getElementById('output').textContent = cleanResult;
+    }
+
+    function showError(msg) {
+      app.innerHTML = `<pre class="error">${escapeHtml(msg)}</pre>`;
+    }
+
+    // ============================================
+    // Documentation Mode
+    // ============================================
+
+    function showDocumentation() {
+      const langRows = Object.entries(LANGUAGES).map(([code, lang]) => {
+        const variants = lang.variants ? Object.keys(lang.variants).join(', ') : '—';
+        const formats = lang.formats ? Object.keys(lang.formats).join(', ') : '—';
+        return `<tr><td>${code}</td><td>${lang.name}</td><td>${variants}</td><td>${formats}</td></tr>`;
+      }).join('');
+
+      app.innerHTML = `<div class="doc">
+<h1>IPA Translator — Agent Interface</h1>
+<p>Translate text to International Phonetic Alphabet (IPA) via URL parameters. No JavaScript interaction required.</p>
+
+<h2>Usage</h2>
+<pre class="code-block">agent.html?language=&lt;code&gt;&amp;input=&lt;text&gt;[&amp;format=&lt;format&gt;][&amp;variant=&lt;variant&gt;]</pre>
+
+<h2>Parameters</h2>
+<table>
+<tr><th>Param</th><th>Required</th><th>Description</th></tr>
+<tr><td><code>language</code></td><td>Yes</td><td>Language code (see list below)</td></tr>
+<tr><td><code>input</code></td><td>Yes</td><td>Text to translate (URL-encode non-ASCII)</td></tr>
+<tr><td><code>format</code></td><td>No</td><td>Output format key. Defaults to raw IPA when omitted</td></tr>
+<tr><td><code>variant</code></td><td>No</td><td>Language variant. Uses default when omitted</td></tr>
+</table>
+
+<h2>Supported Languages</h2>
+<table>
+<tr><th>Code</th><th>Name</th><th>Variants</th><th>Formats</th></tr>
+${langRows}
+</table>
+
+<h2>Examples</h2>
+<ul>
+<li>Cantonese → Jyutping: <code>?language=cantonese&amp;format=Jyutping&amp;input=你好</code></li>
+<li>Mandarin → Pinyin: <code>?language=mandarin&amp;variant=hans&amp;format=Pinyin&amp;input=你好</code></li>
+<li>German IPA: <code>?language=german&amp;input=Hallo Welt</code></li>
+<li>Vietnamese (Southern): <code>?language=vietnamese&amp;variant=S&amp;format=tone_simple&amp;input=Xin chao</code></li>
+<li>Korean: <code>?language=korean&amp;input=안녕하세요</code></li>
+<li>Khmer: <code>?language=khmer&amp;input=សួស្តី</code></li>
+</ul>
+
+<h2>Output</h2>
+<p>Plain text IPA or romanization. No HTML wrapping, no extra UI. Errors are returned as plain text prefixed with "Error:".</p>
+</div>`;
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+  </script>
+</body>
+</html>
