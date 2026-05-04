@@ -155,7 +155,7 @@
 <p><a href="SKILL.md">SKILL.md</a> — Agent usage guide (copy to your skill folder)</p>
 
 <h2>Prerequisites</h2>
-<p>You need a browser to use this site. Recommended: agent-browser, or any tool that can render JavaScript pages.</p>
+<p><b>Required Tooling</b> — use a browser-based tool like agent-browser or a headless engine (Playwright/Puppeteer) that executes JavaScript.</p>
 
 <h2>Usage</h2>
 <pre class="code-block">agent.html?language=&lt;code&gt;&amp;input=&lt;text&gt;[&amp;format=&lt;format&gt;][&amp;variant=&lt;variant&gt;]</pre>
@@ -177,12 +177,10 @@ ${langRows}
 
 <h2>Examples</h2>
 <ul>
-<li>Cantonese → Jyutping: <code>?language=cantonese&amp;format=Jyutping&amp;input=你好</code></li>
-<li>Mandarin → Pinyin: <code>?language=mandarin&amp;variant=hans&amp;format=Pinyin&amp;input=你好</code></li>
-<li>German IPA: <code>?language=german&amp;input=Hallo Welt</code></li>
-<li>Vietnamese (Southern): <code>?language=vietnamese&amp;variant=S&amp;format=tone_simple&amp;input=Xin chao</code></li>
-<li>Korean: <code>?language=korean&amp;input=안녕하세요</code></li>
-<li>Khmer: <code>?language=khmer&amp;input=សួស្តី</code></li>
+<li><a href="?language=german&amp;input=Hallo%20Welt">German IPA</a> — basic usage</li>
+<li><a href="?language=cantonese&amp;format=Jyutping&amp;input=你好">Cantonese → Jyutping</a> — with format</li>
+<li><a href="?language=mandarin&amp;variant=hans&amp;format=Pinyin&amp;input=你好">Mandarin → Pinyin</a> — with variant + format</li>
+<li><a href="?language=khmer&amp;input=សួស្តី">Khmer</a> — special processor</li>
 </ul>
 
 <h2>Output</h2>

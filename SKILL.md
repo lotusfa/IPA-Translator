@@ -9,11 +9,9 @@ Translate text to International Phonetic Alphabet (IPA) via a web interface.
 
 ## Prerequisites
 
-You need a browser tool that renders JavaScript. Recommended options:
+**Required Tooling**
 
-- **[agent-browser](https://github.com/anthropics/claude-code)** — Claude Code browser skill (best option)
-- **WebFetch** — built-in MCP tool (works for simple queries)
-- Any browser automation tool that executes client-side JS
+To use this, you must use a browser-based tool like [agent-browser](https://github.com/anthropics/claude-code) or a headless engine (Playwright/Puppeteer) that executes JavaScript.
 
 **Do not use curl or HTTP tools** — the page runs entirely in the browser (client-side JS fetches IPA databases and processes text).
 

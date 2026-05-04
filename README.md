@@ -54,7 +54,7 @@ Use `agent.html` with query parameters for programmatic access:
 https://toolbox.lotusfa.com/ipa/agent.html?language=cantonese&format=Jyutping&input=你好
 ```
 
-See [SKILL.md](https://toolbox.lotusfa.com/ipa/SKILL.md) for full documentation. A browser tool that renders JavaScript is required (agent-browser, WebFetch, etc.).
+See [SKILL.md](https://toolbox.lotusfa.com/ipa/SKILL.md) for full documentation. Requires a browser-based tool like agent-browser or a headless engine (Playwright/Puppeteer) that executes JavaScript.
 
 ## 📚 Features
 
