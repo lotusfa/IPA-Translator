@@ -38,6 +38,24 @@ Visit the live website: [https://toolbox.lotusfa.com/ipa/](https://toolbox.lotus
 
 **Legacy Version**: [https://toolbox.lotusfa.com/legacy/ipa/cantonese/index.html](https://toolbox.lotusfa.com/legacy/ipa/cantonese/index.html)
 
+## Pages
+
+| Page | Description |
+|------|-------------|
+| [index.html](https://toolbox.lotusfa.com/ipa/index.html) | Main landing page — pick a language and start translating |
+| [agent.html](https://toolbox.lotusfa.com/ipa/agent.html) | Agent interface — translate via URL parameters, plain text output |
+| [SKILL.md](https://toolbox.lotusfa.com/ipa/SKILL.md) | Agent usage guide — copy to your skill folder for repeated use |
+
+## For Agents
+
+Use `agent.html` with query parameters for programmatic access:
+
+```
+https://toolbox.lotusfa.com/ipa/agent.html?language=cantonese&format=Jyutping&input=你好
+```
+
+See [SKILL.md](https://toolbox.lotusfa.com/ipa/SKILL.md) for full documentation. A browser tool that renders JavaScript is required (agent-browser, WebFetch, etc.).
+
 ## 📚 Features
 
 - **Text-to-IPA Conversion**: Enter text in supported languages and get instant IPA transcription
