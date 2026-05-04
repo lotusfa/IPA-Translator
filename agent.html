@@ -5,19 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>IPA Translator — Agent Interface</title>
   <style>
-    body { font-family: system-ui, -apple-system, sans-serif; margin: 2rem; background: #fff; color: #111; line-height: 1.6; }
-    pre { white-space: pre-wrap; word-break: break-word; font-family: 'Courier New', monospace; }
+    body { font-family: system-ui, sans-serif; margin: 2rem; line-height: 1.6; }
+    pre { white-space: pre-wrap; word-break: break-word; }
     .error { color: #c00; }
-    /* Documentation mode */
-    .doc h1 { font-size: 1.5rem; margin-bottom: 0.5rem; }
-    .doc h2 { font-size: 1.15rem; margin-top: 2rem; border-bottom: 1px solid #eee; padding-bottom: 0.3rem; }
-    .doc table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: 0.9rem; }
-    .doc th, .doc td { border: 1px solid #ddd; padding: 0.3rem 0.6rem; text-align: left; vertical-align: top; }
-    .doc th { background: #f8f8f8; font-weight: 600; }
-    .doc code { background: #f4f4f4; padding: 0.1rem 0.35rem; border-radius: 3px; font-size: 0.85em; }
-    .doc pre.code-block { background: #f4f4f4; padding: 1rem; border-radius: 4px; overflow-x: auto; }
-    .doc ul { padding-left: 1.5rem; }
-    .doc li { margin: 0.2rem 0; }
+    table { border-collapse: collapse; }
+    th, td { border: 1px solid #ddd; padding: 0.3rem 0.6rem; text-align: left; }
+    th { background: #f8f8f8; }
+    code { background: #f4f4f4; padding: 0.1rem 0.3rem; border-radius: 3px; }
+    pre.code-block { background: #f4f4f4; padding: 1rem; border-radius: 4px; overflow-x: auto; }
   </style>
 </head>
 <body>
@@ -151,12 +146,16 @@
       const langRows = Object.entries(LANGUAGES).map(([code, lang]) => {
         const variants = lang.variants ? Object.keys(lang.variants).join(', ') : '—';
         const formats = lang.formats ? Object.keys(lang.formats).join(', ') : '—';
-        return `<tr><td>${code}</td><td>${lang.name}</td><td>${variants}</td><td>${formats}</td></tr>`;
+        return `<tr><td>${code}</td><td>${variants}</td><td>${formats}</td></tr>`;
       }).join('');
 
       app.innerHTML = `<div class="doc">
 <h1>IPA Translator — Agent Interface</h1>
 <p>Translate text to International Phonetic Alphabet (IPA) via URL parameters. No JavaScript interaction required.</p>
+<p><a href="SKILL.md">SKILL.md</a> — Agent usage guide (copy to your skill folder)</p>
+
+<h2>Prerequisites</h2>
+<p>You need a browser to use this site. Recommended: <a href="https://github.com/anthropics/claude-code">Claude Code</a> with agent-browser, or any tool that can render JavaScript pages.</p>
 
 <h2>Usage</h2>
 <pre class="code-block">agent.html?language=&lt;code&gt;&amp;input=&lt;text&gt;[&amp;format=&lt;format&gt;][&amp;variant=&lt;variant&gt;]</pre>
@@ -172,7 +171,7 @@
 
 <h2>Supported Languages</h2>
 <table>
-<tr><th>Code</th><th>Name</th><th>Variants</th><th>Formats</th></tr>
+<tr><th>Code</th><th>Variants</th><th>Formats</th></tr>
 ${langRows}
 </table>
 
