@@ -35,10 +35,11 @@ export function formatAsJSON(pairs, formatter) {
  */
 export function formatAsCSV(pairs, formatter) {
   const formattedPairs = formatPairIPAs(pairs, formatter);
+  const q = (v) => `"${String(v ?? '').replace(/"/g, '""')}"`;
   const rows = ['"word","ipa","formatted"'];
   for (let i = 0; i < pairs.length; i++) {
     const [word, ipa] = pairs[i];
-    rows.push(`"${word}","${ipa || ''}","${(formattedPairs[i] || [])[1] || ''}"`);
+    rows.push([q(word), q(ipa || ''), q((formattedPairs[i] || [])[1] || '')].join(','));
   }
   return rows.join('\n');
 }

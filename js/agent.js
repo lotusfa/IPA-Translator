@@ -1,7 +1,8 @@
 /**
  * Agent interface — IPA Translator
  * Loaded by agent.html via <script type="module">.
- * Translates text to IPA via URL query parameters.
+ * Static-hosted, client-side IPA via URL query parameters.
+ * Designed for browsers AND browser-driven agents / CLI tools.
  */
 
 import { LANGUAGES, resolveDatabasePath } from './agent-lang-config.js';
@@ -11,26 +12,34 @@ import { formatAsJSON, formatAsCSV, stripHTML } from './format-display.js';
 
 const app = document.getElementById('app');
 const params = new URLSearchParams(window.location.search);
-const language = params.get('language');
+const hasAnyParam = [...params.keys()].length > 0;
+const helpRequested = params.has('help') || params.get('docs') === '1';
+
+const languageRaw = params.get('language');
 const input = params.get('input');
 const displayFormat = (params.get('displayFormat') || 'normal').toLowerCase();
 
-if (!language || input === null) {
+// Docs only when the page is opened with no query, or ?help / ?docs=1.
+// Partial params (e.g. language without input) return a stable Error: line
+// so agents do not mistake documentation for IPA output.
+if (!hasAnyParam || helpRequested) {
   showDocumentation();
+} else if (!languageRaw || input === null) {
+  const missing = [];
+  if (!languageRaw) missing.push('language');
+  if (input === null) missing.push('input');
+  showError(`Missing required parameter(s): ${missing.join(', ')}. Open agent.html with no params (or ?help=1) for docs.`);
 } else {
-  app.innerHTML = '<pre id="output" class="loading">Loading...</pre>';
-  await runTranslation(language, input, params.get('format'), params.get('variant'), displayFormat);
+  setOutput('Loading...', 'loading');
+  await runTranslation(languageRaw, input, params.get('format'), params.get('variant'), displayFormat);
 }
 
-// ============================================
-// Translation Mode
-// ============================================
-
-async function runTranslation(langCode, inputText, formatKey, variantKey, displayFormat) {
-  const lang = LANGUAGES[langCode];
-  if (!lang) {
-    return showError(`Unknown language "${langCode}". Valid languages: ${Object.keys(LANGUAGES).join(', ')}`);
+async function runTranslation(langCodeRaw, inputText, formatKey, variantKey, displayFormat) {
+  const langCode = resolveLanguageCode(langCodeRaw);
+  if (!langCode) {
+    return showError(`Unknown language "${langCodeRaw}". Valid languages: ${Object.keys(LANGUAGES).join(', ')}`);
   }
+  const lang = LANGUAGES[langCode];
 
   const validDisplayFormats = ['normal', 'ipa', 'json', 'csv'];
   if (!validDisplayFormats.includes(displayFormat)) {
@@ -60,7 +69,7 @@ async function runTranslation(langCode, inputText, formatKey, variantKey, displa
   }
 
   if (!inputText.trim()) {
-    document.getElementById('output').textContent = '';
+    setOutput('', 'ready');
     return;
   }
 
@@ -110,32 +119,55 @@ async function runTranslation(langCode, inputText, formatKey, variantKey, displa
         return showError(`Failed to load formatter: ${e.message}`);
       }
     }
+    // null formatRef (e.g. IPA_org) means identity / raw IPA — intentional.
   }
 
+  let output;
   if (displayFormat === 'json' || displayFormat === 'csv') {
     const { pairs } = processor({ ...procOpts, pairsOnly: true });
-    let output;
-    if (displayFormat === 'json') {
-      output = formatAsJSON(pairs, formatter);
-    } else {
-      output = formatAsCSV(pairs, formatter);
-    }
-    document.getElementById('output').textContent = output;
+    output = displayFormat === 'json'
+      ? formatAsJSON(pairs, formatter)
+      : formatAsCSV(pairs, formatter);
   } else {
     procOpts.withWords = displayFormat === 'normal';
     let result = processor(procOpts);
     if (formatter) result = formatter(result);
-    document.getElementById('output').textContent = stripHTML(result);
+    output = stripHTML(result);
   }
+  setOutput(output, 'ready');
+}
+
+function resolveLanguageCode(code) {
+  if (!code) return null;
+  if (LANGUAGES[code]) return code;
+  const lower = code.toLowerCase();
+  if (LANGUAGES[lower]) return lower;
+  const match = Object.keys(LANGUAGES).find((k) => k.toLowerCase() === lower);
+  return match || null;
+}
+
+function ensureOutputEl() {
+  let el = document.getElementById('output');
+  if (!el) {
+    app.innerHTML = '';
+    el = document.createElement('pre');
+    el.id = 'output';
+    app.appendChild(el);
+  }
+  return el;
+}
+
+function setOutput(text, status) {
+  const el = ensureOutputEl();
+  el.className = status === 'loading' ? 'loading' : (status === 'error' ? 'error' : '');
+  el.dataset.status = status;
+  el.textContent = text;
 }
 
 function showError(msg) {
-  app.innerHTML = `<pre class="error">${escapeHtml(msg)}</pre>`;
+  const line = msg.startsWith('Error:') ? msg : `Error: ${msg}`;
+  setOutput(line, 'error');
 }
-
-// ============================================
-// Documentation Mode
-// ============================================
 
 function showDocumentation() {
   const langLines = Object.entries(LANGUAGES).map(([code, lang]) => {
@@ -146,38 +178,38 @@ function showDocumentation() {
 
   const doc = [
     'IPA Translator — Agent Interface',
-    'Translate text to IPA via URL query parameters on agent.html.',
+    'Static-hosted client-side IPA. Humans use the UI pages; agents/CLI drive this page in a JS browser.',
     '',
     'USAGE: agent.html?language=<code>&input=<text>[&format=<fmt>][&variant=<var>][&displayFormat=<fmt>]',
+    'DOCS:  agent.html   or   agent.html?help=1',
     '',
     'PARAMETERS:',
-    '  language     (required) Language code',
-    '  input        (required) Text to translate (URL-encode non-ASCII)',
-    '  format           Output format key (Jyutping, Pinyin, etc). Defaults to raw IPA when omitted.',
+    '  language         (required for translate) Language code (case-insensitive)',
+    '  input            (required for translate) Text to translate (URL-encode non-ASCII)',
+    '  format           Output format key (Jyutping, Pinyin, etc). Omit for raw IPA.',
     '  variant          Language variant. Uses default when omitted.',
     '  displayFormat    normal (text+IPA, default), ipa (IPA only), json, csv',
+    '                   Note: ruby layout is UI-only; not available here.',
     '',
     'SUPPORTED LANGUAGES:',
     langLines,
     '',
     'EXAMPLES:',
     '  ?language=german&input=Hallo%20Welt',
-    '  ?language=cantonese&format=Jyutping&input=你好',
-    '  ?language=mandarin&variant=hans&format=Pinyin&input=你好',
-    '  ?language=cantonese&input=歡迎&displayFormat=ipa',
-    '  ?language=cantonese&input=歡迎&displayFormat=json',
+    '  ?language=cantonese&format=Jyutping&input=%E4%BD%A0%E5%A5%BD',
+    '  ?language=mandarin&variant=hans&format=Pinyin&input=%E4%BD%A0%E5%A5%BD',
+    '  ?language=cantonese&input=%E6%AD%A1%E8%BF%8E&displayFormat=ipa',
+    '  ?language=cantonese&input=%E6%AD%A1%E8%BF%8E&displayFormat=json',
     '',
-    'OUTPUT: Plain text in <pre> tag. Errors prefixed with "Error:".',
+    'OUTPUT: Plain text in <pre id="output">.',
+    '  Success: data-status="ready" (loading class removed)',
+    '  Error:   data-status="error", text starts with "Error:"',
+    '  Docs:    no query params (or ?help=1)',
     '',
-    'NOTE: Requires a JavaScript browser (agent-browser, Playwright, Puppeteer). curl/HTTP fetch will not work.',
-    'See SKILL.md for full agent usage guide.',
+    'NOTE: Needs a JavaScript browser (agent-browser, Playwright, Puppeteer, or a CLI that drives one).',
+    '      Plain curl / HTTP fetch without JS will not run the converter.',
+    'See SKILL.md for the agent usage guide.',
   ].join('\n');
 
-  app.innerHTML = `<pre id="output">${doc}</pre>`;
-}
-
-function escapeHtml(text) {
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
+  setOutput(doc, 'ready');
 }

@@ -5,51 +5,61 @@ description: Translate text to International Phonetic Alphabet (IPA) and romaniz
 
 # IPA Translator — Agent Interface
 
-Translate text to International Phonetic Alphabet (IPA) via a web interface.
+Static-hosted, offline-capable IPA converter. Humans use the normal language pages; **agents and CLI tools** should drive `agent.html` in a JavaScript browser and read `#output`.
 
-## IMPORTANT: Use a Browser Tool
+## Hosting model
 
-This page runs entirely client-side (JavaScript fetches IPA databases and processes text).
-**DO NOT** use curl, fetch, or any HTTP tool that doesn't execute JavaScript — you will only get an empty `<div id="app"></div>`.
+- Files are static (Firebase / any static host). Conversion runs **in the browser** after load.
+- No server API. A plain HTTP GET without JS execution will not produce IPA.
 
-Use **agent-browser** (open, wait for load, extract text from `pre` element) or a headless browser (Playwright/Puppeteer).
+## How agents / CLI should call it
 
-## Prerequisites
+Use a browser automation tool (agent-browser, Playwright, Puppeteer, or a CLI wrapper around one):
 
-**Required Tooling**
+1. Open the URL with query params (URL-encode non-ASCII `input`).
+2. Wait until `#output` has `data-status="ready"` or `data-status="error"` (not `loading`).
+3. Read `pre#output` text content.
+4. If the text starts with `Error:`, treat as failure.
 
-To use this, you must use a browser-based tool like [agent-browser](https://github.com/anthropics/claude-code) or a headless engine (Playwright/Puppeteer) that executes JavaScript.
+**Do not** use curl / WebFetch / raw HTTP alone for translate mode — those tools usually do not run page JS.
+
+Docs mode (no translate): open `agent.html` with **no query string**, or `?help=1`.
 
 ## Base URL
 
 [https://toolbox.lotusfa.com/ipa/agent.html](https://toolbox.lotusfa.com/ipa/agent.html)
 
-## How to Use
+Local preview (from the `ipa` folder):
 
-Navigate to the URL with query parameters. The page runs entirely in the browser — JavaScript fetches the IPA database and processes the text client-side.
+```bash
+python3 -m http.server 8765 --bind 127.0.0.1
+# then open http://127.0.0.1:8765/agent.html?...
+```
+
+## Query parameters
 
 ```
-https://toolbox.lotusfa.com/ipa/agent.html?language=<code>&input=<text>[&format=<format>][&variant=<variant>][&displayFormat=<format>]
+agent.html?language=<code>&input=<text>[&format=<format>][&variant=<variant>][&displayFormat=<format>]
 ```
 
 | Param | Required | Description |
 |-------|----------|-------------|
-| `language` | Yes | Language code (see list below) |
-| `input` | Yes | Text to translate (URL-encode non-ASCII characters) |
-| `format` | No | Output format key (Jyutping, Pinyin, etc). Omit for raw IPA |
-| `variant` | No | Language variant. Uses default when omitted |
-| `displayFormat` | No | Display mode: `normal` (text+IPA, default), `ipa` (IPA only), `json`, `csv` |
+| `language` | Yes (translate) | Language code (**case-insensitive**) |
+| `input` | Yes (translate) | Text to translate (URL-encode non-ASCII) |
+| `format` | No | Output format key (Jyutping, Pinyin, …). Omit for raw IPA. `IPA_org` is identity (raw IPA). |
+| `variant` | No | Language variant; default when omitted |
+| `displayFormat` | No | `normal` (default), `ipa`, `json`, `csv`. **No `ruby`** (UI-only). |
+| `help` / `docs=1` | Docs | Show documentation instead of translating |
 
-## Browser Usage
+Missing `language` or `input` (when any other query is present) returns `Error: …`, not the docs page.
+
+## Browser / agent-browser example
 
 ```bash
-# Using agent-browser
 agent-browser open "https://toolbox.lotusfa.com/ipa/agent.html?language=cantonese&format=Jyutping&input=%E4%BD%A0%E5%A5%BD"
 agent-browser wait --load networkidle
-agent-browser get text pre  # Get the IPA output
-
-# Using WebFetch
-WebFetch url="https://toolbox.lotusfa.com/ipa/agent.html?language=german&input=Hallo Welt" prompt="Extract the plain text IPA output from the page"
+# Prefer: wait until pre#output[data-status="ready"], then:
+agent-browser get text "pre#output"
 ```
 
 ## Supported Languages
@@ -89,21 +99,25 @@ WebFetch url="https://toolbox.lotusfa.com/ipa/agent.html?language=german&input=H
 - [Vietnamese (Southern)](https://toolbox.lotusfa.com/ipa/agent.html?language=vietnamese&variant=S&format=tone_simple&input=Xin%20chao)
 - [Korean](https://toolbox.lotusfa.com/ipa/agent.html?language=korean&input=%EC%95%88%EB%85%95%ED%95%98%EC%84%B8%EC%9A%94)
 - [Japanese](https://toolbox.lotusfa.com/ipa/agent.html?language=japanese&input=%E3%81%93%E3%82%93%E3%81%AB%E3%81%A1%E3%81%AF)
-- [IPA only (no text)](https://toolbox.lotusfa.com/ipa/agent.html?language=cantonese&input=%E6%AC%A2%E8%BF%8E&displayFormat=ipa)
+- [IPA only](https://toolbox.lotusfa.com/ipa/agent.html?language=cantonese&input=%E6%AC%A2%E8%BF%8E&displayFormat=ipa)
 - [JSON output](https://toolbox.lotusfa.com/ipa/agent.html?language=cantonese&input=%E6%AC%A2%E8%BF%8E&displayFormat=json)
 
-## Output
+## Output contract
 
-The page renders plain text in a `<pre>` element. No extra UI, no HTML wrapping. Errors appear as plain text starting with "Error:" or "Unknown".
+| `data-status` | Meaning |
+|---------------|---------|
+| `loading` | Still working |
+| `ready` | Success **or** documentation page |
+| `error` | Failure; text starts with `Error:` |
 
 | displayFormat | Output |
 |---------------|--------|
 | `normal` (default) | Text with IPA, e.g. `( 歡 fu:n˥ ) ( 迎 jɪŋ˨˩ )` |
-| `ipa` | IPA only, e.g. `fu:n˥ jɪŋ˨˩` |
-| `json` | JSON array of `{word, ipa, formatted}` objects |
-| `csv` | CSV with `word`, `ipa`, `formatted` columns |
+| `ipa` | IPA only |
+| `json` | JSON array of `{word, ipa, formatted}` |
+| `csv` | CSV with quoted `word`, `ipa`, `formatted` columns |
 
 ## Notes
 
-- Visit [without parameters](https://toolbox.lotusfa.com/ipa/agent.html) to see the full documentation page with language table.
-- Non-ASCII input must be URL-encoded (e.g., `你好` → `%E4%BD%A0%E5%A5%BD`).
+- Non-ASCII `input` must be URL-encoded (`你好` → `%E4%BD%A0%E5%A5%BD`).
+- Same static files work for people (UI) and agents (`agent.html`); no separate backend.

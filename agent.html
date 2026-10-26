@@ -1,21 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <!--
-  IMPORTANT: This page requires a JavaScript-enabled browser to render.
-  AI agents: use agent-browser, Playwright, Puppeteer, or any headless browser.
-  Fetching this HTML with curl/HTTP tools will NOT work — the page runs entirely client-side.
-  See SKILL.md for usage instructions.
+  Static IPA agent endpoint. Humans: open with no params for docs.
+  Agents/CLI: open with ?language=&input= in a JS browser; read #output[data-status].
+  Plain curl/HTTP without JS will not convert. See SKILL.md.
 -->
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="IPA Translator Agent Interface. Requires JavaScript browser (agent-browser, Playwright, Puppeteer). curl/HTTP fetch will not work.">
+  <meta name="description" content="IPA Translator agent endpoint (static). Requires a JavaScript browser for convert mode. Agents: read pre#output[data-status].">
   <title>Agent Interface | IPA Translator</title>
   <link rel="stylesheet" href="./css/agent.css">
 </head>
 <body>
   <div id="app">
-    <noscript>This page requires a JavaScript-enabled browser. Use agent-browser, Playwright, or Puppeteer — curl/HTTP fetch will not work.</noscript>
+    <noscript>This page requires JavaScript. Use a browser or browser-driven agent/CLI — plain HTTP fetch will not convert text.</noscript>
   </div>
   <script src="./js/agent.js" type="module"></script>
 </body>
